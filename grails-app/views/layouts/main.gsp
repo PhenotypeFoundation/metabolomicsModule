@@ -1,7 +1,7 @@
 <g:applyLayout name="module">
   <html>
   <head>
-    <title><g:layoutTitle default="pocModule" /></title>
+    <title><g:layoutTitle default="Metabolomics Module" /></title>
     <g:layoutHead />
   </head>
 
@@ -12,8 +12,11 @@
     <li>
       <a href="#" onClick="return false;">GSCF</a>
       <ul class="subnav">
-        <li><g:link
-                url="${org.codehaus.groovy.grails.commons.ConfigurationHolder.config.gscf.baseURL}">Go to GSCF</g:link></li>
+        <li>
+          <g:link url="${org.codehaus.groovy.grails.commons.ConfigurationHolder.config.gscf.baseURL}">
+            Go to GSCF
+          </g:link>
+        </li>
       </ul>
     </li>
   </content>

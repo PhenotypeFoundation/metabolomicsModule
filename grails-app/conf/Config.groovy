@@ -88,3 +88,6 @@ log4j = {
 
     warn   'org.mortbay.log'
 }
+
+// TODO: make configuration locally overridable
+gscf.baseURL='http://localhost:8080/gscf'
