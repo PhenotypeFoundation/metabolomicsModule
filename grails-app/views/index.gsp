@@ -7,6 +7,31 @@
       width: 50%;
     }
 
+    #studyOverview {
+      float: left;
+    }
+    
+    .studyList {
+
+    }
+
+    .studyName {
+
+    }
+
+    .assayList {
+
+    }
+
+    .assayName {
+
+    }
+
+    /* temporary layout fix for as long as this div exists in the page */
+    #preview {
+      clear: both;
+    }
+    
     /*prevent our floating divs from overlapping footer */
     @suppresswarnings
     #footer {
@@ -27,7 +52,7 @@
 
   <div id="uploadArea">
 
-    uploader goes here
+    uploader goes here ...
 
   </div>
 
@@ -35,7 +60,7 @@
 
 </div>
 
-<div id="studiesOverview">
+<div id="studyOverview">
 
   <mm:studyList/>
 
