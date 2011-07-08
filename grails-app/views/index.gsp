@@ -13,6 +13,12 @@
       clear: both;
     }
   </style>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    <mm:previewDialog id="previewLink"/>
+  });
+  </script>
+
 </head>
 <body>
 
@@ -33,6 +39,10 @@
 
   <mm:studyList/>
 
+</div>
+
+<div id="preview">
+  <a href="#" id="previewLink">Open preview dialog</a>
 </div>
 
 </body>
