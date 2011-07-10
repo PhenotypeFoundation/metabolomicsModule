@@ -15,6 +15,7 @@ class MetabolomicsModuleTagLib {
     def fileTypes = ["CSV", "TAB", "XLS/XLSX"]
     def platformList = ["DCL Lipidomics", "Platform2", "Platform 3"]
     def assayList = ["Assay1", "Assay2", "Assay3"]
+    def dataColumnsList = ["Column1", "Column2", "Column3", "Column4"]
 
     // abbreviation for Metabolomics Module
     static namespace = "mm"
@@ -148,7 +149,8 @@ class MetabolomicsModuleTagLib {
      * TODO: jQuery plugin at http://code.google.com/p/dropdown-check-list/
      */
     def previewDataColumnsControl = { attrs, body ->
-       out << "Datacolumns: "
+       //out << "Datacolumns: " + g.select (name:"datacolumns", from:dataColumnsList)
+       out << "Datacolumns: " + '<select name="datacolumns" id="datacolumns" multiple="multiple"><option>Column1</option><option>Column2</option></select>'
     }
 
     /**
