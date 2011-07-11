@@ -13,8 +13,7 @@ import org.dbxp.moduleBase.Auth
 
 class MetabolomicsModuleTagLib {
     def fileTypes = ["CSV", "TAB", "XLS/XLSX"]
-    def platformList = ["DCL Lipidomics", "Platform2", "Platform 3"]
-    def assayList = ["Assay1", "Assay2", "Assay3"]
+    def platformList = ["Platform1", "Platform2", "Platform 3"]
     def dataColumnsList = ["Column1", "Column2", "Column3", "Column4"]
 
     // abbreviation for Metabolomics Module
@@ -69,7 +68,7 @@ class MetabolomicsModuleTagLib {
 
     /**
      * Renders a popup dialog which loads the preview controller to
-     * configure and display the preview data
+     * configure and display the preview data.
      *
      * @param id id of the HTML element being clicked
      */
@@ -81,8 +80,9 @@ class MetabolomicsModuleTagLib {
 	   out << '.dialog({'
        out << 'autoOpen: false,'
 	   out << 'title: "Preview dialog",'
-	   out << 'width: 500,'
-	   out << 'height: 300'
+       out << "buttons: { 'close': function() { \$(this).dialog('close');} },"
+	   out << 'width: 680,'
+	   out << 'height: 400'
 	   out << '});'
 
        out << '$("#' + attrs['id'] + '").click(function() {'
@@ -92,7 +92,7 @@ class MetabolomicsModuleTagLib {
     }
 
     /**
-     * Dropdown list control to choose the type of data formatting used: tabular, comma separated, Excel et cetera
+     * Dropdown list control to choose the type of data formatting used: tabular, comma separated, Excel et cetera.
      */
 
     def previewFileTypeControl = { attrs, body ->
@@ -100,14 +100,14 @@ class MetabolomicsModuleTagLib {
     }
 
     /**
-     * Dropdown list control to choose the platform used (DCL lipodomics)
+     * Dropdown list control to choose the platform used (DCL lipodomics).
      */
     def previewPlatformControl = { attrs, body ->
         out << "Platform: " + g.select(name:"platform", from:platformList)
     }
 
     /**
-     * Radio button to switch orientation/transpose data: 1 sample per row or per column
+     * Radio button to switch orientation/transpose data: 1 sample per row or per column.
      */
     def previewOrientationControl = { attrs, body ->
         out << "Sample per "
@@ -116,36 +116,58 @@ class MetabolomicsModuleTagLib {
     }
 
     /**
-     * Dropdown list control to choose where the sample column starts
+     * Dropdown list control to choose where the sample column starts.
      */
     def previewSampleColumnControl = { attrs, body ->
 
     }
 
     /**
-     * Dropdown list control to choose one parameter (not clear)
+     * Dropdown list control to choose one parameter (not clear).
      */
     def previewOneParameterControl = { attrs, body ->
 
     }
 
     /**
-     * Dropdown list control to choose the feature row
+     * Checkbox control for normalized data.
+     */
+    def previewNormalizedControl = { attrs, body ->
+        out << "Normalized: " + g.checkBox(name:"normalized")
+    }
+
+    /**
+     * Dropdown list control to choose the feature row.
      */
     def previewFeatureRowControl = { attrs, body ->
 
     }
 
     /**
-     * Multiselect control to choose assays
+     * Multiselect control to choose assays.
+     *
+     * @param studies list of studies with assays
+     *
      */
     def previewAssaysControl = { attrs, body ->
-        out << "Assay: " + g.select(name:"assays", from:assayList)
+        out << "Assay: "
+        out << '<select name="assays" multiple size="8" style="width:170px">'
 
+        // if new studygroup create new label
+        10.times { out << '<optgroup label="Study' + it + '">'
+            5.times {
+                out << '<option value="' + it + '">Assay' + it + '</option>'
+            }
+
+            out << '</optgroup>'
+        }
+
+        out << '</select>'
     }
 
     /**
-     * Checkbox list control to select the data columns
+     * Checkbox list control to select the data columns.
+     *
      * TODO: jQuery plugin at http://code.google.com/p/dropdown-check-list/
      */
     def previewDataColumnsControl = { attrs, body ->
@@ -154,10 +176,20 @@ class MetabolomicsModuleTagLib {
     }
 
     /**
-     * Preview control displaying a preview of the data according to the settings made by other controls
+     * Preview control displaying a preview of the data according to the settings made by other controls.
+     * @param datamatrix two dimensional array with data
+     *
      */
-    def previewDataControl = { attrs, body ->
+    def previewDataMatrixControl = { attrs, body ->
+        out << 'Datamatrix'
+    }
 
+    /**
+     * Statistics control showing amount of samples found in assay, unassigned samples et cetera.
+     */
+    def previewStatisticsControl = { attrs, body ->
+        out << "Statistics: 200 of 200 samples in selected assays were found."
+        out << "1785 of 1985 samples in this file remain unassigned."
     }
 
 }

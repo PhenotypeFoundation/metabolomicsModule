@@ -5,6 +5,7 @@
     <link type="text/css" href="${createLinkTo(dir:'css',file:'ui.dropdownchecklist.themeroller.css')}" />
     <link type="text/css" href="${createLinkTo(dir:'css',file:'jquery-ui-1.8.14.custom.css')}" />
 
+
     <title><g:layoutTitle default="Metabolomics Module" /></title>
     <g:layoutHead />
   </head>

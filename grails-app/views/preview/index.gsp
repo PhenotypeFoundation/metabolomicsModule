@@ -9,24 +9,48 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
   <head>
-      <script type="text/javascript">
-        $(document).ready(function() {
-            $("#datacolumns").dropdownchecklist( { width: 150, height:100 } );
-        });
-        </script>
+  <link rel="stylesheet" href="${createLinkTo(dir:'css',file:'preview.css')}" />
 
   <title>Preview data</title>
   </head>
   <body>
+    <div class="previewpanel" id="previewpanel">
+        <div class="fileType">
+            <mm:previewFileTypeControl/>
+         </div>
 
-    <mm:previewAssaysControl/>
-    <mm:previewDataColumnsControl/>
-    <mm:previewDataControl/>
-    <mm:previewFeatureRowControl/>
-    <mm:previewFileTypeControl/>
-    <mm:previewOneParameterControl/>
-    <mm:previewOrientationControl/>
-    <mm:previewPlatformControl/>
-    <mm:previewSampleColumnControl/>
+        <div class="platform">
+            <mm:previewPlatformControl/>
+        </div>
+
+        <div class="assays">
+            <mm:previewAssaysControl/>
+        </div>
+
+        <div class="orientation">
+            <mm:previewOrientationControl/>
+        </div>
+
+        <div class="normalized">
+            <mm:previewNormalizedControl/>
+        </div>
+
+
+        <div class="datamatrix">
+            <mm:previewDataMatrixControl/>
+        </div>
+
+        <div class="statistics">
+            <mm:previewStatisticsControl/>
+        </div>
+
+
+        <mm:previewFeatureRowControl/>
+
+        <mm:previewOneParameterControl/>
+
+
+
+    </div>
   </body>
 </html>
