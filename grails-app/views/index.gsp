@@ -27,22 +27,18 @@
 
     }
 
-    /* temporary layout fix for as long as this div exists in the page */
-    #preview {
-      clear: both;
-    }
-    
     /*prevent our floating divs from overlapping footer */
     @suppresswarnings
     #footer {
       clear: both;
     }
   </style>
-  <script type="text/javascript">
+
+<script>
   $(document).ready(function() {
-    <mm:previewDialog id="previewLink"/>
-  });
-  </script>
+   <pc:dialog id="dialogLink"/>
+});
+</script>
 
 </head>
 <body>
@@ -66,8 +62,8 @@
 
 </div>
 
-<div id="preview">
-  <a href="#" id="previewLink">Open preview dialog</a>
+<div id="configInfo">
+  <a href="#" id="dialogLink">Open Parse Configuration dialog</a>
 </div>
 
 </body>

@@ -3,9 +3,13 @@ body {
     font: 11px verdana, arial, helvetica, sans-serif;
 }
 
-.previewpanel {
+.parseConfigDialog {
     width: 100%;
     height: 200px;
+}
+
+#configInfo {
+ clear: both;
 }
 
 .assays {
