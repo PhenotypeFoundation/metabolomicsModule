@@ -61,8 +61,8 @@ class ParseConfigurationTagLib {
      */
     def orientationControl = { attrs, body ->
         out << "Sample per "
-        out << "<b>row</b>" + g.radio(name:"orientation", value:"samplePerRow", checked:true)
-        out << "<b>column</b>" + g.radio(name:"orientation", value:"samplePerColumn")
+        out << "<b>row</b>" + g.radio(id:"samplePerRow", name:"orientation", value:"samplePerRow")
+        out << "<b>column</b>" + g.radio(id:"samplePerColumn", name:"orientation", value:"samplePerColumn")
     }
 
     /**
@@ -138,8 +138,7 @@ class ParseConfigurationTagLib {
      * Statistics control showing amount of samples found in assay, unassigned samples et cetera.
      */
     def statisticsControl = { attrs, body ->
-        out << "Statistics: 200 of 200 samples in selected assays were found."
-        out << "1785 of 1985 samples in this file remain unassigned."
+        out << '<div id="statistics">Statistics: no statistics available</div>'
     }
 
 

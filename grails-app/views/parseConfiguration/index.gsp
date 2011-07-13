@@ -20,7 +20,7 @@
   </head>
   <body>
     <div class="parseConfigDialog" id="parseConfigDialog">
-        <g:formRemote name="pcform" onFailure="alert('No response from server')" onSuccess="updateDatamatrix(data, textStatus)" action="updateDatamatrix" url="${[action:'updateDatamatrix']}">
+        <g:formRemote name="pcform" onFailure="alert('No response from server')" before="updateStatistics('loading...')" onSuccess="updateDatamatrix(data, textStatus)" action="updateDatamatrix" url="${[action:'updateDatamatrix']}">
         <div class="fileType">
             <pc:fileTypeControl/>
          </div>

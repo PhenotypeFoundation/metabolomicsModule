@@ -27,7 +27,7 @@ class ParseConfigurationController {
 		def olddatamatrix = [ [123,1234,123], [123,123,123]]
 
         def datamatrix = []
-        100.times { datamatrix.add ( [100,200,300,400,500,600,700, 800, 900, 1000]) }
+        1000.times { datamatrix.add ( [100,200,300,400,500,600,700, 800, 900, 1000]) }
 
 		def dataTables = [:]
 		if (datamatrix) {
