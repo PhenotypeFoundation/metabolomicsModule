@@ -32,7 +32,7 @@ class ParseConfigurationTagLib {
         out << 'title: "Parse Configuration panel",'
         out << "buttons: { 'close': function() { \$(this).dialog('close');}, 'send': function() { submitForm(); } },"
         out << 'width: 680,'
-        out << 'height: 450'
+        out << 'height: 520'
         out << '});'
 
         out << '$("#' + attrs['id'] + '").click(function() {'

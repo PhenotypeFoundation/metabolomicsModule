@@ -20,7 +20,7 @@
   </head>
   <body>
     <div class="parseConfigDialog" id="parseConfigDialog">
-        <g:formRemote name="pcform" on404="alert('not found!')" update="something" action="show" url="${[action:'show']}">
+        <g:formRemote name="pcform" onFailure="alert('No response from server')" onSuccess="updateDatamatrix(data, textStatus)" action="updateDatamatrix" url="${[action:'updateDatamatrix']}">
         <div class="fileType">
             <pc:fileTypeControl/>
          </div>
@@ -42,7 +42,6 @@
         <div class="statistics">
             <pc:statisticsControl/>
         </div>
-        <input type="submit" value="Send"/>
         </g:formRemote>
     </div>
   </body>
