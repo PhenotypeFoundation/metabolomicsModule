@@ -34,7 +34,7 @@
   <meta http-equiv="pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <link rel="stylesheet" href="${createLinkTo(dir:'css',file: 'parseConfiguration.css')}" />
+  <r:require module="parseConfiguration"/>
 
   <pc:initParseConfigurationDialog/>
 
