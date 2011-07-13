@@ -57,7 +57,7 @@
             name="myUniqueUploadName"
             path="/tmp">
       <uploadr:onSuccess>
-        $.ajax(\'${g.createLink(controller: 'parsedFile', action: 'uploadFinished', plugin: 'dbxpModuleStorage')}\'+'?fileName=' + file.fileName)
+        $.ajax('${g.createLink(controller: 'parsedFile', action: 'uploadFinished', plugin: 'dbxpModuleStorage')}'+'?fileName=' + file.fileName)
       </uploadr:onSuccess>
     </uploadr:add>
 
