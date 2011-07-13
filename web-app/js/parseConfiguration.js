@@ -5,6 +5,10 @@ function initParseConfigurationDialog() {
  // Init stuff
 }
 
+function submitForm() {
+    $('#pcform').submit()"
+}
+
 function updateParseConfiguration() {
 
    // show the please wait spinner
