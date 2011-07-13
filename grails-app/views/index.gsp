@@ -9,10 +9,15 @@
 
     #studyOverview {
       float: left;
+      width: auto;
     }
-    
-    .studyList {
 
+    .sampleCount {
+      float: right;
+    }
+
+    .studyList {
+      width: 100%;
     }
 
     .studyName {
@@ -28,10 +33,10 @@
     }
 
     /*prevent our floating divs from overlapping footer */
-    @suppresswarnings
     #footer {
       clear: both;
     }
+
   </style>
 
 <script>
@@ -48,8 +53,15 @@
 
   <div id="uploadArea">
 
-    uploader goes here ...
+    <uploadr:add
+            name="myUniqueUploadName"
+            path="/tmp">
+      <uploadr:onSuccess>
+        $.ajax(\'${g.createLink(controller: 'parsedFile', action: 'uploadFinished', plugin: 'dbxpModuleStorage')}\'+'?fileName=' + file.fileName)
+      </uploadr:onSuccess>
+    </uploadr:add>
 
+    %{--<uploadr:demo/>--}%
   </div>
 
   <mm:uploadedFileList/>

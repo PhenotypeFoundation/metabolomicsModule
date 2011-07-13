@@ -7,7 +7,11 @@
 
 
     <title><g:layoutTitle default="Metabolomics Module" /></title>
+
     <g:layoutHead />
+    <r:require modules="uploadr"/>
+    <r:layoutResources/>
+
   </head>
 
   <body>
@@ -26,6 +30,7 @@
     </li>
   </content>
   <g:layoutBody />
+  <r:layoutResources/>
   </body>
   </html>
 </g:applyLayout>

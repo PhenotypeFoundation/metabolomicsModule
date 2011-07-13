@@ -46,7 +46,7 @@ class MetabolomicsModuleTagLib {
     
     def studyTag = { attrs ->
 
-        out << '<li class="studyName">' + attrs.study.name + '<ul class="assayList">'
+        out << '<li class="studyName">' + attrs.study.name + '<span class="sampleCount">' + attrs.study.assays.collect{it.samples.size()}.sum() + ' samples</span><ul class="assayList">'
 
         attrs.study.assays.each { assay ->
             out << assayTag(assay: assay)
@@ -58,8 +58,8 @@ class MetabolomicsModuleTagLib {
 
     def assayTag = { attrs ->
 
-        // TODO: make assay clickable with a link to relevant pop-up when assay is associated with an uploaded file. Something like: UploadedFile.findByAssay attrs.assay
-        out << '<li class=assayName>' + attrs.assay.name + '</li>'
+        // TODO: make assay clickable with a link to relevant pop-up when assay is associated with an uploaded file.
+        out << '<li class=assayName>' + attrs.assay.name + '<span class=sampleCount>' + attrs.assay.samples.size() + ' samples</span></li>'
 
     }
 }

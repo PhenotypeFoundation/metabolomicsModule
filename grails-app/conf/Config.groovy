@@ -57,10 +57,10 @@ environments {
         grails.serverURL = "http://www.changeme.com"
     }
     development {
-        grails.serverURL = "http://localhost:8080/${appName}"
+        grails.serverURL = "http://localhost:8083/${appName}"
     }
     test {
-        grails.serverURL = "http://localhost:8080/${appName}"
+        grails.serverURL = "http://localhost:8083/${appName}"
     }
 
 }
@@ -94,3 +94,8 @@ grails.views.javascript.library="jquery"
 
 // TODO: make configuration locally overridable
 gscf.baseURL='http://localhost:8080/gscf'
+
+// tell org.dbxp.moduleBase.SynchronizationService to use our extended Assay instead of the base Assay
+module.synchronization.classes.assay = 'org.dbxp.dbxpModuleStorage.AssayWithUploadedFile'
+
+grails.server.port.http=8083
