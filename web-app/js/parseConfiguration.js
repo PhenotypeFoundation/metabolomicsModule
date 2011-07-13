@@ -6,7 +6,7 @@ function initParseConfigurationDialog() {
 }
 
 function submitForm() {
-    $('#pcform').submit()"
+    $('#pcform').submit();
 }
 
 function updateParseConfiguration() {
