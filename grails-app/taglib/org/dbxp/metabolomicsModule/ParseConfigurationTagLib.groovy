@@ -52,21 +52,22 @@ class ParseConfigurationTagLib {
     }
 
     def dialog = { attrs, body ->
-        out << 'var $link = "parseConfiguration";'
-        out << 'var $pcDialog = $("<div></div>")\n'
-        out << '.load($link)\n'
+        out << 'var link = "parseConfiguration";'
+        out << 'var pcDialog = $("<div></div>")'
+        out << '.load(link)'
         out << '.dialog({'
         out << 'autoOpen: false,'
+        out << 'modal: true,'
         out << 'title: "Parse Configuration panel",'
-        out << "buttons: { 'close': function() { \$(this).dialog('close');}, 'send': function() { submitForm(); } },"
+        out << "buttons: { 'Send': function() { submitForm(); }, 'OK': function() { \$(this).dialog('close'); }  },"
         out << 'width: 680,'
         out << 'height: 520'
         out << '});'
 
         out << '$("#' + attrs['id'] + '").click(function() {'
-        out << '$pcDialog.dialog("open");'
+        out << 'pcDialog.dialog("open");'
         out << 'return false;'
-        out << '	});'
+        out << '});'
     }
 
     /**

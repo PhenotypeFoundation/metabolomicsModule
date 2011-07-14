@@ -6,6 +6,8 @@
 
     <g:layoutHead />
     <r:require modules="uploadr, jqueryUi"/>
+    <r:require modules="parseConfiguration"/>
+
     <r:layoutResources/>
 
   </head>
