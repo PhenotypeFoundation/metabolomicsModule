@@ -1,6 +1,7 @@
 package org.dbxp.metabolomicsModule
 
 import org.dbxp.moduleBase.Auth
+import org.dbxp.moduleBase.User
 
 /**
  * The metabolomics module tag library delivers a rich set of tags to make it easier to re-use components
@@ -16,11 +17,26 @@ class MetabolomicsModuleTagLib {
     // abbreviation for Metabolomics Module
     static namespace = "mm"
 
+    def uploadedFileService
+
     def uploadedFileList = { attrs ->
 
         out << '<h1>Uploaded files</h1>'
 
-        out << 'uploaded file list goes here ....'
+        def uploadedFiles = uploadedFileService.getUploadedFilesForUser((User) session.user)
+        out << '<ul class=uploadedFileList>'
+
+        uploadedFiles.each { uploadedFile ->
+            out << uploadedFileTag(uploadedFile: uploadedFile)
+        }
+
+        out << '</ul>'
+
+    }
+
+    def UploadedFileTag = { attrs ->
+
+        out << '<li class="uploadedFileTag">' + attrs.uploadedFile.name + '</li>'
 
     }
 
@@ -46,7 +62,7 @@ class MetabolomicsModuleTagLib {
     
     def studyTag = { attrs ->
 
-        out << '<li class="studyName">' + attrs.study.name + '<span class="sampleCount">' + attrs.study.assays.collect{it.samples.size()}.sum() + ' samples</span><ul class="assayList">'
+        out << '<li class="studyTag">' + attrs.study.name + '<span class="sampleCount">' + attrs.study.assays.collect{it.samples.size()}.sum() + ' samples</span><ul class="assayList">'
 
         attrs.study.assays.each { assay ->
             out << assayTag(assay: assay)
@@ -59,7 +75,7 @@ class MetabolomicsModuleTagLib {
     def assayTag = { attrs ->
 
         // TODO: make assay clickable with a link to relevant pop-up when assay is associated with an uploaded file.
-        out << '<li class=assayName>' + attrs.assay.name + '<span class=sampleCount>' + attrs.assay.samples.size() + ' samples</span></li>'
+        out << '<li class=assayTag>' + attrs.assay.name + '<span class=sampleCount>' + attrs.assay.samples.size() + ' samples</span></li>'
 
     }
 }

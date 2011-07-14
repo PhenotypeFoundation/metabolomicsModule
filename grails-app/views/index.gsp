@@ -20,7 +20,7 @@
       width: 100%;
     }
 
-    .studyName {
+    .studyTag {
 
     }
 
@@ -28,13 +28,26 @@
 
     }
 
-    .assayName {
+    .assayTag {
 
+    }
+
+    .uploadedFileList {
+
+    }
+
+    .uploadedFileTag {
+      background-color: #bc8f8f;
     }
 
     /*prevent our floating divs from overlapping footer */
     #footer {
       clear: both;
+    }
+
+    .uploadDropArea {
+      border: 3px dashed #ccc;
+      height: 50px;
     }
 
   </style>
@@ -48,21 +61,40 @@
 </head>
 <body>
 
-
 <div id="uploadedFiles">
+  %{--<uploadr:add--}%
+          %{--name="myUniqueUploadName"--}%
+          %{--path="/tmp">--}%
+    %{--<uploadr:onSuccess>--}%
+      %{--$.ajax('${g.createLink(controller: 'parsedFile', action: 'uploadFinished', plugin: 'dbxpModuleStorage')}'+'?fileName=' + file.fileName)--}%
+    %{--</uploadr:onSuccess>--}%
+  %{--</uploadr:add>--}%
 
-  <div id="uploadArea">
+  %{--<uploadr:demo/>--}%
 
-    <uploadr:add
-            name="myUniqueUploadName"
-            path="/tmp">
-      <uploadr:onSuccess>
-        $.ajax('${g.createLink(controller: 'parsedFile', action: 'uploadFinished', plugin: 'dbxpModuleStorage')}'+'?fileName=' + file.fileName)
-      </uploadr:onSuccess>
-    </uploadr:add>
+  <uploadr:add name="uploadDropArea" path="/tmp" class="uploadDropArea" >
 
-    %{--<uploadr:demo/>--}%
-  </div>
+    <uploadr:onStart>
+      console.log('Upload started');
+      %{--add a div to upload list--}%
+    </uploadr:onStart>
+
+    <uploadr:onProgress>
+      console.log('Progress: ' + percentage);
+      %{--advance progress bar--}%
+      return false; // to disable default progress handler
+    </uploadr:onProgress>
+
+    <uploadr:onSuccess>
+      $.ajax('${g.createLink(controller: 'uploadedFile', action: 'uploadFinished', plugin: 'dbxpModuleStorage')}'+'?fileName=' + file.fileName)
+      %{--re-render template containing uploaded files--}%
+    </uploadr:onSuccess>
+
+    <uploadr:onFailure>
+      %{--color upload div red?--}%
+    </uploadr:onFailure>
+
+  </uploadr:add>
 
   <mm:uploadedFileList/>
 
