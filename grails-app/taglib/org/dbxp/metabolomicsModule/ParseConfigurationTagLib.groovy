@@ -53,8 +53,8 @@ class ParseConfigurationTagLib {
 
     def dialog = { attrs, body ->
         out << 'var $link = "parseConfiguration";'
-        out << 'var $pcDialog = $("<div></div>")'
-        out << '.load($link)'
+        out << 'var $pcDialog = $("<div></div>")\n'
+        out << '.load($link)\n'
         out << '.dialog({'
         out << 'autoOpen: false,'
         out << 'title: "Parse Configuration panel",'
