@@ -31,7 +31,14 @@ import grails.converters.JSON
 
 class ParseConfigurationController {
 
-    def index = { }
+    def index = {
+
+        // get uploaded file: def uploadedFile = UploadedFile.get(my_id)
+        // parse file: def parsedFile = uploadedFile.parse([fileName: uploadedFile.fileName, delimiter: .... etc.)
+        // get data: parsedFileService.getMeasurements(parsedFile)
+
+
+    }
 
     /**
      * Method to update all controls in the view

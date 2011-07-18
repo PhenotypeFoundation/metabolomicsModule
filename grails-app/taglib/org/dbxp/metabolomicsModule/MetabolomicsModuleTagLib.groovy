@@ -1,7 +1,6 @@
 package org.dbxp.metabolomicsModule
 
-import org.dbxp.moduleBase.Auth
-import org.dbxp.moduleBase.User
+import org.dbxp.dbxpModuleStorage.UploadedFile
 
 /**
  * The metabolomics module tag library delivers a rich set of tags to make it easier to re-use components
@@ -18,12 +17,16 @@ class MetabolomicsModuleTagLib {
     static namespace = "mm"
 
     def uploadedFileService
+    def assayService
+    def metabolomicsModuleDB
 
     def uploadedFileList = { attrs ->
 
         out << '<h1>Uploaded files</h1>'
 
-        def uploadedFiles = uploadedFileService.getUploadedFilesForUser((User) session.user)
+//        def uploadedFiles = uploadedFileService.getUploadedFilesForUser((User) session.user)
+        def uploadedFiles = UploadedFile.all
+
         out << '<ul class=uploadedFileList>'
 
         uploadedFiles.each { uploadedFile ->
@@ -34,9 +37,13 @@ class MetabolomicsModuleTagLib {
 
     }
 
-    def UploadedFileTag = { attrs ->
+    def uploadedFileTag = { attrs ->
 
-        out << '<li class="uploadedFileTag">' + attrs.uploadedFile.name + '</li>'
+        out << '<li class="uploadedFileTag">'
+
+        out << attrs.uploadedFile.fileName
+
+        out << '</li>'
 
     }
 
@@ -44,16 +51,12 @@ class MetabolomicsModuleTagLib {
 
         out << '<h1>Study overview</h1>'
 
-        // TODO: is 'read' flag always enabled when 'write' or 'isOwner' is?
-        // find all Auth objects connected to this user with read access to a study
-        def authorizations = Auth.findAllByUserAndCanRead(session.user, true)
-
         // find all studies the user can read and have at least one assay
-        def readableStudiesWithAssays = authorizations*.study.findAll { it.assays }
+        def readableStudiesWithAssays = assayService.getAssaysReadableByUserAndGroupedByStudy(session.user)
         out << '<ul class=studyList>'
 
-        readableStudiesWithAssays.each { study ->
-            out << studyTag(study: study)
+        readableStudiesWithAssays.each { study, assays ->
+            out << studyTag(study: study, assays: assays)
         }
 
         out << '</ul>'
@@ -62,9 +65,9 @@ class MetabolomicsModuleTagLib {
     
     def studyTag = { attrs ->
 
-        out << '<li class="studyTag">' + attrs.study.name + '<span class="sampleCount">' + attrs.study.assays.collect{it.samples.size()}.sum() + ' samples</span><ul class="assayList">'
+        out << '<li class="studyTag">' + attrs.study.name + '<span class="sampleCount">' + attrs.assays.collect{it.samples.size()}.sum() + ' samples</span><ul class="assayList">'
 
-        attrs.study.assays.each { assay ->
+        attrs.assays.each { assay ->
             out << assayTag(assay: assay)
         }
 
