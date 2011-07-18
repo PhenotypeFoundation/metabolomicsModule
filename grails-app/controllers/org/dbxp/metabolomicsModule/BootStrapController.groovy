@@ -56,10 +56,10 @@ class BootStrapController {
 		def f9 = new Feature(label: "PA(12:0/18:2(9Z,12Z))", props: ['mass':'616.41','formula':'C33H61O8P', 'class':'GP10']).save()
 
 		// setup measurement platform
-		10.times { // create MeasurementPlatforms
+		3.times { // create MeasurementPlatforms
 			def mp = new MeasurementPlatform(name: "MP-" + (1 + rand.nextInt(100000))).save()
 			
-			rand.nextInt(10).times { // create MeasurementPlatformVersions
+			rand.nextInt(3).times { // create MeasurementPlatformVersions
 				def mpv = new MeasurementPlatformVersion(measurementPlatform: mp, versionnumber: it + 1 as Float).save()
 				
 				// setup features (only platform version specific feature properties)

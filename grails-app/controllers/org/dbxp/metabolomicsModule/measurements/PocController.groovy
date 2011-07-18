@@ -29,4 +29,42 @@ class PocController {
 			}
 		}
 	}
+	
+	def platforms = {
+		
+		render "<b>FETCH MEASUREMENT PLATFORM VERSIONS PER PLATFORM...</b><br /><br />"
+		
+		/*
+		 * Fetch all Measurement Platform versions (per platform) 
+		 */
+		def mps = measurementFactoryService.findAllMeasurementPlatforms()
+		
+		mps.sort { a,b -> a.name <=> b.name }.each { mp ->
+			render "<b>${mp.name}</b><br />has version(s): "
+			
+			def mp_mpvs = measurementFactoryService.findAllMeasurementPlatformVersions(['measurementPlatform':mp])
+			
+			mp_mpvs.each {
+				render " :: V${it.versionnumber} "
+			}
+			
+			render "<br />"
+		}
+		
+		render "<br /><b>OR FETCH ALL IN ONE GO...</b><br /><br />"
+		
+		/*
+		* Fetch all Measurement Platform versions (in one go)
+		*/
+		def mpvs = measurementFactoryService.findAllMeasurementPlatformVersions()
+		
+		mpvs.sort { a,b -> a.measurementPlatform.name <=> b.measurementPlatform.name }.each { mpv ->
+			render "Platform: ${mpv.measurementPlatform.name} - V${mpv.versionnumber}<br />"			
+		}
+		
+		
+		
+		render "Done"
+		
+	}
 }

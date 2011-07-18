@@ -15,7 +15,12 @@ class MeasurementFactoryService {
 	 * Wrapper function to fetch all MeasurementPlatformVersions based on the provided arguments
 	 */
 	def findAllMeasurementPlatformVersions(args = [:]) {
-		return MeasurementPlatformVersion.findAllByMeasurementPlatform(args['measurementPlatform'])
+		if (args['measurementPlatform']){
+			return MeasurementPlatformVersion.findAllByMeasurementPlatform(args['measurementPlatform'])
+		}
+		
+		//default return all
+		return MeasurementPlatformVersion.list()
 	}
 	
 	/*
