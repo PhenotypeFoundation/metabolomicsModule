@@ -5,6 +5,6 @@ class IdentityFactoryService {
     static transactional = true
 
     def serviceMethod() {
-
+		
     }
 }
