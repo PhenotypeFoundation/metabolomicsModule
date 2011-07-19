@@ -1,8 +1,11 @@
 package org.dbxp.metabolomicsModule.measurements
 
+import grails.converters.*
+
 class PocController {
 	
 	def measurementFactoryService
+	def identityFactoryService
 
     def index = {
 			
@@ -44,6 +47,8 @@ class PocController {
 			
 			def mp_mpvs = measurementFactoryService.findAllMeasurementPlatformVersions(['measurementPlatform':mp])
 			
+			println mp_mpvs.features
+			
 			mp_mpvs.each {
 				render " :: V${it.versionnumber} "
 			}
@@ -67,4 +72,15 @@ class PocController {
 		render "Done"
 		
 	}
+	
+	def identityExample = {
+		
+		
+		def labels = ['PA(12:0/13:0)', 'PA(6:0/6:0)', 'PA(12:0/15:0)']
+		
+		labels.each { label ->
+			render identityFactoryService.featureFromLabel(label,['eager': true]) as JSON
+		}
+	}
+	
 }
