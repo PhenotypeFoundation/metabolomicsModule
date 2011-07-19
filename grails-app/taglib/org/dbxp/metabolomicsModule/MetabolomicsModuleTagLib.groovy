@@ -16,35 +16,55 @@ class MetabolomicsModuleTagLib {
     // abbreviation for Metabolomics Module
     static namespace = "mm"
 
-    def uploadedFileService
     def assayService
-    def metabolomicsModuleDB
 
     def uploadedFileList = { attrs ->
 
         out << '<h1>Uploaded files</h1>'
 
-//        def uploadedFiles = uploadedFileService.getUploadedFilesForUser((User) session.user)
         def uploadedFiles = UploadedFile.all
 
-        out << '<ul class=uploadedFileList>'
+        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", class: "demo") {
+            uploadedFiles.each { uploadedFile ->
+                uploadr.file(name: uploadedFile.fileName) {
+                    uploadr.fileSize { uploadedFile.fileSize }
+                    uploadr.fileModified { uploadedFile.lastUpdated.time }
+                }
+            }
 
-        uploadedFiles.each { uploadedFile ->
-            out << uploadedFileTag(uploadedFile: uploadedFile)
+            uploadr.onStart {
+                "console.log('start uploading' + file.fileName);"
+            }
+
+            uploadr.onProgress {
+                "console.log(file.fileName + ' upload progress: ' + percentage + '%'); return true;"
+            }
+
+            uploadr.onSuccess {
+                "console.log('done uploading ' + file.fileName);" +
+                '$.ajax(\'' + g.createLink(plugin: 'dbxpModuleStorage', controller: 'uploadedFile', action: 'uploadFinished') + '?fileName=\'+file.fileName);'
+            }
+
+            uploadr.onFailure {
+                "console.log('failed uploading ' + file.fileName);"
+            }
+
+            uploadr.onAbort {
+                "console.log('aborted uploading ' + file.fileName);"
+            }
+
+            uploadr.onView {
+                "console.log('you clicked view on ' + file.fileName);"
+            }
+
+            uploadr.onDownload {
+                "console.log('you clicked download on ' + file.fileName);"
+            }
+
+            uploadr.onDelete {
+                "console.log('you clicked delete on ' + file.fileName); return true;"
+            }
         }
-
-        out << '</ul>'
-
-    }
-
-    def uploadedFileTag = { attrs ->
-
-        out << '<li class="uploadedFileTag">'
-
-        out << attrs.uploadedFile.fileName
-
-        out << '</li>'
-
     }
 
     def studyList = { attrs ->

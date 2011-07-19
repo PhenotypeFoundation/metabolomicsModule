@@ -1,9 +1,13 @@
 package org.dbxp.metabolomicsModule
 
+import org.dbxp.dbxpModuleStorage.AssayWithUploadedFile
 import org.dbxp.metabolomicsModule.identity.Feature
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersionFeature
+import org.dbxp.moduleBase.Auth
+import org.dbxp.moduleBase.Study
+import org.dbxp.moduleBase.User
 
 /**
  * This is a temporary controller, solely for development purposes. This is a place where you
@@ -22,10 +26,9 @@ class BootStrapController {
         def file            = new File('testData/DiogenesMockData_mini.txt')
         def uploadedFile    = uploadedFileService.createUploadedFileFromFile(file)
 
-        def parsedFile      = parsedFileService.parseUploadedFile(uploadedFile, [delimiter: '\t'])
+        uploadedFile.parse([delimiter: '\t'])
 
         uploadedFile.save()
-        parsedFile.save()
 
         render 'done loading mock data'
 
@@ -78,4 +81,51 @@ class BootStrapController {
 
 		render 'done loading mock data'
 	}
+
+    def createStudy = {
+
+        def rand = new Random()
+        def intLimit = 1000000
+
+        def user = new User(
+                identifier:         rand.nextInt(intLimit),
+                username:           'userName' + rand.nextInt(intLimit),
+                isAdministrator:    false
+        ).save()
+
+        def study = new Study(
+                studyToken: 'token' + rand.nextInt(intLimit),
+                name:       'name'  + rand.nextInt(intLimit),
+        )
+
+        def auth = new Auth(
+                canRead:    true,
+                canWrite:   true,
+                isOwner:    true
+        )
+
+        study.addToAuth(auth)
+        user.addToAuth(auth)
+
+        def assay = new AssayWithUploadedFile(
+                assayToken: 'token' + rand.nextInt(intLimit),
+                name:       'name'  + rand.nextInt(intLimit)
+        )
+
+        study.addToAssays(assay)
+
+        rand.nextInt(10).times{
+            assay.addToSamples(
+                    sampleToken:    'token'     + it,
+                    name:           'name'      + it,
+                    subject:        'subject'   + it,
+                    event:          'event'     + it
+            )
+        }
+
+        study.save()
+
+        render 'done'
+
+    }
 }
