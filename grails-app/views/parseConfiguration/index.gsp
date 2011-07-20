@@ -34,13 +34,15 @@
   <meta http-equiv="pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <pc:initParseConfigurationDialog/>
+  <script>
+      initParseConfigurationDialogListeners();
+  </script>
 
   <title>Parse Configuration panel</title>
-  </head>
+ </head>
   <body>
     <div class="parseConfigDialog" id="parseConfigDialog">
-        <g:formRemote name="pcform" onFailure="alert('No response from server')" before="updateStatistics('loading...')" onSuccess="updateDatamatrix(data, textStatus)" action="updateDatamatrix" url="${[action:'updateDatamatrix']}">
+        <g:formRemote name="pcform" onFailure="alert('No response from server')" before="updateStatus('loading...')" onSuccess="updateDatamatrix(data, textStatus)" action="updateDatamatrix" url="${[action:'updateDatamatrix']}">
         <div class="fileType">
             <pc:fileTypeControl/>
          </div>
@@ -53,14 +55,11 @@
         <div class="orientation">
             <pc:orientationControl/>
         </div>
-        <div class="normalized">
-            <pc:normalizedControl/>
-        </div>
         <div class="datamatrix">
             <pc:dataMatrixControl/>
         </div>
-        <div class="statistics">
-            <pc:statisticsControl/>
+        <div class="status">
+            <pc:statusControl/>
         </div>
         </g:formRemote>
     </div>

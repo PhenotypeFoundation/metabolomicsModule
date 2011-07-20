@@ -93,6 +93,8 @@ class BootStrapController {
                 isAdministrator:    false
         ).save()
 
+        session.user = user
+
         def study = new Study(
                 studyToken: 'token' + rand.nextInt(intLimit),
                 name:       'name'  + rand.nextInt(intLimit),

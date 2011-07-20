@@ -30,50 +30,24 @@ package org.dbxp.metabolomicsModule
 
 class ParseConfigurationTagLib {
     static namespace = "pc"
+    def measurementFactoryService
+    def assayService
 
     def fileTypes = ["CSV", "TAB", "XLS/XLSX"]
-    def platformList = ["Platform1", "Platform2", "Platform 3"]
     def dataColumnsList = ["Column1", "Column2", "Column3", "Column4"]
 
     /**
-     * Renders a dialog which loads the parse configuration controller to
-     * configure and display the preview data.
+     * Method showing a popup dialog to configure the parse settings
      *
-     * @param id id of the HTML element being clicked
+     * @uploadedFileId identifier of the uploaded file
      */
-
-    def initParseConfigurationDialog = { attrs, body ->
-        out << "<script type=\"text/javascript\" src=\"${resource(dir: 'js', file: 'parseConfiguration.js')}\"></script>"
-        out << '<script>'
-        out << '$(document).ready(function() {'
-        out << 'initParseConfigurationDialog();'
-        out << '});'
-        out << '</script>'
-    }
-
-    def dialog = { attrs, body ->
-        out << 'var link = "parseConfiguration";'
-        out << 'var pcDialog = $("<div></div>")'
-        out << '.load(link)'
-        out << '.dialog({'
-        out << 'autoOpen: false,'
-        out << 'modal: true,'
-        out << 'title: "Parse Configuration panel",'
-        out << "buttons: { 'Send': function() { submitForm(); }, 'OK': function() { \$(this).dialog('close'); }  },"
-        out << 'width: 680,'
-        out << 'height: 520'
-        out << '});'
-
-        out << '$("#' + attrs['id'] + '").click(function() {'
-        out << 'pcDialog.dialog("open");'
-        out << 'return false;'
-        out << '});'
+    def popupDialog = { attrs, body ->
+        out << body()
     }
 
     /**
      * Dropdown list control to choose the type of data formatting used: tabular, comma separated, Excel et cetera.
      */
-
     def fileTypeControl = { attrs, body ->
         out << "Filetype: " + g.select(name:"fileType", from:fileTypes)
     }
@@ -82,7 +56,21 @@ class ParseConfigurationTagLib {
      * Dropdown list control to choose the platform used (DCL lipodomics).
      */
     def platformControl = { attrs, body ->
-        out << "Platform: " + g.select(name:"platform", from:platformList)
+        //out << "Platform: " + g.select(name:"platform", from:platformList)
+        out << "Platform: "
+        out << '<select name="platform" size="6" style="width:210px">'
+
+        measurementFactoryService.findAllMeasurementPlatforms().each { platform ->
+        // if new studygroup create new label
+        out << '<optgroup label="' + platform.name + '">'
+            measurementFactoryService.findAllMeasurementPlatformVersions(measurementPlatform:platform).each { platformversion ->
+                out << '<option value="' + platformversion.versionnumber+ '">' + platformversion.versionnumber + '</option>'
+            }
+
+            out << '</optgroup>'
+        }
+
+        out << '</select>'
     }
 
     /**
@@ -98,6 +86,8 @@ class ParseConfigurationTagLib {
      * Dropdown list control to choose where the sample column starts.
      */
     def sampleColumnControl = { attrs, body ->
+        out << "Sample column: "
+        //out <<
 
     }
 
@@ -130,12 +120,14 @@ class ParseConfigurationTagLib {
      */
     def assaysControl = { attrs, body ->
         out << "Assay: "
-        out << '<select name="assays" multiple size="8" style="width:170px">'
+        out << '<select name="assays" size="8" style="width:170px">'
 
         // if new studygroup create new label
-        10.times { out << '<optgroup label="Study' + it + '">'
-            5.times {
-                out << '<option value="' + it + '">Assay' + it + '</option>'
+        assayService.getAssaysReadableByUserAndGroupedByStudy(session.user).each { assaysGroupedByStudy ->
+            out << '<optgroup label="' + assaysGroupedByStudy.key.name + '">'
+
+            assaysGroupedByStudy.value.each { assay ->
+                out << '<option value="' + assay.id + '">' + assay.name + '</option>'
             }
 
             out << '</optgroup>'
@@ -164,11 +156,9 @@ class ParseConfigurationTagLib {
     }
 
     /**
-     * Statistics control showing amount of samples found in assay, unassigned samples et cetera.
+     * Status control showing amount of samples found in assay, unassigned samples et cetera.
      */
-    def statisticsControl = { attrs, body ->
-        out << '<div id="statistics">Statistics: no statistics available</div>'
+    def statusControl = { attrs, body ->
+        out << '<div id="status">Status: no status available</div>'
     }
-
-
 }

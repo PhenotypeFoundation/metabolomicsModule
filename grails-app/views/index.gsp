@@ -50,30 +50,33 @@
     }
 
   </style>
-
-<script>
-  $(document).ready(function() {
-   <pc:dialog id="dialogLink"/>
-});
-</script>
-
 </head>
 <body>
 
-<div id="uploadedFiles">
+%{--<div id="uploadedFiles">--}%
 
-  <mm:uploadedFileList/>
+  %{--<mm:uploadedFileList/>--}%
 
-</div>
+%{--</div>--}%
 
 <div id="studyOverview">
-
-  <mm:studyList/>
-
+      <mm:studyList/>
 </div>
 
+<br/>
+
+<uploadr:add name="myuploadr" path="/tmp">
+    <uploadr:onSuccess>
+        console.log(file.fileName)
+    </uploadr:onSuccess>
+</uploadr:add>
+
 <div id="configInfo">
-  <a href="#" id="dialogLink">Open Parse Configuration dialog</a>
+  %{--<pc:popupDialog uploadedFileId="100">Your custom text</pc:popupDialog>--}%
+    <a href="#" onclick="javascript:openParseConfigurationDialog('file1')"/>bestand1</a><br/>
+    <a href="#" onclick="javascript:openParseConfigurationDialog('file2')"/>bestand2</a><br/>
+    <a href="#" onclick="javascript:openParseConfigurationDialog('file3')"/>bestand3</a><br/>
+    <a href="#" onclick="javascript:openParseConfigurationDialog('file4')"/>bestand4</a><br/>
 </div>
 
 </body>

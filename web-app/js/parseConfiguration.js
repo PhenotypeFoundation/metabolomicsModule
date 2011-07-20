@@ -1,12 +1,38 @@
 // Global variable holding the datamatrix
 var dataMatrixTable;
+var parseConfigurationDialog;
+var parseConfigurationDialogController = "parseConfiguration";
 
-// Initialize the dialog
-function initParseConfigurationDialog() {
+
+/**
+* Add control element listeners so when a control is changed the preview is updated
+*/
+function initParseConfigurationDialogListeners() {
     // Listen for control element changes, if so, submit the form
     $('#fileType, #samplePerRow, #samplePerColumn').change( function() {
         submitForm();
     });
+}
+
+/**
+* Method to open up a dialog to configure the parsing of the uploaded file
+* @param file filename of uploaded file
+*/
+function openParseConfigurationDialog(fileName) {
+
+    // Assign the dialog to the global variable
+    parseConfigurationDialog = $("<div></div>")
+        .load(parseConfigurationDialogController + "?filename=" + fileName)
+        .dialog({
+                autoOpen: false,
+                modal: true,
+                title: "Parse Configuration panel - " + fileName,
+                buttons: { 'Send': function() { submitForm(); }, 'OK': function() { $(this).dialog('close'); }  },
+                width: 680,
+                height: 520
+        });
+
+    parseConfigurationDialog.dialog("open");
 }
 
 /**
@@ -23,7 +49,7 @@ function updateDatamatrix(data, textStatus) {
     var jsonDatamatrix = eval(data);
 
     // show a spinner?
-    updateStatistics("updating preview...");
+    updateStatus("updating preview...");
 
     // Is the datamatrix table filled already? Then destroy and clean it
     if (dataMatrixTable) dataMatrixTable.fnDestroy();
@@ -44,17 +70,18 @@ function updateDatamatrix(data, textStatus) {
                           [5, 10, 25, "All"]
                         ],
                         "bSort" : false,
+                        "bFilter" : false,
                         "aaData": jsonDatamatrix.aaData,
                         "aoColumns": jsonDatamatrix.aoColumns
                       });
 
     // hide a spinner?
-    updateStatistics("done");
+    updateStatus("done");
 }
 
 /**
-* @param message message to put in the statistics bar
+* @param message message to put in the status bar
 */
-function updateStatistics(message) {
-  $('#statistics').html('Statistics: ' + message);
+function updateStatus(message) {
+  $('#status').html('Status: ' + message);
 }

@@ -32,12 +32,10 @@ import grails.converters.JSON
 class ParseConfigurationController {
 
     def index = {
-
         // get uploaded file: def uploadedFile = UploadedFile.get(my_id)
         // parse file: def parsedFile = uploadedFile.parse([fileName: uploadedFile.fileName, delimiter: .... etc.)
         // get data: parsedFileService.getMeasurements(parsedFile)
-
-
+        [fileName:params.filename]
     }
 
     /**
