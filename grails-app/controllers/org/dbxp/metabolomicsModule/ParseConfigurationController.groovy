@@ -32,6 +32,8 @@ import org.dbxp.dbxpModuleStorage.UploadedFile
 
 class ParseConfigurationController {
 
+    def parsedFileService
+
     def index = {
         // get uploaded file: def uploadedFile = UploadedFile.get(my_id)
         // parse file: def parsedFile = uploadedFile.parse([fileName: uploadedFile.fileName, delimiter: .... etc.)
@@ -41,9 +43,9 @@ class ParseConfigurationController {
 
         println "uploadfile= " + uploadedFile
 
-        println uploadedFile.parse([delimiter: '\t', fileName: uploadedFile.fileName])
+        def parsedFile = parsedFileService.parseUploadedFile(uploadedFile, [delimiter: '\t', fileName: uploadedFile.fileName])
 
-        //def parsedFile = uploadedFile.parse([delimiter: '\t', fileName: uploadedFile.fileName] )
+        uploadedFile.parsedFile = parsedFile
 
         [uploadedFile:uploadedFile]
     }
