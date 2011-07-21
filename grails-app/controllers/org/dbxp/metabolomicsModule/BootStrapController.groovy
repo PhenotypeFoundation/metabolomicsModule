@@ -47,16 +47,16 @@ class BootStrapController {
 		def rand  = new Random() //very handy to generate fake data
 		
 		// setup features (including feature specific properties)
-		def f0 = new Feature(label: "PA(12:0/13:0)", props: ['mass':'567.39','formula':'C28H58NO8P', 'class':'GP10']).save()
-		def f1 = new Feature(label: "PA(16:0/18:1(9Z))", props: ['mass':'691.52','formula':'C37H71O8P', 'class':'GP10']).save()
-		def f2 = new Feature(label: "PA(17:0/14:1(9Z))", props: ['mass':'649.47','formula':'C34H68NO8P', 'class':'GP10']).save()
-		def f3 = new Feature(label: "PA(6:0/6:0)", props: ['mass':'368.16','formula':'C15H29O8P', 'class':'GP10']).save()
-		def f4 = new Feature(label: "PA(8:0/8:0)", props: ['mass':'424.22','formula':'C19H37O8P', 'class':'GP10']).save()
-		def f5 = new Feature(label: "PA(10:0/10:0)", props: ['mass':'424.22','formula':'C19H37O8P', 'class':'GP10']).save()
-		def f6 = new Feature(label: "PA(18:0/18:0)", props: ['mass':'704.54','formula':'C39H77O8P', 'class':'GP10']).save()
-		def f7 = new Feature(label: "PA(12:0/12:0)", props: ['mass':'536.35','formula':'C27H53O8P', 'class':'GP10']).save()
-		def f8 = new Feature(label: "PA(12:0/15:0)", props: ['mass':'578.39','formula':'C30H59O8P', 'class':'GP10']).save()
-		def f9 = new Feature(label: "PA(12:0/18:2(9Z,12Z))", props: ['mass':'616.41','formula':'C33H61O8P', 'class':'GP10']).save()
+		def f0 = new Feature(label: "PA(12:0/13:0)", props: ['pubchem_sid':'4266297','hmdb_id':'','lipidmaps_id':'LMGP10010001']).save()
+		def f1 = new Feature(label: "PA(16:0/18:1(9Z))", props: ['pubchem_sid':'4266298','hmdb_id':'HMDB07859','lipidmaps_id':'LMGP10010002']).save()
+		def f2 = new Feature(label: "PA(17:0/14:1(9Z))", props: ['pubchem_sid':'4266302','hmdb_id':'','lipidmaps_id':'LMGP10010006']).save()
+		def f3 = new Feature(label: "PA(6:0/6:0)", props: ['pubchem_sid':'14714439','hmdb_id':'','lipidmaps_id':'LMGP10010020']).save()
+		def f4 = new Feature(label: "PA(8:0/8:0)", props: ['pubchem_sid':'14714440','hmdb_id':'','lipidmaps_id':'LMGP10010021']).save()
+		def f5 = new Feature(label: "PA(10:0/10:0)", props: ['pubchem_sid':'14714441','hmdb_id':'','lipidmaps_id':'LMGP10010022']).save()
+		def f6 = new Feature(label: "PA(18:0/18:0)", props: ['pubchem_sid':'14714447','hmdb_id':'','lipidmaps_id':'LMGP10010028']).save()
+		def f7 = new Feature(label: "PA(12:0/12:0)", props: ['pubchem_sid':'14714449','hmdb_id':'','lipidmaps_id':'LMGP10010030']).save()
+		def f8 = new Feature(label: "PA(12:0/15:0)", props: ['pubchem_sid':'123066206','hmdb_id':'','lipidmaps_id':'LMGP10010045']).save()
+		def f9 = new Feature(label: "PA(12:0/18:2(9Z,12Z))", props: ['pubchem_sid':'123066212','hmdb_id':'','lipidmaps_id':'LMGP10010051']).save()
 
 		// setup measurement platform
 		3.times { // create MeasurementPlatforms
@@ -71,6 +71,7 @@ class BootStrapController {
 							measurementPlatformVersion: mpv,
 							feature: feature,
 							props: [
+								'mass'	: (((1 + rand.nextInt(1000)) * 0.2627) as Float),	// mass
 								'rt'	: (((1 + rand.nextInt(60*60)) * 0.2672) as Float),	// time it comes from the column
 								'is_id'	: 'IS-' + (1 + rand.nextInt(40)) as String 			// internal standard used to correct
 							]

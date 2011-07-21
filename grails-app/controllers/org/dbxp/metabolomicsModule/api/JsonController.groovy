@@ -32,7 +32,7 @@ class JsonController {
     def feature = { 
 		
 		if (params.label){ // fetch a feature from the provided label
-			return identityFactoryService.featureFromLabel(params.label, ['eager': true]) //set argument eager to true to fetch all details
+			return identityFactoryService.featureFromLabel(['label': params.label, 'eager': true]) //set argument eager to true to fetch all details
 		}
 		
 		// fetch all features

@@ -47,8 +47,6 @@ class PocController {
 			
 			def mp_mpvs = measurementFactoryService.findAllMeasurementPlatformVersions(['measurementPlatform':mp])
 			
-			println mp_mpvs.features
-			
 			mp_mpvs.each {
 				render " :: V${it.versionnumber} "
 			}
@@ -75,12 +73,14 @@ class PocController {
 	
 	def identityExample = {
 		
-		
-		def labels = ['PA(12:0/13:0)', 'PA(6:0/6:0)', 'PA(12:0/15:0)']
+		def outHashMap = [:]
+		def labels = ['PA(12:0/13:0)', 'PA(6:0/6:0)', 'PA(12:0/15:0)', 'unknown']
 		
 		labels.each { label ->
-			render identityFactoryService.featureFromLabel(label,['eager': true]) as JSON
+			outHashMap[label] = identityFactoryService.featureFromLabel(['label':label, 'eager': true])
 		}
+		
+		render (outHashMap as JSON)
 	}
 	
 }
