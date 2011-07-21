@@ -54,7 +54,8 @@ class MetabolomicsModuleTagLib {
             }
 
             uploadr.onView {
-                "console.log('you clicked view on ' + file.fileName);"
+                "console.log('you clicked view on ' + file.fileName);" +
+                "openParseConfigurationDialog(file.fileName)"
             }
 
             uploadr.onDownload {
