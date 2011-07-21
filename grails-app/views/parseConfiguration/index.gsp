@@ -43,7 +43,7 @@
   <body>
     <div class="parseConfigDialog" id="parseConfigDialog">
         <g:formRemote name="pcform" onFailure="alert('No response from server')" before="updateStatus('loading...')" onSuccess="updateDatamatrix(data, textStatus)" action="updateDatamatrix" url="${[action:'updateDatamatrix']}">
-        <input type="hidden" name="filename" value="${uploadedFile.fileName}"/>
+        <input type="hidden" name="filename" value="${filename}"/>
         <div class="fileType">
             <pc:fileTypeControl/>
          </div>

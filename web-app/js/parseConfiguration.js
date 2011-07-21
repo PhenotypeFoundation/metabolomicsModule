@@ -33,7 +33,7 @@ function openParseConfigurationDialog(fileName) {
                 autoOpen: false,
                 modal: true,
                 title: "Parse Configuration panel - " + fileName,
-                buttons: { 'Send': function() { submitForm(); }, 'OK': function() { $(this).dialog('close'); }  },
+                buttons: { 'SendTest': function() { submitForm(); }, 'Close': function() { $(this).remove(); }  },
                 width: 680,
                 height: 520
         });

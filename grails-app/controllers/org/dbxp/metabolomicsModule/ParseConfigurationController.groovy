@@ -38,26 +38,34 @@ class ParseConfigurationController {
         // get uploaded file: def uploadedFile = UploadedFile.get(my_id)
         // parse file: def parsedFile = uploadedFile.parse([fileName: uploadedFile.fileName, delimiter: .... etc.)
         // get data: parsedFileService.getMeasurements(parsedFile)
-
-        def uploadedFile = UploadedFile.findByFileName(params.filename)
-
-        println "uploadfile= " + uploadedFile
-
-        def parsedFile = parsedFileService.parseUploadedFile(uploadedFile, [delimiter: '\t', fileName: uploadedFile.fileName])
-
-        uploadedFile.parsedFile = parsedFile
-
-        [uploadedFile:uploadedFile]
+        [filename:params.filename]
     }
 
     /**
-     * Method to update all controls in the view
-     * @return JSON formatted string
+     * Method to read all form parameters and to update the datamatrix preview
+     *
+     * @param form control parameters (filename, filetype, orientation et cetera)
+     * @return JSON (datatables) formatted string representing the datamatrix
      */
     def updateDatamatrix = {
-        println "called"
+        // Get the uploaded file from the database
+        def uploadedFile = UploadedFile.findByFileName(params.filename)
 
-        render getDatamatrixAsJSON()
+        //try {
+            // Read the uploaded file and parse it
+            def parsedFile = parsedFileService.parseUploadedFile(uploadedFile, [delimiter: '\t', fileName: uploadedFile.fileName])
+
+            // Store the parsed file in the 'uploadedFile' object
+            uploadedFile.parsedFile = parsedFile
+
+            // Render the parsed datamatrix as JSON
+            render getDatamatrixAsJSON(uploadedFile.parsedFile.matrix)
+        /*} catch (Exception e) {
+                println e.printStackTrace()
+                def dataTables = [iTotalRecords: 0, iColumns: 0, iTotalDisplayRecords: 0, aoColumns: [], aaData: []]
+                render dataTables as JSON
+                }*/
+
     }
 
      /**
@@ -65,14 +73,8 @@ class ParseConfigurationController {
      * @return JSON formatted string containing [iTotalRecords, iColumns, iTotalDisplayRecords, aoColumns, aaData]
      */
 
-    def getDatamatrixAsJSON = {
+    def getDatamatrixAsJSON(datamatrix) {
 		def headerColumns = []
-		// Initialize the datamatrix
-
-		def olddatamatrix = [ [123,1234,123], [123,123,123]]
-
-        def datamatrix = []
-        1000.times { datamatrix.add ( [100,200,300,400,500,600,700, 800, 900, 1000]) }
 
 		def dataTables = [:]
 		if (datamatrix) {
