@@ -28,6 +28,7 @@
 package org.dbxp.metabolomicsModule
 
 import grails.converters.JSON
+import org.dbxp.dbxpModuleStorage.UploadedFile
 
 class ParseConfigurationController {
 
@@ -35,7 +36,16 @@ class ParseConfigurationController {
         // get uploaded file: def uploadedFile = UploadedFile.get(my_id)
         // parse file: def parsedFile = uploadedFile.parse([fileName: uploadedFile.fileName, delimiter: .... etc.)
         // get data: parsedFileService.getMeasurements(parsedFile)
-        [fileName:params.filename]
+
+        def uploadedFile = UploadedFile.findByFileName(params.filename)
+
+        println "uploadfile= " + uploadedFile
+
+        println uploadedFile.parse([delimiter: '\t', fileName: uploadedFile.fileName])
+
+        //def parsedFile = uploadedFile.parse([delimiter: '\t', fileName: uploadedFile.fileName] )
+
+        [uploadedFile:uploadedFile]
     }
 
     /**
@@ -43,6 +53,7 @@ class ParseConfigurationController {
      * @return JSON formatted string
      */
     def updateDatamatrix = {
+        println "called"
 
         render getDatamatrixAsJSON()
     }

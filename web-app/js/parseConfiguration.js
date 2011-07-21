@@ -12,6 +12,12 @@ function initParseConfigurationDialogListeners() {
     $('#fileType, #samplePerRow, #samplePerColumn').change( function() {
         submitForm();
     });
+
+    // When the page is ready, read the parameters set in the form and send
+    // them to the server. The returned JSON will update the dat apreview.
+    $(document).ready(function() {
+      submitForm();
+    });
 }
 
 /**
