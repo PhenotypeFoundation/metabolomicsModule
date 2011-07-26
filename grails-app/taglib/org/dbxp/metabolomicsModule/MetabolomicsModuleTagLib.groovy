@@ -30,6 +30,7 @@ class MetabolomicsModuleTagLib {
                 uploadr.file(name: uploadedFile.fileName) {
                     uploadr.fileSize { uploadedFile.fileSize }
                     uploadr.fileModified { uploadedFile.lastUpdated.time }
+                    uploadr.fileId { uploadedFile.id }
                 }
             }
 
@@ -43,7 +44,8 @@ class MetabolomicsModuleTagLib {
 
             uploadr.onSuccess {
                 "console.log('done uploading ' + file.fileName);" +
-                '$.ajax(\'' + g.createLink(plugin: 'dbxpModuleStorage', controller: 'uploadedFile', action: 'uploadFinished') + '?fileName=\'+file.fileName);'
+                '$.ajax({url: \'' + g.createLink(plugin: 'dbxpModuleStorage', controller: 'uploadedFile', action: 'uploadFinished') + '?fileName=\'+file.fileName, ' +
+                        'success: function(data){file.fileId=data.fileId}});'
             }
 
             uploadr.onFailure {
@@ -56,7 +58,7 @@ class MetabolomicsModuleTagLib {
 
             uploadr.onView {
                 "console.log('you clicked view on ' + file.fileName);" +
-                "openParseConfigurationDialog(file.fileName)"
+                "openParseConfigurationDialog(file.fileName, file.fileId)"
             }
 
             uploadr.onDownload {

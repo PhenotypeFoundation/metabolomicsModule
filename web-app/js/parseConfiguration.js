@@ -24,15 +24,15 @@ function initParseConfigurationDialogListeners() {
 * Method to open up a dialog to configure the parsing of the uploaded file
 * @param file filename of uploaded file
 */
-function openParseConfigurationDialog(fileName) {
+function openParseConfigurationDialog(uploadedFileName, uploadedFileId) {
 
     // Assign the dialog to the global variable
     parseConfigurationDialog = $("<div></div>")
-        .load(parseConfigurationDialogController + "?filename=" + fileName)
+        .load(parseConfigurationDialogController + "?uploadedFileName=" + encodeURI(uploadedFileName) + "&uploadedFileId=" + encodeURI(uploadedFileId))
         .dialog({
                 autoOpen: false,
                 modal: true,
-                title: "Parse Configuration panel - " + fileName,
+                title: "Parse Configuration panel - " + uploadedFileName,
                 buttons: { 'Save': function() { submitForm("save"); }, 'Cancel': function() { $(this).remove(); }  },
                 width: 680,
                 height: 520

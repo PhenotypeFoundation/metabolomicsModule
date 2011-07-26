@@ -38,11 +38,15 @@ class ParseConfigurationController {
 
     def index = {
 
-        session.uploadedFile = UploadedFile.findByFileName(params.filename)
+        if (!params.uploadedFileId) {
+            throw new RuntimeException('The uploadedFileId was not set, please report this error message to the system administrator.')
+        }
+
+        session.uploadedFile = UploadedFile.get(params.uploadedFileId)
 
         def errorMessage = ''
 
-        if (!session.uploadedFile.parsedFile) {
+        if (!session.uploadedFile?.parsedFile) {
             try {
                 // Read the uploaded file and parse it
                 def parsedFile = parsedFileService.parseUploadedFile(session.uploadedFile)
