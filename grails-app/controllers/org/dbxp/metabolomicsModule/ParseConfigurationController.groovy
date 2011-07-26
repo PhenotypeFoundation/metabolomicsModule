@@ -28,6 +28,7 @@
 package org.dbxp.metabolomicsModule
 
 import grails.converters.JSON
+import org.dbxp.dbxpModuleStorage.AssayWithUploadedFile
 import org.dbxp.dbxpModuleStorage.UploadedFile
 
 class ParseConfigurationController {
@@ -35,54 +36,105 @@ class ParseConfigurationController {
     def parsedFileService
 
     def index = {
-        // get uploaded file: def uploadedFile = UploadedFile.get(my_id)
-        // parse file: def parsedFile = uploadedFile.parse([fileName: uploadedFile.fileName, delimiter: .... etc.)
-        // get data: parsedFileService.getMeasurements(parsedFile)
-        [filename:params.filename]
+
+        session.uploadedFile = UploadedFile.findByFileName(params.filename)
+
+        def errorMessage = ''
+
+        if (!session.uploadedFile.parsedFile) {
+            try {
+                // Read the uploaded file and parse it
+                def parsedFile = parsedFileService.parseUploadedFile(session.uploadedFile)
+
+                // Store the parsed file in the 'uploadedFile' object
+                session.uploadedFile.parsedFile = parsedFile
+
+            } catch (Exception e) {
+
+                errorMessage = e.message
+
+            }
+        }
+
+        // TODO: make sure errorMessage is displayed
+        [uploadedFile: session.uploadedFile, errorMessage: errorMessage]
     }
 
     /**
-     * Method to read all form parameters and to update the datamatrix preview
+     * Method to read all form parameters and to update the dataMatrix preview
      *
      * @param form control parameters (filename, filetype, orientation et cetera)
-     * @return JSON (datatables) formatted string representing the datamatrix
+     * @return JSON (datatables) formatted string representing the dataMatrix
      */
-    def updateDatamatrix = {
-        // Get the uploaded file from the database
-        def uploadedFile = UploadedFile.findByFileName(params.filename)
+    def handleForm = {
+        println "action=" + params.formAction
 
-        //try {
-            // Read the uploaded file and parse it
-            def parsedFile = parsedFileService.parseUploadedFile(uploadedFile, [delimiter: '\t', fileName: uploadedFile.fileName])
+        def dataTables = getDataMatrix(session.uploadedFile?.parsedFile?.matrix)
 
-            // Store the parsed file in the 'uploadedFile' object
-            uploadedFile.parsedFile = parsedFile
+        if (!dataTables) dataTables = [errorMessage: 'Could not parse uploaded file.']
 
-            // Render the parsed datamatrix as JSON
-            render getDatamatrixAsJSON(uploadedFile.parsedFile.matrix)
-        /*} catch (Exception e) {
-                println e.printStackTrace()
-                def dataTables = [iTotalRecords: 0, iColumns: 0, iTotalDisplayRecords: 0, aoColumns: [], aaData: []]
-                render dataTables as JSON
-                }*/
+        switch (params.formAction) {
+            case 'save':
+
+                try {
+                    // make sure we have an id for uploadedFile by saving it
+                    session.uploadedFile.save(failOnError: true)
+
+                    def assay = AssayWithUploadedFile.get(params.assayID)
+
+                    if (params.assayID) {
+                        if (params.assayID != session.uploadedFile.assay?.id) {
+
+                            assay.uploadedFile = session.uploadedFile
+                            session.uploadedFile.assay = assay
+
+                        }
+                    } else {
+                        // remove link with assay
+                        assay?.uploadedFile = null
+                        session.uploadedFile.assay = null
+
+                    }
+
+                    session.uploadedFile.save(failOnError: true)
+
+                } catch (Exception e) {
+                    dataTables.errorMessage = e.message
+                }
+                break
+            case 'update':
+
+                if (params.isColumnOriented != session.uploadedFile.parsedFile.isColumnOriented) {
+                    session.uploadedFile.parsedFile.isColumnOriented = params.isColumnOriented
+                    session.uploadedFile.parsedFile.matrix.transpose()
+                    // TODO: also transpose dataMatrix? or create datamatrix from transposed parsedFile?
+                }
+
+                break
+            case 'init':
+            default:
+                break
+        }
+
+        render dataTables as JSON
 
     }
 
      /**
-     * @datamatrix two dimensional datamatrix containing data
+     * @dataMatrix two dimensional dataMatrix containing data
      * @return JSON formatted string containing [iTotalRecords, iColumns, iTotalDisplayRecords, aoColumns, aaData]
      */
 
-    def getDatamatrixAsJSON(datamatrix) {
+    def getDataMatrix(dataMatrix) {
 		def headerColumns = []
 
 		def dataTables = [:]
-		if (datamatrix) {
-			datamatrix[0].size().times { headerColumns += [sTitle: "Column" + it]}
+		if (dataMatrix) {
+			dataMatrix[0].size().times { headerColumns += [sTitle: "Column" + it]}
 
-			dataTables = [param1: "param1", iTotalRecords: datamatrix.size(), iColumns: datamatrix.size(), iTotalDisplayRecords: datamatrix.size(), aoColumns: headerColumns, aaData: datamatrix]
+			dataTables = [param1: "param1", iTotalRecords: dataMatrix.size(), iColumns: dataMatrix.size(), iTotalDisplayRecords: dataMatrix.size(), aoColumns: headerColumns, aaData: dataMatrix]
 		}
 
-		render dataTables as JSON
+		return dataTables
     }
 }

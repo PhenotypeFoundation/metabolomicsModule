@@ -42,8 +42,9 @@
  </head>
   <body>
     <div class="parseConfigDialog" id="parseConfigDialog">
-        <g:formRemote name="pcform" onFailure="alert('No response from server')" before="updateStatus('loading...')" onSuccess="updateDatamatrix(data, textStatus)" action="updateDatamatrix" url="${[action:'updateDatamatrix']}">
-        <input type="hidden" name="filename" value="${filename}"/>
+        <g:formRemote name="pcform" onFailure="alert('No response from server')" before="updateStatus('loading...')" onSuccess="updateDialog(data, textStatus)" action="handleForm" url="${[action:'handleForm']}">
+        <input type="hidden" name="filename" value="${uploadedFile.fileName}"/>
+          <input id="formAction" type="hidden" name="formAction" value=""/>
         <div class="fileType">
             <pc:fileTypeControl/>
          </div>
@@ -51,10 +52,10 @@
             <pc:platformControl/>
         </div>
         <div class="assays">
-            <pc:assaysControl/>
+            <pc:assaysControl assayID="${uploadedFile.assay?.id}"/>
         </div>
         <div class="orientation">
-            <pc:orientationControl/>
+            <pc:orientationControl isColumnOriented="${uploadedFile.parsedFile?.isColumnOriented}"/>
         </div>
         <div class="datamatrix">
             <pc:dataMatrixControl/>

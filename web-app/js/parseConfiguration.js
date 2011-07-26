@@ -10,13 +10,13 @@ var parseConfigurationDialogController = "parseConfiguration";
 function initParseConfigurationDialogListeners() {
     // Listen for control element changes, if so, submit the form
     $('#fileType, #samplePerRow, #samplePerColumn').change( function() {
-        submitForm();
+        submitForm("update");
     });
 
     // When the page is ready, read the parameters set in the form and send
-    // them to the server. The returned JSON will update the dat apreview.
+    // them to the server. The returned JSON will update the data preview.
     $(document).ready(function() {
-      submitForm();
+      submitForm("init");
     });
 }
 
@@ -33,7 +33,7 @@ function openParseConfigurationDialog(fileName) {
                 autoOpen: false,
                 modal: true,
                 title: "Parse Configuration panel - " + fileName,
-                buttons: { 'SendTest': function() { submitForm(); }, 'Close': function() { $(this).remove(); }  },
+                buttons: { 'Save': function() { submitForm("save"); }, 'Cancel': function() { $(this).remove(); }  },
                 width: 680,
                 height: 520
         });
@@ -44,15 +44,29 @@ function openParseConfigurationDialog(fileName) {
 /**
 * Submit the parser configuration form to the server
 */
-function submitForm() {
+function submitForm(formAction) {
+    if (formAction=="save" ) {
+        $("#formAction").val("save")
+    } else
+    if (formAction=="update") {
+        $("#formAction").val("update")
+    } else
+    if (formAction=="init") {
+        $("#formAction").val("init")
+    }
+
     $('#pcform').submit();
 }
 
 /**
 * Update the datatables datamatrix
 */
-function updateDatamatrix(data, textStatus) {
-    var jsonDatamatrix = eval(data);
+function updateDialog(jsonDataMatrix, textStatus) {
+
+    if (jsonDataMatrix.errorMessage != undefined) {
+        updateStatus(jsonDataMatrix.errorMessage);
+        return;
+    }
 
     // show a spinner?
     updateStatus("updating preview...");
@@ -77,8 +91,8 @@ function updateDatamatrix(data, textStatus) {
                         ],
                         "bSort" : false,
                         "bFilter" : false,
-                        "aaData": jsonDatamatrix.aaData,
-                        "aoColumns": jsonDatamatrix.aoColumns
+                        "aaData": jsonDataMatrix.aaData,
+                        "aoColumns": jsonDataMatrix.aoColumns
                       });
 
     // hide a spinner?

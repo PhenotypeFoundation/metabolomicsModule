@@ -78,8 +78,8 @@ class ParseConfigurationTagLib {
      */
     def orientationControl = { attrs, body ->
         out << "Sample per "
-        out << "<b>row</b>" + g.radio(id:"samplePerRow", name:"orientation", value:"samplePerRow")
-        out << "<b>column</b>" + g.radio(id:"samplePerColumn", name:"orientation", value:"samplePerColumn")
+        out << "<b>row</b>" + g.radio(id:"samplePerRow", name:"isColumnOriented", value:"${false}", checked: !attrs.isColumnOriented)
+        out << "<b>column</b>" + g.radio(id:"samplePerColumn", name:"isColumnOriented", value:"${true}", checked: attrs.isColumnOriented)
     }
 
     /**
@@ -120,14 +120,15 @@ class ParseConfigurationTagLib {
      */
     def assaysControl = { attrs, body ->
         out << "Assay: "
-        out << '<select name="assays" size="8" style="width:170px">'
+
+        out << '<select name="assayID" size="8" style="width:170px">'
 
         // if new studygroup create new label
         assayService.getAssaysReadableByUserAndGroupedByStudy(session.user).each { assaysGroupedByStudy ->
             out << '<optgroup label="' + assaysGroupedByStudy.key.name + '">'
 
             assaysGroupedByStudy.value.each { assay ->
-                out << '<option value="' + assay.id + '">' + assay.name + '</option>'
+                out << '<option value="' + assay.id + '" ' + ((assay.id == attrs.assayID) ? 'selected' : '')  + '>' + assay.name + '</option>'
             }
 
             out << '</optgroup>'
