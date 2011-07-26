@@ -29,6 +29,7 @@ package org.dbxp.metabolomicsModule
 
 import grails.converters.JSON
 import org.dbxp.dbxpModuleStorage.AssayWithUploadedFile
+import org.dbxp.dbxpModuleStorage.ParsedFile
 import org.dbxp.dbxpModuleStorage.UploadedFile
 
 class ParseConfigurationController {
@@ -67,72 +68,70 @@ class ParseConfigurationController {
      * @return JSON (datatables) formatted string representing the dataMatrix
      */
     def handleForm = {
-        println "action=" + params.formAction
 
-        def dataTables = getDataMatrix(session.uploadedFile?.parsedFile?.matrix)
+        transposeMatrixIfNeeded(params)
+
+        def dataTables = getDataMatrix(session.uploadedFile?.parsedFile)
 
         if (!dataTables) dataTables = [errorMessage: 'Could not parse uploaded file.']
 
-        switch (params.formAction) {
-            case 'save':
+        if (params.formAction == 'save') {
+            try {
+                // make sure we have an id for uploadedFile by saving it
+                session.uploadedFile.save(failOnError: true)
 
-                try {
-                    // make sure we have an id for uploadedFile by saving it
-                    session.uploadedFile.save(failOnError: true)
+                def assay = AssayWithUploadedFile.get(params.assayID)
 
-                    def assay = AssayWithUploadedFile.get(params.assayID)
+                if (params.assayID) {
+                    if (params.assayID != session.uploadedFile.assay?.id) {
 
-                    if (params.assayID) {
-                        if (params.assayID != session.uploadedFile.assay?.id) {
-
-                            assay.uploadedFile = session.uploadedFile
-                            session.uploadedFile.assay = assay
-
-                        }
-                    } else {
-                        // remove link with assay
-                        assay?.uploadedFile = null
-                        session.uploadedFile.assay = null
+                        assay.uploadedFile = session.uploadedFile
+                        session.uploadedFile.assay = assay
 
                     }
-
-                    session.uploadedFile.save(failOnError: true)
-
-                } catch (Exception e) {
-                    dataTables.errorMessage = e.message
-                }
-                break
-            case 'update':
-
-                if (params.isColumnOriented != session.uploadedFile.parsedFile.isColumnOriented) {
-                    session.uploadedFile.parsedFile.isColumnOriented = params.isColumnOriented
-                    session.uploadedFile.parsedFile.matrix.transpose()
-                    // TODO: also transpose dataMatrix? or create datamatrix from transposed parsedFile?
+                } else {
+                    // remove link with assay
+                    assay?.uploadedFile = null
+                    session.uploadedFile.assay = null
                 }
 
-                break
-            case 'init':
-            default:
-                break
+                session.uploadedFile.save(failOnError: true)
+
+            } catch (Exception e) {
+                dataTables.errorMessage = e.message
+            }
         }
 
         render dataTables as JSON
-
     }
 
-     /**
-     * @dataMatrix two dimensional dataMatrix containing data
-     * @return JSON formatted string containing [iTotalRecords, iColumns, iTotalDisplayRecords, aoColumns, aaData]
-     */
+    def transposeMatrixIfNeeded(params) {
 
-    def getDataMatrix(dataMatrix) {
+        if (    session.uploadedFile?.parsedFile?.matrix &&
+                params.formAction == 'update' &&
+                params.isColumnOriented != session.uploadedFile.parsedFile.isColumnOriented) {
+
+            session.uploadedFile.parsedFile.isColumnOriented = params.isColumnOriented
+            session.uploadedFile.parsedFile = parsedFileService.transposeMatrix(session.uploadedFile?.parsedFile)
+        }
+    }
+
+    /**
+     * @dataMatrix two dimensional dataMatrix containing data
+     * @return Map containing: [iTotalRecords, iColumns, iTotalDisplayRecords, aoColumns, aaData]
+     */
+    def getDataMatrix(ParsedFile parsedFile) {
 		def headerColumns = []
 
-		def dataTables = [:]
-		if (dataMatrix) {
-			dataMatrix[0].size().times { headerColumns += [sTitle: "Column" + it]}
+        def rows = parsedFile.rows
+        def columns = parsedFile.columns
+        def totalEntries = rows * columns
 
-			dataTables = [param1: "param1", iTotalRecords: dataMatrix.size(), iColumns: dataMatrix.size(), iTotalDisplayRecords: dataMatrix.size(), aoColumns: headerColumns, aaData: dataMatrix]
+		def dataTables = [:]
+		if (parsedFile.matrix) {
+			columns.times { headerColumns += [sTitle: "Column " + it]}
+
+			dataTables = [iTotalRecords: totalEntries, iColumns: columns, iTotalDisplayRecords: totalEntries, aoColumns: headerColumns, aaData: parsedFile.matrix]
 		}
 
 		return dataTables
