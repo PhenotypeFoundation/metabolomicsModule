@@ -24,9 +24,10 @@ class MetabolomicsModuleTagLib {
 
         def uploadedFiles = UploadedFile.all
 
-        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: "up") {
+        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: 'up') {
 
             uploadedFiles.each { uploadedFile ->
+
                 uploadr.file(name: uploadedFile.fileName) {
                     uploadr.fileSize { uploadedFile.fileSize }
                     uploadr.fileModified { uploadedFile.lastUpdated.time }
@@ -34,16 +35,7 @@ class MetabolomicsModuleTagLib {
                 }
             }
 
-            uploadr.onStart {
-                "console.log('start uploading' + file.fileName);"
-            }
-
-            uploadr.onProgress {
-                "console.log(file.fileName + ' upload progress: ' + percentage + '%'); return true;"
-            }
-
             uploadr.onSuccess {
-                "console.log('done uploading ' + file.fileName);" +
                 '$.ajax({url: \'' + g.createLink(plugin: 'dbxpModuleStorage', controller: 'uploadedFile', action: 'uploadFinished') + '?fileName=\'+file.fileName, ' +
                         'success: function(data){file.fileId=data.fileId}});'
             }
@@ -57,16 +49,21 @@ class MetabolomicsModuleTagLib {
             }
 
             uploadr.onView {
-                "console.log('you clicked view on ' + file.fileName);" +
                 "openParseConfigurationDialog(file.fileName, file.fileId)"
             }
 
             uploadr.onDownload {
-                "console.log('you clicked download on ' + file.fileName);"
+                "console.log('you clicked download on ' + file.fileName);" +
+                 'window.open(\'' + g.createLink(plugin: 'dbxpModuleStorage', controller: 'uploadedFile', action: 'downloadUploadedFile') + '?fileId=\'+file.fileId);'
             }
 
             uploadr.onDelete {
-                "console.log('you clicked delete on ' + file.fileName); return true;"
+                "console.log('you clicked delete on ' + file.fileName);" +
+                "var deletionWasSuccessful = false;" +
+                '$.ajax({url: \'' + g.createLink(plugin: 'dbxpModuleStorage', controller: 'uploadedFile', action: 'deleteUploadedFile') + '?fileId=\'+file.fileId, ' +
+                        'success: function(data){deletionWasSuccessful=data.status},' +
+                        'async: false});' +
+                'return deletionWasSuccessful'
             }
         }
     }
