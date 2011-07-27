@@ -53,18 +53,20 @@ class ParseConfigurationTagLib {
     }
 
     /**
-     * Dropdown list control to choose the platform used (DCL lipodomics).
+     * Dropdown list control to choose the platform used (DCL lipodomics, et cetera).
+     *
+     * @param platformVersionID selected platform version identifier
      */
     def platformControl = { attrs, body ->
         //out << "Platform: " + g.select(name:"platform", from:platformList)
         out << "Platform: "
-        out << '<select name="platform" size="6" style="width:210px">'
+        out << '<select name="platformVersionID" size="6" style="width:210px">'
 
         measurementFactoryService.findAllMeasurementPlatforms().each { platform ->
         // if new studygroup create new label
         out << '<optgroup label="' + platform.name + '">'
             measurementFactoryService.findAllMeasurementPlatformVersions(measurementPlatform:platform).each { platformversion ->
-                out << '<option value="' + platformversion.versionnumber+ '">' + platformversion.versionnumber + '</option>'
+                out << '<option value="' + platformversion.id + ((platformversion.id == attrs.platformVersionID) ? 'selected' : '') + '">' + platformversion.versionnumber + '</option>'
             }
 
             out << '</optgroup>'
@@ -75,6 +77,8 @@ class ParseConfigurationTagLib {
 
     /**
      * Radio button to switch orientation/transpose data: 1 sample per row or per column.
+     *
+     * @param isColumnOriented true if samples are stored per column, false if samples are stored per row
      */
     def orientationControl = { attrs, body ->
         out << "Sample per "
@@ -115,7 +119,7 @@ class ParseConfigurationTagLib {
     /**
      * Multiselect control to choose assays.
      *
-     * @param studies list of studies with assays
+     * @param assayID selected assay identifier
      *
      */
     def assaysControl = { attrs, body ->
