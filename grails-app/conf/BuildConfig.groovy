@@ -9,7 +9,7 @@ grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
         // uncomment to disable ehcache
-        // excludes 'ehcache'
+        // excludes 'ehcache'¤
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
@@ -34,7 +34,7 @@ grails.project.dependency.resolution = {
     }
 }
 
-grails.plugin.location.'dbxpModuleBase'     = '../dbxpModuleBase'
-grails.plugin.location.'dbxpModuleStorage'  = '../dbxpModuleStorage'
-grails.plugin.location.'matrixImporter'     = '../matrixImporter'
-grails.plugin.location.'uploadr'            = '../uploadr'
+//grails.plugin.location.'dbxpModuleBase'     = '../dbxpModuleBase'
+//grails.plugin.location.'dbxpModuleStorage'  = '../dbxpModuleStorage'
+//grails.plugin.location.'matrixImporter'     = '../matrixImporter'
+//grails.plugin.location.'uploadr'            = '../uploadr'
