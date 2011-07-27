@@ -24,7 +24,7 @@ class MetabolomicsModuleTagLib {
 
         def uploadedFiles = UploadedFile.all
 
-        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload") {
+        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: "up") {
 
             uploadedFiles.each { uploadedFile ->
                 uploadr.file(name: uploadedFile.fileName) {
