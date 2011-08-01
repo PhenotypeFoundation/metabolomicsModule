@@ -81,4 +81,4 @@ grails.views.javascript.library="jquery"
 // tell org.dbxp.moduleBase.SynchronizationService to use our extended Assay instead of the base Assay
 module.synchronization.classes.assay = 'org.dbxp.dbxpModuleStorage.AssayWithUploadedFile'
 
-grails.serverURL="http://localhost:8080/gscf"
+gscf.baseURL="http://localhost:8080/gscf"
