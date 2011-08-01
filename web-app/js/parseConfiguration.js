@@ -3,7 +3,6 @@ var dataMatrixTable;
 var parseConfigurationDialog;
 var parseConfigurationDialogController = "parseConfiguration";
 
-
 /**
 * Add control element listeners so when a control is changed the preview is updated
 */
@@ -33,7 +32,7 @@ function openParseConfigurationDialog(uploadedFileName, uploadedFileId) {
                 autoOpen: false,
                 modal: true,
                 title: "Parse Configuration panel - " + uploadedFileName,
-                buttons: { 'Save': function() { submitForm("save"); }, 'Cancel': function() { $(this).remove(); }  },
+                buttons: { 'Save': function() { submitForm("save"); }, 'Close': function() { $(this).remove(); }  },
                 width: 680,
                 height: 520
         });
@@ -45,15 +44,8 @@ function openParseConfigurationDialog(uploadedFileName, uploadedFileId) {
 * Submit the parser configuration form to the server
 */
 function submitForm(formAction) {
-    if (formAction=="save" ) {
-        $("#formAction").val("save")
-    } else
-    if (formAction=="update") {
-        $("#formAction").val("update")
-    } else
-    if (formAction=="init") {
-        $("#formAction").val("init")
-    }
+
+    $("#formAction").val(formAction);
 
     $('#pcform').submit();
 }

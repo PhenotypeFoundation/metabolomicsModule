@@ -37,7 +37,6 @@ class ParseConfigurationController {
     def parsedFileService
 
     def index = {
-
         if (!params.uploadedFileId) {
             throw new RuntimeException('The uploadedFileId was not set, please report this error message to the system administrator.')
         }
@@ -55,7 +54,7 @@ class ParseConfigurationController {
                 session.uploadedFile.parsedFile = parsedFile
 
             } catch (Exception e) {
-
+                e.printStackTrace()
                 errorMessage = e.message
 
             }
@@ -72,41 +71,49 @@ class ParseConfigurationController {
      * @return JSON (datatables) formatted string representing the dataMatrix
      */
     def handleForm = {
+//TODO: check samples names with assay
+        if (!session.uploadedFile) return
 
-        transposeMatrixIfNeeded(params)
-
-        def dataTables = getDataMatrix(session.uploadedFile?.parsedFile)
-
-        if (!dataTables) dataTables = [errorMessage: 'Could not parse uploaded file.']
-
-        if (params.formAction == 'save') {
-            try {
-                // make sure we have an id for uploadedFile by saving it
-                session.uploadedFile.save(failOnError: true)
-
-                def assay = AssayWithUploadedFile.get(params.assayID)
-
-                if (params.assayID) {
-                    if (params.assayID != session.uploadedFile.assay?.id) {
-
-                        assay.uploadedFile = session.uploadedFile
-                        session.uploadedFile.assay = assay
-
-                    }
-                } else {
-                    // remove link with assay
-                    assay?.uploadedFile = null
-                    session.uploadedFile.assay = null
-                }
-
-                session.uploadedFile.save(failOnError: true)
-
-            } catch (Exception e) {
-                dataTables.errorMessage = e.message
-            }
+        switch (params.formAction) {
+            case 'init':
+                render(getCurrentDataTablesObjectOrErrorMessage() as JSON)
+                break
+            case 'update':
+                render(handleUpdateFormAction(params) as JSON)
+                break
+            case 'save':
+                handleSaveFormAction(params)
+                break
         }
+    }
 
-        render dataTables as JSON
+    def getCurrentDataTablesObjectOrErrorMessage() {
+        getDataTablesObject(session.uploadedFile.parsedFile) ?: [errorMessage: 'Could not parse uploaded file.']
+    }
+
+    def handleSaveFormAction(params) {
+        // make sure we have an id for uploadedFile by saving it
+        if (!session.uploadedFile.id)
+            session.uploadedFile.save(failOnError: true)
+
+        updateAssayIfNeeded(params)
+        session.uploadedFile['platformVersionID'] = params.platformVersionID
+        session.uploadedFile.save(failOnError: true)
+    }
+
+    def updateAssayIfNeeded(params) {
+
+        def assay = AssayWithUploadedFile.get(params.assayID)
+
+        if (params.assayID != session.uploadedFile.assay?.id) {
+            assay?.uploadedFile = session.uploadedFile
+            session.uploadedFile.assay = assay
+        }
+    }
+
+    Map handleUpdateFormAction(params) {
+        transposeMatrixIfNeeded(params)
+        getCurrentDataTablesObjectOrErrorMessage()
     }
 
     def transposeMatrixIfNeeded(params) {
@@ -124,20 +131,20 @@ class ParseConfigurationController {
      * @dataMatrix two dimensional dataMatrix containing data
      * @return Map containing: [iTotalRecords, iColumns, iTotalDisplayRecords, aoColumns, aaData]
      */
-    def getDataMatrix(ParsedFile parsedFile) {
+    Map getDataTablesObject(ParsedFile parsedFile) {
 		def headerColumns = []
 
         def rows = parsedFile.rows
         def columns = parsedFile.columns
         def totalEntries = rows * columns
 
-		def dataTables = [:]
+		def dataTablesObject = [:]
 		if (parsedFile.matrix) {
 			columns.times { headerColumns += [sTitle: "Column " + it]}
 
-			dataTables = [iTotalRecords: totalEntries, iColumns: columns, iTotalDisplayRecords: totalEntries, aoColumns: headerColumns, aaData: parsedFile.matrix]
+			dataTablesObject = [iTotalRecords: totalEntries, iColumns: columns, iTotalDisplayRecords: totalEntries, aoColumns: headerColumns, aaData: parsedFile.matrix]
 		}
 
-		return dataTables
+		return dataTablesObject
     }
 }
