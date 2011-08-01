@@ -1,14 +1,14 @@
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
+//
+grails.config.locations = [
+	// the default configuration properties
+	"classpath:default.properties",
 
-// grails.config.locations = [ "classpath:${appName}-config.properties",
-//                             "classpath:${appName}-config.groovy",
-//                             "file:${userHome}/.grails/${appName}-config.properties",
-//                             "file:${userHome}/.grails/${appName}-config.groovy"]
-
-// if(System.properties["${appName}.config.location"]) {
-//    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
-// }
+	// the external configuration to override the default
+	// configuration (e.g. ~/.gscf/ci.properties)
+	"file:${userHome}/.${appName}/${grails.util.GrailsUtil.environment}.properties"
+]
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
@@ -51,20 +51,6 @@ grails.spring.bean.packages = []
 // request parameters to mask when logging exceptions
 grails.exceptionresolver.params.exclude = ['password']
 
-// set per-environment serverURL stem for creating absolute links
-environments {
-    production {
-        grails.serverURL = "http://www.changeme.com"
-    }
-    development {
-        grails.serverURL = "http://localhost:8083/${appName}"
-    }
-    test {
-        grails.serverURL = "http://localhost:8083/${appName}"
-    }
-
-}
-
 // log4j configuration
 log4j = {
     // Example of changing the log pattern for the default console
@@ -92,10 +78,7 @@ log4j = {
 // jQuery plugin
 grails.views.javascript.library="jquery"
 
-// TODO: make configuration locally overridable
-gscf.baseURL='http://localhost:8080/gscf'
-
 // tell org.dbxp.moduleBase.SynchronizationService to use our extended Assay instead of the base Assay
 module.synchronization.classes.assay = 'org.dbxp.dbxpModuleStorage.AssayWithUploadedFile'
 
-grails.server.port.http=8083
+grails.serverURL="http://localhost:8080/gscf"
