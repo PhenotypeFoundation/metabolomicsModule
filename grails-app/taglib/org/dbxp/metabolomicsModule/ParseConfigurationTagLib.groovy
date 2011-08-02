@@ -164,6 +164,6 @@ class ParseConfigurationTagLib {
      * Status control showing amount of samples found in assay, unassigned samples et cetera.
      */
     def statusControl = { attrs, body ->
-        out << '<div id="status">Status: no status available</div>'
+        out << "<div id=\"status\">${attrs.initialStatus ?: 'Status: no status available'}</div>"
     }
 }

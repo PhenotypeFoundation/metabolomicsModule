@@ -31,7 +31,7 @@ function openParseConfigurationDialog(uploadedFileName, uploadedFileId) {
         .dialog({
                 autoOpen: false,
                 modal: true,
-                title: "Parse Configuration panel - " + uploadedFileName,
+                title: "Data Interpretation Settings - " + uploadedFileName,
                 buttons: { 'Save': function() { submitForm("save"); }, 'Close': function() { $(this).remove(); }  },
                 width: 680,
                 height: 520
@@ -60,6 +60,12 @@ function updateDialog(jsonDataMatrix, textStatus) {
         return;
     }
 
+    if (jsonDataMatrix.message != undefined) {
+        updateStatus(jsonDataMatrix.message);
+    }
+
+    if (jsonDataMatrix.aaData == undefined) return
+
     // show a spinner?
     updateStatus("updating preview...");
 
@@ -71,7 +77,7 @@ function updateDialog(jsonDataMatrix, textStatus) {
     dataMatrixTable = $('#datamatrix').dataTable({
                         "oLanguage": {
                             //"sInfo": "Page _START_ of _END_"
-                                "sInfo": "Showing rows _START_ to _END_ from uploaded file."
+                                "sInfo": "Showing rows _START_ to _END_ of uploaded file."
                                 },
                         "sScrollX": "100%",
                         "sScrollY": "120px",

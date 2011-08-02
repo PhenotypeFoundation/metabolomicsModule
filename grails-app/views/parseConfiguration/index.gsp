@@ -42,7 +42,7 @@
  </head>
   <body>
     <div class="parseConfigDialog" id="parseConfigDialog">
-        <g:formRemote name="pcform" onFailure="updateStatus('server does not respond')" before="updateStatus('loading...')" onSuccess="updateDialog(data, textStatus)" action="handleForm" url="${[action:'handleForm']}">
+        <g:formRemote name="pcform" onFailure="updateStatus('server does not respond')" onSuccess="updateDialog(data, textStatus)" action="handleForm" url="${[action:'handleForm']}">
         <input type="hidden" name="filename" value="${uploadedFile.fileName}"/>
           <input id="formAction" type="hidden" name="formAction" value=""/>
         <div class="fileType">
@@ -61,7 +61,7 @@
             <pc:dataMatrixControl/>
         </div>
         <div class="status">
-            <pc:statusControl/>
+            <pc:statusControl initialStatus="${errorMessage}"/>
         </div>
         </g:formRemote>
     </div>

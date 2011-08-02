@@ -35,6 +35,7 @@ import org.dbxp.dbxpModuleStorage.UploadedFile
 class ParseConfigurationController {
 
     def parsedFileService
+    def uploadedFileService
 
     def index = {
         if (!params.uploadedFileId) {
@@ -56,11 +57,9 @@ class ParseConfigurationController {
             } catch (Exception e) {
                 e.printStackTrace()
                 errorMessage = e.message
-
             }
         }
 
-        // TODO: make sure errorMessage is displayed
         [uploadedFile: session.uploadedFile, errorMessage: errorMessage]
     }
 
@@ -71,7 +70,6 @@ class ParseConfigurationController {
      * @return JSON (datatables) formatted string representing the dataMatrix
      */
     def handleForm = {
-//TODO: check samples names with assay
         if (!session.uploadedFile) return
 
         switch (params.formAction) {
@@ -83,6 +81,7 @@ class ParseConfigurationController {
                 break
             case 'save':
                 handleSaveFormAction(params)
+                render([message: buildSavedMessage()] as JSON)
                 break
         }
     }
@@ -92,6 +91,7 @@ class ParseConfigurationController {
     }
 
     def handleSaveFormAction(params) {
+
         // make sure we have an id for uploadedFile by saving it
         if (!session.uploadedFile.id)
             session.uploadedFile.save(failOnError: true)
@@ -101,6 +101,27 @@ class ParseConfigurationController {
         session.uploadedFile.save(failOnError: true)
     }
 
+    def buildSavedMessage() {
+
+        def msg = 'Saved'
+
+        if (session.uploadedFile.parsedFile) {
+
+            def uploadedFile = session.uploadedFile
+            def parsedFile = uploadedFile.parsedFile
+            def assay = uploadedFile.assay
+
+            def sampleNamesInFile = parsedFileService.getSampleNames(parsedFile)
+            def sampleNamesInAssay = assay.samples*.name
+
+            def foundSampleCount = sampleNamesInAssay.intersect(sampleNamesInFile).size()
+            def unmappedSampleCount = sampleNamesInFile.size() - foundSampleCount
+            def assaySampleCount = assay.samples.size()
+
+            msg += ", $foundSampleCount of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
+        }
+        msg
+    }
     def updateAssayIfNeeded(params) {
 
         def assay = AssayWithUploadedFile.get(params.assayID)
@@ -132,6 +153,9 @@ class ParseConfigurationController {
      * @return Map containing: [iTotalRecords, iColumns, iTotalDisplayRecords, aoColumns, aaData]
      */
     Map getDataTablesObject(ParsedFile parsedFile) {
+
+        if (!parsedFile) return [:]
+
 		def headerColumns = []
 
         def rows = parsedFile.rows
