@@ -1,0 +1,1 @@
+window.open('<g:createLink plugin="dbxpModuleStorage" controller="uploadedFile" action="downloadUploadedFile"/>?fileId='+file.fileId);

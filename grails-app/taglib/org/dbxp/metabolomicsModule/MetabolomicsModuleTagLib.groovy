@@ -36,8 +36,9 @@ class MetabolomicsModuleTagLib {
             }
 
             uploadr.onSuccess {
-                '$.ajax({url: \'' + g.createLink(plugin: 'dbxpModuleStorage', controller: 'uploadedFile', action: 'uploadFinished') + '?fileName=\'+file.fileName, ' +
-                        'success: function(data){file.fileId=data.fileId}});'
+//                '$.ajax({url: \'' + g.createLink(plugin: 'dbxpModuleStorage', controller: 'uploadedFile', action: 'uploadFinished') + '?fileName=\'+file.fileName, ' +
+//                        'success: function(data){file.fileId=data.fileId}});'
+				out << g.render(template:'/js/uploadr/onSuccess', model:[])
             }
 
             uploadr.onFailure {
@@ -49,21 +50,15 @@ class MetabolomicsModuleTagLib {
             }
 
             uploadr.onView {
-                "openParseConfigurationDialog(file.fileName, file.fileId)"
+				out << g.render(template:'/js/uploadr/onView', model:[])
             }
 
             uploadr.onDownload {
-                "console.log('you clicked download on ' + file.fileName);" +
-                 'window.open(\'' + g.createLink(plugin: 'dbxpModuleStorage', controller: 'uploadedFile', action: 'downloadUploadedFile') + '?fileId=\'+file.fileId);'
+				out << g.render(template:'/js/uploadr/onDownload', model:[])
             }
 
             uploadr.onDelete {
-                "console.log('you clicked delete on ' + file.fileName);" +
-                "var deletionWasSuccessful = false;" +
-                '$.ajax({url: \'' + g.createLink(plugin: 'dbxpModuleStorage', controller: 'uploadedFile', action: 'deleteUploadedFile') + '?fileId=\'+file.fileId, ' +
-                        'success: function(data){deletionWasSuccessful=data.status},' +
-                        'async: false});' +
-                'return deletionWasSuccessful'
+				out << g.render(template:'/js/uploadr/onDelete', model:[])
             }
         }
     }
