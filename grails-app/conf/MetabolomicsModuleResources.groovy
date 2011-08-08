@@ -9,7 +9,7 @@ modules = {
 
     parseConfiguration {
 
-        dependsOn 'jqueryUi'
+        dependsOn 'jqueryUi, moduleBase'
 
         resource url: '/js/parseConfiguration.js'
         resource url: '/js/jquery.dataTables.min.js'

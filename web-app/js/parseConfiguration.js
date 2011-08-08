@@ -4,59 +4,57 @@ var parseConfigurationDialog;
 var parseConfigurationDialogController = "parseConfiguration";
 
 /**
-* Add control element listeners so when a control is changed the preview is updated
-*/
+ * Add control element listeners so when a control is changed the preview is updated
+ */
 function initParseConfigurationDialogListeners() {
     // Listen for control element changes, if so, submit the form
-    $('#fileType, #samplePerRow, #samplePerColumn').change( function() {
+    $('#delimiter, #sheetIndex, #samplePerRow, #samplePerColumn').change( function() {
         submitForm("update");
     });
 
     // When the page is ready, read the parameters set in the form and send
     // them to the server. The returned JSON will update the data preview.
-    $(document).ready(function() {
-      submitForm("init");
-    });
+    submitForm("init");
 }
 
 /**
-* Method to open up a dialog to configure the parsing of the uploaded file
-* @param file filename of uploaded file
-*/
+ * Method to open up a dialog to configure the parsing of the uploaded file
+ * @param uploadedFileName filename of uploaded file
+ * @param uploadedFileId id of uploaded file
+ */
 function openParseConfigurationDialog(uploadedFileName, uploadedFileId) {
 
     // Assign the dialog to the global variable
-    parseConfigurationDialog = $("<div></div>")
-        .load(parseConfigurationDialogController + "?uploadedFileName=" + encodeURI(uploadedFileName) + "&uploadedFileId=" + encodeURI(uploadedFileId))
+    parseConfigurationDialog = $("<div><img src='images/spinner.gif'></div>")
+        .load(parseConfigurationDialogController + "?uploadedFileId=" + encodeURI(uploadedFileId))
         .dialog({
-                autoOpen: false,
                 modal: true,
                 title: "Data Interpretation Settings - " + uploadedFileName,
-                buttons: { 'Save': function() { submitForm("save"); }, 'Close': function() { $(this).remove(); }  },
+                buttons: { 'Save': function() { submitForm("save"); }, 'Close': function() {$(this).dialog('close')} },
                 width: 680,
-                height: 520
+                height: 520,
+                // necessary to destroy object to make datatables appear after opening dialog for a second time
+                beforeClose: function(event, ui) { $(this).remove(); }
         });
-
-    parseConfigurationDialog.dialog("open");
 }
 
 /**
-* Submit the parser configuration form to the server
-*/
+ * Submit the parser configuration form to the server
+ */
 function submitForm(formAction) {
-
     $("#formAction").val(formAction);
 
     $('#pcform').submit();
 }
 
 /**
-* Update the datatables datamatrix
-*/
-function updateDialog(jsonDataMatrix, textStatus) {
+ * Update the datatables datamatrix
+ */
+function updateDialog(jsonDataMatrix) {
 
     if (jsonDataMatrix.errorMessage != undefined) {
         updateStatus(jsonDataMatrix.errorMessage);
+        destroyDataTable();
         return;
     }
 
@@ -69,37 +67,36 @@ function updateDialog(jsonDataMatrix, textStatus) {
     // show a spinner?
     updateStatus("updating preview...");
 
-    // Is the datamatrix table filled already? Then destroy and clean it
-    if (dataMatrixTable) dataMatrixTable.fnDestroy();
-    $('#datamatrix').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="datamatrix"></table>');
+    if (dataMatrixTable) {
+        destroyDataTable();
+    }
 
-    // Fill the datamatrix table with new data and properties
-    dataMatrixTable = $('#datamatrix').dataTable({
-                        "oLanguage": {
-                            //"sInfo": "Page _START_ of _END_"
-                                "sInfo": "Showing rows _START_ to _END_ of uploaded file."
-                                },
-                        "sScrollX": "100%",
-                        "sScrollY": "120px",
-                        "bScrollCollapse": true,
-                        "iDisplayLength": 5,
-                        "aLengthMenu": [
-                          [5, 10, 25, 50],
-                          [5, 10, 25, "All"]
-                        ],
-                        "bSort" : false,
-                        "bFilter" : false,
-                        "aaData": jsonDataMatrix.aaData,
-                        "aoColumns": jsonDataMatrix.aoColumns
-                      });
+    dataMatrixTable = $('#dataMatrix').dataTable({
+        "oLanguage": {
+            "sInfo": "Showing rows _START_ to _END_ of uploaded file."
+        },
+        "sScrollX": "100%",
+        "bScrollCollapse": false,
+        "iDisplayLength": 5,
+        "bLengthChange": false,
+        "bSort" : false,
+        "bFilter" : false,
+        "aaData": jsonDataMatrix.aaData,
+        "aoColumns": jsonDataMatrix.aoColumns
+    });
 
     // hide a spinner?
     updateStatus("done");
+
+}
+
+function destroyDataTable() {
+    $('div.dataMatrixContainer').html('<table cellpadding="0" cellspacing="0" border="0" id="dataMatrix"></table>');
 }
 
 /**
-* @param message message to put in the status bar
-*/
+ * @param message message to put in the status bar
+ */
 function updateStatus(message) {
   $('#status').html('Status: ' + message);
 }

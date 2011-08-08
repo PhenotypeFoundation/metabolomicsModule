@@ -1,6 +1,7 @@
 package org.dbxp.metabolomicsModule
 
 import org.dbxp.dbxpModuleStorage.AssayWithUploadedFile
+
 import org.dbxp.metabolomicsModule.identity.Feature
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
@@ -24,7 +25,7 @@ class BootStrapController {
     def loadSmallDataSet = {
 
         def file            = new File('testData/DiogenesMockData_mini.txt')
-        def uploadedFile    = uploadedFileService.createUploadedFileFromFile(file)
+        def uploadedFile    = uploadedFileService.createUploadedFileFromFile(file, null)
 
         uploadedFile.parse([delimiter: '\t'])
 

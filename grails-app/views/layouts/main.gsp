@@ -2,9 +2,9 @@
 	<html>
 	<head>
 		<title><g:layoutTitle default="Metabolomics Module"/></title>
-		<g:layoutHead/>
-		<r:require modules="uploadr, parseConfiguration"/>
-	</head>
+      <g:layoutHead/>
+      <r:require modules="uploadr, parseConfiguration"/>
+    </head>
 
 	<body>
 	<content tag="topnav">

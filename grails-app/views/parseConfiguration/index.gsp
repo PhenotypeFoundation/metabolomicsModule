@@ -30,40 +30,57 @@
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
-  <head>
+<head>
   <meta http-equiv="pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
   <script>
-      initParseConfigurationDialogListeners();
+    $(document).ready(function(){initParseConfigurationDialogListeners();});
   </script>
 
   <title>Parse Configuration panel</title>
- </head>
-  <body>
-    <div class="parseConfigDialog" id="parseConfigDialog">
-        <g:formRemote name="pcform" onFailure="updateStatus('server does not respond')" onSuccess="updateDialog(data, textStatus)" action="handleForm" url="${[action:'handleForm']}">
-        <input type="hidden" name="filename" value="${uploadedFile.fileName}"/>
-          <input id="formAction" type="hidden" name="formAction" value=""/>
-        <div class="fileType">
-            <pc:fileTypeControl/>
-         </div>
-        <div class="platform">
-            <pc:platformControl platformVersionID="${uploadedFile['platformVersionID']}"/>
-        </div>
-        <div class="assays">
-            <pc:assaysControl assayID="${uploadedFile.assay?.id}"/>
-        </div>
-        <div class="orientation">
-            <pc:orientationControl isColumnOriented="${uploadedFile.parsedFile?.isColumnOriented}"/>
-        </div>
-        <div class="datamatrix">
-            <pc:dataMatrixControl/>
-        </div>
-        <div class="status">
-            <pc:statusControl initialStatus="${errorMessage}"/>
-        </div>
-        </g:formRemote>
+</head>
+
+<body>
+<div class="parseConfigDialog" id="parseConfigDialog">
+  <g:formRemote name="pcform" onFailure="updateStatus('server does not respond')"
+                onSuccess="updateDialog(data, textStatus)" action="handleForm" url="${[action:'handleForm']}">
+    <input type="hidden" name="filename" value="${uploadedFile.fileName}" />
+    <input id="formAction" type="hidden" name="formAction" value="" />
+
+    <div class="matrixOptions">
+      <g:if test="${parseInfo?.readerClassName=='ExcelReader'}">
+        <pc:sheetSelectControl numberOfSheets="${parseInfo.numberOfSheets}" sheetIndex="${parseInfo.sheetIndex}"/>
+      </g:if>
+      <g:elseif test="${parseInfo?.readerClassName=='CsvReader'}">
+        <pc:delimiterControl value="${parseInfo.delimiter}" delimiterNameMap="${parseInfo.delimiterNameMap}" />
+      </g:elseif>
+
+      <pc:sampleColumnControl sampleColumnIndex="${uploadedFile?.parsedFile?.sampleColumnIndex}"/>
+      <pc:featureRowControl featureRowIndex="${uploadedFile?.parsedFile?.featureRowIndex}"/>
+
     </div>
-  </body>
+
+    <div class="orientation">
+      <pc:orientationControl isColumnOriented="${uploadedFile.parsedFile?.isColumnOriented}" disabled="${disabled}"/>
+    </div>
+
+    <div class="dataMatrixContainer">
+      <pc:dataMatrixControl />
+    </div>
+
+    <div class="platform">
+      <pc:platformControl platformVersionId="${uploadedFile.platformVersionId}" />
+    </div>
+
+    <div class="assays">
+      <pc:assaysControl assayId="${uploadedFile.assay?.id}" />
+    </div>
+
+    <div class="status">
+      <pc:statusControl initialStatus="${errorMessage}" />
+    </div>
+  </g:formRemote>
+</div>
+</body>
 </html>

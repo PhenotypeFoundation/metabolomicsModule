@@ -27,10 +27,10 @@
 
 package org.dbxp.metabolomicsModule
 
-import grails.converters.JSON
 import org.dbxp.dbxpModuleStorage.AssayWithUploadedFile
 import org.dbxp.dbxpModuleStorage.ParsedFile
 import org.dbxp.dbxpModuleStorage.UploadedFile
+import grails.converters.JSON
 
 class ParseConfigurationController {
 
@@ -38,6 +38,7 @@ class ParseConfigurationController {
     def uploadedFileService
 
     def index = {
+
         if (!params.uploadedFileId) {
             throw new RuntimeException('The uploadedFileId was not set, please report this error message to the system administrator.')
         }
@@ -46,21 +47,26 @@ class ParseConfigurationController {
 
         def errorMessage = ''
 
+        def parsedFile = null
+
         if (!session.uploadedFile?.parsedFile) {
             try {
                 // Read the uploaded file and parse it
-                def parsedFile = parsedFileService.parseUploadedFile(session.uploadedFile)
+                parsedFile = parsedFileService.parseUploadedFile(session.uploadedFile).save()
 
                 // Store the parsed file in the 'uploadedFile' object
                 session.uploadedFile.parsedFile = parsedFile
 
-            } catch (Exception e) {
+            } catch (e) {
                 e.printStackTrace()
                 errorMessage = e.message
             }
         }
 
-        [uploadedFile: session.uploadedFile, errorMessage: errorMessage]
+        [       uploadedFile: session.uploadedFile,
+                errorMessage: errorMessage,
+                parseInfo: parsedFile?.parseInfo,
+                disabled: errorMessage?true:false]
     }
 
     /**
@@ -71,10 +77,10 @@ class ParseConfigurationController {
      */
     def handleForm = {
         if (!session.uploadedFile) return
-
+        
         switch (params.formAction) {
             case 'init':
-                render(getCurrentDataTablesObjectOrErrorMessage() as JSON)
+                render(getCurrentDataTablesObject() as JSON)
                 break
             case 'update':
                 render(handleUpdateFormAction(params) as JSON)
@@ -83,34 +89,51 @@ class ParseConfigurationController {
                 handleSaveFormAction(params)
                 render([message: buildSavedMessage()] as JSON)
                 break
+            default:
+                render ''
         }
     }
 
-    def getCurrentDataTablesObjectOrErrorMessage() {
-        getDataTablesObject(session.uploadedFile.parsedFile) ?: [errorMessage: 'Could not parse uploaded file.']
+    def getCurrentDataTablesObject() {
+        getDataTablesObject(session.uploadedFile.parsedFile)
     }
 
     def handleSaveFormAction(params) {
 
+        def uploadedFile = session.uploadedFile
+
+        updatePlatformVersionId(params)
+        updateSampleColumnAndFeatureRow(params)
+
         // make sure we have an id for uploadedFile by saving it
-        if (!session.uploadedFile.id)
-            session.uploadedFile.save(failOnError: true)
+        if (!uploadedFile.id)
+            uploadedFile.save(failOnError: true)
 
         updateAssayIfNeeded(params)
-        session.uploadedFile['platformVersionID'] = params.platformVersionID
-        session.uploadedFile.save(failOnError: true)
+        uploadedFile.save(failOnError: true)
+    }
+
+    def updatePlatformVersionId(def params) {
+        if (params.platformVersionId) {
+            session.uploadedFile.platformVersionId = params.platformVersionId as int
+        }
+    }
+
+    def updateSampleColumnAndFeatureRow(params) {
+        def parsedFile = session.uploadedFile.parsedFile
+        parsedFile.sampleColumnIndex = params.sampleColumnIndex as int
+        parsedFile.featureRowIndex = params.featureRowIndex as int
     }
 
     def buildSavedMessage() {
 
         def msg = 'Saved'
 
-        if (session.uploadedFile.parsedFile) {
+        def uploadedFile = session.uploadedFile
+        def parsedFile = uploadedFile.parsedFile
+        def assay = uploadedFile.assay
 
-            def uploadedFile = session.uploadedFile
-            def parsedFile = uploadedFile.parsedFile
-            def assay = uploadedFile.assay
-
+        if (parsedFile && assay) {
             def sampleNamesInFile = parsedFileService.getSampleNames(parsedFile)
             def sampleNamesInAssay = assay.samples*.name
 
@@ -122,11 +145,12 @@ class ParseConfigurationController {
         }
         msg
     }
+
     def updateAssayIfNeeded(params) {
 
-        def assay = AssayWithUploadedFile.get(params.assayID)
+        def assay = AssayWithUploadedFile.get(params.assayId)
 
-        if (params.assayID != session.uploadedFile.assay?.id) {
+        if (params.assayId != session.uploadedFile.assay?.id) {
             assay?.uploadedFile = session.uploadedFile
             session.uploadedFile.assay = assay
         }
@@ -134,16 +158,49 @@ class ParseConfigurationController {
 
     Map handleUpdateFormAction(params) {
         transposeMatrixIfNeeded(params)
-        getCurrentDataTablesObjectOrErrorMessage()
+        parseFileAgainIfNeeded(params)
+        getCurrentDataTablesObject() ?: [errorMessage: flash.errorMessage ?: "No parsed data available."]
+    }
+
+    def parseFileAgainIfNeeded(params) {
+
+        def uploadedFile = session.uploadedFile
+        def parsedFile = uploadedFile.parsedFile
+        def parseInfo = parsedFile?.parseInfo
+
+        if (parseInfo?.readerClassName == 'ExcelReader') {
+
+            if (parseInfo.sheetIndex != params.sheetIndex as int) {
+                try {
+                    session.uploadedFile.parsedFile = parsedFileService.parseUploadedFile(uploadedFile, [sheetIndex: params.sheetIndex as int])
+                } catch (e) {
+                    session.uploadedFile.parsedFile = null
+                    flash.errorMessage = e.message
+                }
+            }
+
+        } else if (parseInfo?.readerClassName == 'CsvReader') {
+
+            if (parseInfo.delimiter != params.delimiter) {
+                try {
+                    parseInfo.delimiter = params.delimiter
+                    session.uploadedFile.parsedFile = parsedFileService.parseUploadedFile(uploadedFile, [delimiter: params.delimiter])
+                } catch (e) {
+                    session.uploadedFile.parsedFile.matrix = []
+                    flash.errorMessage = e.message
+                }
+            }
+        }
     }
 
     def transposeMatrixIfNeeded(params) {
 
+        def requestedColumnOrientation = params.isColumnOriented.toBoolean()
+
         if (    session.uploadedFile?.parsedFile?.matrix &&
                 params.formAction == 'update' &&
-                params.isColumnOriented != session.uploadedFile.parsedFile.isColumnOriented) {
+                requestedColumnOrientation != session.uploadedFile.parsedFile.isColumnOriented) {
 
-            session.uploadedFile.parsedFile.isColumnOriented = params.isColumnOriented
             session.uploadedFile.parsedFile = parsedFileService.transposeMatrix(session.uploadedFile?.parsedFile)
         }
     }
@@ -164,11 +221,19 @@ class ParseConfigurationController {
 
 		def dataTablesObject = [:]
 		if (parsedFile.matrix) {
-			columns.times { headerColumns += [sTitle: "Column " + it]}
 
-			dataTablesObject = [iTotalRecords: totalEntries, iColumns: columns, iTotalDisplayRecords: totalEntries, aoColumns: headerColumns, aaData: parsedFile.matrix]
-		}
+			parsedFileService.getHeaderRow(parsedFile).each { headerColumns += [sTitle: it] }
 
-		return dataTablesObject
+			dataTablesObject = [
+//                    iTotalRecords: totalEntries,
+//                    iColumns: columns,
+//                    iTotalDisplayRecords: totalEntries,
+                    aoColumns: headerColumns,
+                    aaData: parsedFile.matrix[parsedFile.featureRowIndex+1..-1],
+                    message: 'Done'
+            ]
+        }
+
+		dataTablesObject
     }
 }
