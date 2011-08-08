@@ -30,6 +30,7 @@ package org.dbxp.metabolomicsModule
 import org.dbxp.dbxpModuleStorage.AssayWithUploadedFile
 import org.dbxp.dbxpModuleStorage.ParsedFile
 import org.dbxp.dbxpModuleStorage.UploadedFile
+
 import grails.converters.JSON
 
 class ParseConfigurationController {
@@ -52,7 +53,7 @@ class ParseConfigurationController {
         if (!session.uploadedFile?.parsedFile) {
             try {
                 // Read the uploaded file and parse it
-                parsedFile = parsedFileService.parseUploadedFile(session.uploadedFile).save()
+                parsedFile = parsedFileService.parseUploadedFile(session.uploadedFile).save(failOnError: true)
 
                 // Store the parsed file in the 'uploadedFile' object
                 session.uploadedFile.parsedFile = parsedFile
