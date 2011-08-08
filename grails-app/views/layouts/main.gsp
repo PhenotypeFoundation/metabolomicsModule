@@ -1,10 +1,11 @@
 <g:applyLayout name="module">
-	<html>
+<html>
 	<head>
 		<title><g:layoutTitle default="Metabolomics Module"/></title>
-      <g:layoutHead/>
-      <r:require modules="uploadr, parseConfiguration"/>
-    </head>
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<g:layoutHead/>
+		<r:require modules="metabolomicsModule"/>
+	</head>
 
 	<body>
 	<content tag="topnav">
@@ -23,5 +24,5 @@
 	</content>
 	<g:layoutBody/>
 	</body>
-	</html>
+</html>
 </g:applyLayout>
