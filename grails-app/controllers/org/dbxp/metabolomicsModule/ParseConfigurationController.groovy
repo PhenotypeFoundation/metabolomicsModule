@@ -168,7 +168,7 @@ class ParseConfigurationController {
         def parsedFile = uploadedFile.parsedFile
         def parseInfo = parsedFile?.parseInfo
 
-        if (parseInfo?.readerClassName == 'ExcelReader') {
+        if (parseInfo?.parserClassName == 'ExcelParser') {
 
             if (parseInfo.sheetIndex != params.sheetIndex as int) {
                 try {
@@ -179,7 +179,7 @@ class ParseConfigurationController {
                 }
             }
 
-        } else if (parseInfo?.readerClassName == 'CsvReader') {
+        } else if (parseInfo?.parserClassName == 'CsvParser') {
 
             if (parseInfo.delimiter != params.delimiter) {
                 try {
@@ -215,25 +215,52 @@ class ParseConfigurationController {
 
 		def headerColumns = []
 
-        def rows = parsedFile.rows
-        def columns = parsedFile.columns
-        def totalEntries = rows * columns
-
 		def dataTablesObject = [:]
 		if (parsedFile.matrix) {
 
 			parsedFileService.getHeaderRow(parsedFile).each { headerColumns += [sTitle: it] }
 
 			dataTablesObject = [
-//                    iTotalRecords: totalEntries,
-//                    iColumns: columns,
-//                    iTotalDisplayRecords: totalEntries,
                     aoColumns: headerColumns,
-                    aaData: parsedFile.matrix[parsedFile.featureRowIndex+1..-1],
-                    message: 'Done'
+                    message: 'Done',
+                    parseInfo: parsedFile.parseInfo,
+                    isColumnOriented: parsedFile.isColumnOriented,
+                    ajaxSource: g.createLink(action: 'ajaxDataTablesSource')
             ]
         }
 
 		dataTablesObject
+    }
+
+    def ajaxDataTablesSource = {
+        def parsedFile = session.uploadedFile.parsedFile
+
+        def rows = parsedFile.rows
+        def columns = parsedFile.columns
+
+        def dataStart = parsedFile.featureRowIndex + 1
+
+        def start = (params.iDisplayStart as int) + dataStart
+        def end = Math.min(start + (params.iDisplayLength as int) - 1, rows - 1)
+
+        def data = parsedFile.matrix[start..end]
+
+        def roundedData = data.collect{ row ->
+            row.collect {
+                String cellValue ->
+                cellValue.isDouble() ?
+                    cellValue.toDouble().round(3) :
+                    cellValue
+            }
+        }
+
+        def response = [
+                sEcho: params.sEcho,
+                iTotalRecords: (rows-parsedFile.featureRowIndex)*columns,
+                iTotalDisplayRecords: (params.iDisplayLength as int)*columns,
+                aaData: roundedData
+        ]
+
+        render response as JSON
     }
 }

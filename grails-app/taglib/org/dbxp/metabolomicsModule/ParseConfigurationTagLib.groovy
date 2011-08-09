@@ -33,15 +33,6 @@ class ParseConfigurationTagLib {
     def measurementFactoryService
     def assayService
 
-//    def fileTypes = ["CSV", "TAB", "EXCEL"]
-
-//    /**
-//     * Dropdown list control to choose the type of data formatting used: tabular, comma separated, Excel et cetera.
-//     */
-//    def fileTypeControl = { attrs, body ->
-//        out << "Filetype: " + g.select(name:"fileType", from:fileTypes)
-//    }
-
     /**
      * Dropdown list control to choose the platform used (DCL lipodomics, et cetera).
      *
@@ -163,23 +154,6 @@ class ParseConfigurationTagLib {
      */
     def normalizedControl = { attrs, body ->
         out << "Normalized: " + g.checkBox(name:"normalized")
-    }
-
-    /**
-     * Checkbox list control to select the data columns.
-     *
-     * TODO: jQuery plugin at http://code.google.com/p/dropdown-check-list/
-     */
-    def dataColumnsControl = { attrs, body ->
-        out << "Datacolumns: " + '<select name="datacolumns" id="datacolumns" multiple="multiple"><option>Column1</option><option>Column2</option></select>'
-    }
-
-    /**
-     * Preview control displaying a preview of the data according to the settings made by other controls.
-     */
-    def dataMatrixControl = { attrs, body ->
-
-        out << '<table id="dataMatrix"><thead></thead><tbody></tbody></table>'
     }
 
     /**

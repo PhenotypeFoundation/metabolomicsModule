@@ -50,30 +50,26 @@ function submitForm(formAction) {
 /**
  * Update the datatables datamatrix
  */
-function updateDialog(jsonDataMatrix) {
+function updateDialog(data) {
 
-    if (jsonDataMatrix.errorMessage != undefined) {
-        updateStatus(jsonDataMatrix.errorMessage);
+    if (data.errorMessage != undefined) {
+        updateStatus(data.errorMessage);
         destroyDataTable();
         return;
     }
 
-    if (jsonDataMatrix.message != undefined) {
-        updateStatus(jsonDataMatrix.message);
+    if (data.message != undefined) {
+        updateStatus(data.message);
     }
 
-    if (jsonDataMatrix.aaData == undefined) return
+    updateControls(data);
 
-    // show a spinner?
-    updateStatus("updating preview...");
-
-    if (dataMatrixTable) {
-        destroyDataTable();
-    }
+    destroyDataTable();
 
     dataMatrixTable = $('#dataMatrix').dataTable({
         "oLanguage": {
-            "sInfo": "Showing rows _START_ to _END_ of uploaded file."
+            "sInfo": "Showing rows _START_ to _END_.",
+            "sInfoFiltered": ''
         },
         "sScrollX": "100%",
         "bScrollCollapse": false,
@@ -81,17 +77,30 @@ function updateDialog(jsonDataMatrix) {
         "bLengthChange": false,
         "bSort" : false,
         "bFilter" : false,
-        "aaData": jsonDataMatrix.aaData,
-        "aoColumns": jsonDataMatrix.aoColumns
+        "bServerSide": true,
+        "bProcessing": true,
+        "fnServerData": function ( sSource, aoData, fnCallback ) {
+			$.ajax( {
+				"dataType": 'json',
+				"type": "POST",
+				"url": sSource,
+				"data": aoData,
+				"success": fnCallback
+			} );
+		},
+        "sAjaxSource": data.ajaxSource,
+        "aoColumns": data.aoColumns
     });
-
-    // hide a spinner?
-    updateStatus("done");
-
 }
 
 function destroyDataTable() {
-    $('div.dataMatrixContainer').html('<table cellpadding="0" cellspacing="0" border="0" id="dataMatrix"></table>');
+    $('div.dataMatrixContainer').html('<table id="dataMatrix"></table>');
+}
+
+function updateControls(data) {
+    $('#samplePerRow').attr('checked', !data.isColumnOriented);
+    $('#samplePerColumn').attr('checked', data.isColumnOriented);
+    $('#delimiter').val(data.parseInfo.delimiter);
 }
 
 /**
