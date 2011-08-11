@@ -27,10 +27,10 @@
 
 package org.dbxp.metabolomicsModule
 
-import grails.converters.JSON
 import org.dbxp.dbxpModuleStorage.AssayWithUploadedFile
 import org.dbxp.dbxpModuleStorage.ParsedFile
 import org.dbxp.dbxpModuleStorage.UploadedFile
+import grails.converters.JSON
 
 class ParseConfigurationController {
 
@@ -142,6 +142,10 @@ class ParseConfigurationController {
             def assaySampleCount = assay.samples.size()
 
             msg += ", $foundSampleCount of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
+
+            parsedFile.amountOfSamplesWithData = foundSampleCount
+        } else {
+            parsedFile?.amountOfSamplesWithData = 0
         }
         msg
     }
@@ -184,7 +188,7 @@ class ParseConfigurationController {
             if (parseInfo.delimiter != params.delimiter) {
                 try {
                     parseInfo.delimiter = params.delimiter
-                    session.uploadedFile.parsedFile = parsedFileService.parseUploadedFile(uploadedFile, [delimiter: params.delimiter])
+                    session.uploadedFile.parsedFile = parsedFileService.parseUploadedFile(uploadedFile, [delimiter: params.delimiter as byte])
                 } catch (e) {
                     session.uploadedFile.parsedFile.matrix = []
                     flash.errorMessage = e.message
@@ -235,10 +239,10 @@ class ParseConfigurationController {
     def ajaxDataTablesSource = {
         def parsedFile = session.uploadedFile.parsedFile
 
-        def rows = parsedFile.rows
-        def columns = parsedFile.columns
+        int rows = parsedFile.rows
+        int columns = parsedFile.columns
 
-        def dataStart = parsedFile.featureRowIndex + 1
+        int dataStart = parsedFile.featureRowIndex + 1
 
         def start = (params.iDisplayStart as int) + dataStart
         def end = Math.min(start + (params.iDisplayLength as int) - 1, rows - 1)

@@ -101,8 +101,8 @@ class ParseConfigurationTagLib {
     def delimiterControl = { attrs, body ->
         out << "Delimiter: "
         out << g.select(name: "delimiter",
-                from: "${attrs.delimiterNameMap.entrySet()}",
-                value: "${attrs.value}",
+                from: attrs.delimiterNameMap.entrySet(),
+                value: attrs.value,
                 optionKey: "value",
                 optionValue: "key")
     }
