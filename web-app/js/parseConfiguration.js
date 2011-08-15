@@ -47,6 +47,11 @@ function submitForm(formAction) {
     $('#pcform').submit();
 }
 
+function submitSaveForm() {
+    var $hiddenInput = $('<input/>',{type:'hidden',id:"save",value:"save"});
+    $hiddenInput.appendTo('form');
+}
+
 /**
  * Update the datatables datamatrix
  */
@@ -68,7 +73,7 @@ function updateDialog(data) {
 
     dataMatrixTable = $('#dataMatrix').dataTable({
         "oLanguage": {
-            "sInfo": "Showing rows _START_ to _END_.",
+            "sInfo": "Showing rows _START_ to _END_ of _TOTAL_.",
             "sInfoFiltered": ''
         },
         "sScrollX": "100%",

@@ -36,6 +36,7 @@ class ParseConfigurationController {
 
     def parsedFileService
     def uploadedFileService
+    static final int tableCellMaxContentLength = 40
 
     def index = {
 
@@ -224,6 +225,8 @@ class ParseConfigurationController {
 
 			parsedFileService.getHeaderRow(parsedFile).each { headerColumns += [sTitle: it] }
 
+            //parsedFile.matrix
+
 			dataTablesObject = [
                     aoColumns: headerColumns,
                     message: 'Done',
@@ -240,7 +243,6 @@ class ParseConfigurationController {
         def parsedFile = session.uploadedFile.parsedFile
 
         int rows = parsedFile.rows
-        int columns = parsedFile.columns
 
         int dataStart = parsedFile.featureRowIndex + 1
 
@@ -254,14 +256,16 @@ class ParseConfigurationController {
                 String cellValue ->
                 cellValue.isDouble() ?
                     cellValue.toDouble().round(3) :
-                    cellValue
+                    (cellValue.length()<tableCellMaxContentLength ) ?
+                        cellValue :
+                        cellValue[0..Math.min(tableCellMaxContentLength , cellValue.length()-1)] + ' (...)'
             }
         }
 
         def response = [
                 sEcho: params.sEcho,
-                iTotalRecords: (rows-parsedFile.featureRowIndex)*columns,
-                iTotalDisplayRecords: (params.iDisplayLength as int)*columns,
+                iTotalRecords: rows-parsedFile.featureRowIndex-1,
+                iTotalDisplayRecords: rows-parsedFile.featureRowIndex-1,
                 aaData: roundedData
         ]
 
