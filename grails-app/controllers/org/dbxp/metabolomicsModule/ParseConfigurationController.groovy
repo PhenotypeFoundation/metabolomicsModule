@@ -164,7 +164,13 @@ class ParseConfigurationController {
     Map handleUpdateFormAction(params) {
         transposeMatrixIfNeeded(params)
         parseFileAgainIfNeeded(params)
-        getCurrentDataTablesObject() ?: [errorMessage: flash.errorMessage ?: "No parsed data available."]
+
+        // Get the current datatable object and add the params set, actually these are control settings which are changed
+        // by the user, but we do not want to store yet
+        def currentDataTablesObject = getCurrentDataTablesObject()
+        currentDataTablesObject.sampleColumnIndex = params.sampleColumnIndex
+
+        currentDataTablesObject ?: [errorMessage: flash.errorMessage ?: "No parsed data available."]
     }
 
     def parseFileAgainIfNeeded(params) {
@@ -232,6 +238,8 @@ class ParseConfigurationController {
                     message: 'Done',
                     parseInfo: parsedFile.parseInfo,
                     isColumnOriented: parsedFile.isColumnOriented,
+                    sampleColumnIndex : parsedFile.sampleColumnIndex,
+                    featurRowIndex : '',
                     ajaxSource: g.createLink(action: 'ajaxDataTablesSource')
             ]
         }

@@ -8,7 +8,7 @@ var parseConfigurationDialogController = "parseConfiguration";
  */
 function initParseConfigurationDialogListeners() {
     // Listen for control element changes, if so, submit the form
-    $('#delimiter, #sheetIndex, #samplePerRow, #samplePerColumn').change( function() {
+    $('#delimiter, #sheetIndex, #samplePerRow, #samplePerColumn, #sampleColumnIndex').change( function() {
         submitForm("update");
     });
 
@@ -72,6 +72,17 @@ function updateDialog(data) {
     destroyDataTable();
 
     dataMatrixTable = $('#dataMatrix').dataTable({
+        "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+			/* Append the grade to the default row class name */
+
+			var dataCellObject = $('td:eq(' + data.sampleColumnIndex +')', nRow)
+
+            dataCellObject.html('<img src="images/sample.png" class="sampleColumnIcon"/>' + dataCellObject.html());
+			dataCellObject.addClass('sampleColumnIndex')
+
+			return nRow;
+		},
+
         "oLanguage": {
             "sInfo": "Showing rows _START_ to _END_ of _TOTAL_.",
             "sInfoFiltered": ''

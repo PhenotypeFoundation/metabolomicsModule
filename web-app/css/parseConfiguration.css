@@ -91,6 +91,17 @@ body {
     float: left;
 }
 
+.sampleColumnIndex {
+    color: #000000;
+    background-color: #ADDFFF;
+    font-weight: bold;
+}
+
+.sampleColumnIcon {
+    float:right;
+    margin:0 0 0 0;
+}
+
 th {
     background-image: none;
     white-space: nowrap;
