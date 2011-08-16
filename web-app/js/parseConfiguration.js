@@ -116,7 +116,8 @@ function destroyDataTable() {
 function updateControls(data) {
     $('#samplePerRow').attr('checked', !data.isColumnOriented);
     $('#samplePerColumn').attr('checked', data.isColumnOriented);
-    $('#delimiter').val(data.parseInfo.delimiter);
+    //console.log("data= " + data);
+    //$('#delimiter').val(data.parseInfo.delimiter);
 }
 
 /**

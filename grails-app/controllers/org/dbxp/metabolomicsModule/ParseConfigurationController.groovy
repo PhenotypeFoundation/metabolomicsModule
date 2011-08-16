@@ -59,7 +59,7 @@ class ParseConfigurationController {
                 session.uploadedFile.parsedFile = parsedFile
 
             } catch (e) {
-                e.printStackTrace()
+                log.error e.printStackTrace()
                 errorMessage = e.message
             }
         }
@@ -165,12 +165,13 @@ class ParseConfigurationController {
         transposeMatrixIfNeeded(params)
         parseFileAgainIfNeeded(params)
 
-        // Get the current datatable object and add the params set, actually these are control settings which are changed
+        // Get the current datatable object and add the params - these are control settings which are changed
         // by the user, but we do not want to store yet
         def currentDataTablesObject = getCurrentDataTablesObject()
-        currentDataTablesObject.sampleColumnIndex = params.sampleColumnIndex
+        if (currentDataTablesObject) currentDataTablesObject.sampleColumnIndex = params.sampleColumnIndex
 
-        currentDataTablesObject ?: [errorMessage: flash.errorMessage ?: "No parsed data available."]
+        //currentDataTablesObject ?: [errorMessage: flash.errorMessage ?: "No parsed data available."]
+        currentDataTablesObject ?: [message: 'Could not parse datamatrix, no data found.']
     }
 
     def parseFileAgainIfNeeded(params) {
@@ -185,7 +186,9 @@ class ParseConfigurationController {
                 try {
                     session.uploadedFile.parsedFile = parsedFileService.parseUploadedFile(uploadedFile, [sheetIndex: params.sheetIndex as int])
                 } catch (e) {
-                    session.uploadedFile.parsedFile = null
+                    session.uploadedFile.parsedFile.matrix = []
+                    session.uploadedFile.parsedFile.parseInfo.sheetIndex = params.sheetIndex
+                    session.uploadedFile.parsedFile.save()
                     flash.errorMessage = e.message
                 }
             }
@@ -259,14 +262,19 @@ class ParseConfigurationController {
 
         def data = parsedFile.matrix[start..end]
 
-        def roundedData = data.collect{ row ->
+        // Round or limit the string length of the values in the datamatrix
+        def choppedData = data.collect{ row ->
             row.collect {
                 String cellValue ->
+
+                // If the cell value is a double round it and leave it as is, otherwise it is probably
+                // a string value which should be chopped of if it exceeds the predefined maximum
+                // cell content length
                 cellValue.isDouble() ?
                     cellValue.toDouble().round(3) :
-                    (cellValue.length()<tableCellMaxContentLength ) ?
-                        cellValue :
-                        cellValue[0..Math.min(tableCellMaxContentLength , cellValue.length()-1)] + ' (...)'
+                    (cellValue.trim().length()<tableCellMaxContentLength ) ?
+                        cellValue.trim() :
+                        cellValue[0..Math.min(tableCellMaxContentLength , cellValue.trim().length()-1)] + ' (...)'
             }
         }
 
@@ -274,7 +282,7 @@ class ParseConfigurationController {
                 sEcho: params.sEcho,
                 iTotalRecords: rows-parsedFile.featureRowIndex-1,
                 iTotalDisplayRecords: rows-parsedFile.featureRowIndex-1,
-                aaData: roundedData
+                aaData: choppedData
         ]
 
         render response as JSON
