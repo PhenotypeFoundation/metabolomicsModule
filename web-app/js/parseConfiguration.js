@@ -83,7 +83,6 @@ function updateDialog(data) {
 
         "fnInitComplete": function() {
             var columnCount = this.fnGetData()[0].length;
-            console.log(columnCount);
 
             var options = '';
 
