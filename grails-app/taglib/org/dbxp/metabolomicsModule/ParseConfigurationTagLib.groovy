@@ -129,7 +129,7 @@ class ParseConfigurationTagLib {
      * @param sampleColumnIndex currently selected sample column
      */
     def sampleColumnControl = { attrs, body ->
-        out << pc.rangeSelectWithLabel(label: 'Sample column', name: 'sampleColumnIndex', maxIndex: 5, value: attrs.sampleColumnIndex)
+        out << pc.rangeSelectWithLabel(label: 'Sample column', name: 'sampleColumnIndex', maxIndex: attrs.maxIndex, value: attrs.sampleColumnIndex)
     }
 
     /**

@@ -56,7 +56,7 @@
         <pc:delimiterControl value="${parseInfo.delimiter}" delimiterNameMap="${parseInfo.delimiterNameMap}" />
       </g:elseif>
 
-      <pc:sampleColumnControl sampleColumnIndex="${uploadedFile?.parsedFile?.sampleColumnIndex}"/>
+      <pc:sampleColumnControl sampleColumnIndex="${uploadedFile?.parsedFile?.sampleColumnIndex}" maxIndex="${uploadedFile?.parsedFile?.columns}"/>
       <pc:featureRowControl featureRowIndex="${uploadedFile?.parsedFile?.featureRowIndex}"/>
 
     </div>
