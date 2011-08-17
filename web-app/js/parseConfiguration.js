@@ -93,8 +93,6 @@ function updateDialog(data) {
             $("select#sampleColumnIndex").html(options);
             $("select#sampleColumnIndex option[value='" + data.sampleColumnIndex + "']").attr("selected", "selected");
 
-            console.log(data.sampleColumnIndex);
-
         },
 
         "oLanguage": {
