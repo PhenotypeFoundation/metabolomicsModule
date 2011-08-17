@@ -43,7 +43,6 @@ function openParseConfigurationDialog(uploadedFileName, uploadedFileId) {
  */
 function submitForm(formAction) {
     $("#formAction").val(formAction);
-
     $('#pcform').submit();
 }
 
@@ -57,14 +56,15 @@ function submitSaveForm() {
  */
 function updateDialog(data) {
 
+    if (data.formAction=="save") {
+        updateStatus(data.message);
+        return;
+    }
+
     if (data.errorMessage != undefined) {
         updateStatus(data.errorMessage);
         destroyDataTable();
         return;
-    }
-
-    if (data.message != undefined) {
-        updateStatus(data.message);
     }
 
     updateControls(data);
@@ -73,8 +73,6 @@ function updateDialog(data) {
 
     dataMatrixTable = $('#dataMatrix').dataTable({
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-			/* Append the grade to the default row class name */
-
 			var dataCellObject = $('td:eq(' + data.sampleColumnIndex +')', nRow)
 
             dataCellObject.html('<img src="images/sample.png" class="sampleColumnIcon"/>' + dataCellObject.html());
@@ -82,6 +80,22 @@ function updateDialog(data) {
 
 			return nRow;
 		},
+
+        "fnInitComplete": function() {
+            var columnCount = this.fnGetData()[0].length;
+            console.log(columnCount);
+
+            var options = '';
+
+            for (var i = 0; i < this.fnGetData()[0].length; i++) {
+                options += '<option value="' + i + '">' + (i+1) + '</option>';
+            }
+            $("select#sampleColumnIndex").html(options);
+            $("select#sampleColumnIndex option[value='" + data.sampleColumnIndex + "']").attr("selected", "selected");
+
+            console.log(data.sampleColumnIndex);
+
+        },
 
         "oLanguage": {
             "sInfo": "Showing rows _START_ to _END_ of _TOTAL_.",
@@ -116,8 +130,7 @@ function destroyDataTable() {
 function updateControls(data) {
     $('#samplePerRow').attr('checked', !data.isColumnOriented);
     $('#samplePerColumn').attr('checked', data.isColumnOriented);
-    //console.log("data= " + data);
-    //$('#delimiter').val(data.parseInfo.delimiter);
+    if (data.parseInfo) $('#delimiter').val(data.parseInfo.delimiter);
 }
 
 /**

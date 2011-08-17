@@ -88,7 +88,8 @@ class ParseConfigurationController {
                 break
             case 'save':
                 handleSaveFormAction(params)
-                render([message: buildSavedMessage()] as JSON)
+                def returnStatus = [formAction:params.formAction, message: buildSavedMessage()]
+                render returnStatus as JSON
                 break
             default:
                 render ''
@@ -148,6 +149,7 @@ class ParseConfigurationController {
         } else {
             parsedFile?.amountOfSamplesWithData = 0
         }
+
         msg
     }
 
