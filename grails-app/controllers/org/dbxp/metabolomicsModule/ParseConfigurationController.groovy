@@ -133,7 +133,7 @@ class ParseConfigurationController {
         def parsedFile = uploadedFile.parsedFile
 
         // somehow uploadedFile.assay sometimes equals to 'false', getting the assay this way prevents that
-        def assay = Assay.get(uploadedFile.assay.id)
+        def assay = Assay.get(uploadedFile?.assay?.id)
 
         if (parsedFile && assay) {
             def fileSampleCount = parsedFileService.sampleCount(parsedFile)
