@@ -1,6 +1,7 @@
 package org.dbxp.metabolomicsModule
 
 import org.dbxp.dbxpModuleStorage.UploadedFile
+import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
 
 /**
  * The metabolomics module tag library delivers a rich set of tags to make it easier to re-use components
@@ -17,12 +18,13 @@ class MetabolomicsModuleTagLib {
     static namespace = "mm"
 
     def assayService
+    def uploadedFileService
 
     def uploadedFileList = { attrs ->
 
         out << '<h1>Uploaded files</h1>'
 
-        def uploadedFiles = UploadedFile.all
+        def uploadedFiles = uploadedFileService.getUploadedFilesForUser(session.user)
 
         out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: 'up', maxVisible: 5) {
 
@@ -36,8 +38,6 @@ class MetabolomicsModuleTagLib {
             }
 
             uploadr.onSuccess {
-//                '$.ajax({url: \'' + g.createLink(plugin: 'dbxpModuleStorage', controller: 'uploadedFile', action: 'uploadFinished') + '?fileName=\'+file.fileName, ' +
-//                        'success: function(data){file.fileId=data.fileId}});'
 				out << g.render(template:'/js/uploadr/onSuccess', model:[])
             }
 
@@ -81,7 +81,7 @@ class MetabolomicsModuleTagLib {
     
     def studyTag = { attrs ->
 
-        out << '<li class="studyTag">' + attrs.study.name + '<span class="sampleCount">' + attrs.assays.collect{it.samples.size()}.sum() + ' samples</span><ul class="assayList">'
+        out << '<li class="studyTag">' + attrs.study.name + '<span class="sampleCount">' + attrs.assays.collect{it.samples?.size()}.sum() + ' samples</span><ul class="assayList">'
 
         attrs.assays.each { assay ->
             out << assayTag(assay: assay)
@@ -93,8 +93,25 @@ class MetabolomicsModuleTagLib {
 
     def assayTag = { attrs ->
 
+        def assay = attrs.assay
+
         // TODO: make assay clickable with a link to relevant pop-up when assay is associated with an uploaded file.
-        out << '<li class=assayTag>' + attrs.assay.name + '<span class=sampleCount>' + attrs.assay.samples.size() + ' samples</span></li>'
+        def sampleMsg = "${assay.samples?.size()} samples"
+
+        UploadedFile uploadedFile = UploadedFile.findByAssay(assay)
+
+        def parsedFile = uploadedFile?.parsedFile
+
+        if (parsedFile) sampleMsg += " (${parsedFile.amountOfSamplesWithData} assigned)"
+
+        if (uploadedFile?.platformVersionId) {
+
+            def mpv = MeasurementPlatformVersion.get(uploadedFile.platformVersionId)
+
+            sampleMsg += " ${mpv.measurementPlatform.name} ($mpv.versionNumber)"
+        }
+
+        out << '<li class=assayTag>' + assay.name + '<span class=sampleCount>' + sampleMsg + '</span></li>'
 
     }
 }

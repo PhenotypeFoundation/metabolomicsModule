@@ -27,10 +27,10 @@
 
 package org.dbxp.metabolomicsModule
 
-import org.dbxp.dbxpModuleStorage.AssayWithUploadedFile
+import grails.converters.JSON
 import org.dbxp.dbxpModuleStorage.ParsedFile
 import org.dbxp.dbxpModuleStorage.UploadedFile
-import grails.converters.JSON
+import org.dbxp.moduleBase.Assay
 
 class ParseConfigurationController {
 
@@ -59,7 +59,7 @@ class ParseConfigurationController {
                 session.uploadedFile.parsedFile = parsedFile
 
             } catch (e) {
-                log.error e.printStackTrace()
+                e.printStackTrace()
                 errorMessage = e.message
             }
         }
@@ -88,7 +88,7 @@ class ParseConfigurationController {
                 break
             case 'save':
                 handleSaveFormAction(params)
-                def returnStatus = [formAction:params.formAction, message: buildSavedMessage()]
+                def returnStatus = [formAction:params.formAction, message: buildSampleMappingString()]
                 render returnStatus as JSON
                 break
             default:
@@ -127,40 +127,47 @@ class ParseConfigurationController {
         parsedFile.featureRowIndex = params.featureRowIndex as int
     }
 
-    def buildSavedMessage() {
-
-        def msg = 'Saved'
+    def buildSampleMappingString() {
 
         def uploadedFile = session.uploadedFile
         def parsedFile = uploadedFile.parsedFile
-        def assay = uploadedFile.assay
+
+        // somehow uploadedFile.assay sometimes equals to 'false', getting the assay this way prevents that
+        def assay = Assay.get(uploadedFile.assay.id)
 
         if (parsedFile && assay) {
-            def sampleNamesInFile = parsedFileService.getSampleNames(parsedFile)
-            def sampleNamesInAssay = assay.samples*.name
-
-            def foundSampleCount = sampleNamesInAssay.intersect(sampleNamesInFile).size()
-            def unmappedSampleCount = sampleNamesInFile.size() - foundSampleCount
+            def fileSampleCount = parsedFileService.sampleCount(parsedFile)
             def assaySampleCount = assay.samples.size()
+            def unmappedSampleCount = fileSampleCount - parsedFile.amountOfSamplesWithData
 
-            msg += ", $foundSampleCount of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
+            "$parsedFile.amountOfSamplesWithData of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
 
-            parsedFile.amountOfSamplesWithData = foundSampleCount
-        } else {
-            parsedFile?.amountOfSamplesWithData = 0
-        }
-
-        msg
+        } else 'File is not associated with an assay.'
     }
 
     def updateAssayIfNeeded(params) {
 
-        def assay = AssayWithUploadedFile.get(params.assayId)
+        def assay = Assay.get(params.assayId)
 
         if (params.assayId != session.uploadedFile.assay?.id) {
-            assay?.uploadedFile = session.uploadedFile
+
             session.uploadedFile.assay = assay
+
+            if (session.uploadedFile.parsedFile)
+                session.uploadedFile.parsedFile.amountOfSamplesWithData = determineAmountOfSamplesWithData(session.uploadedFile)
         }
+    }
+
+    def determineAmountOfSamplesWithData(UploadedFile uploadedFile) {
+
+        def sampleNamesInFile = parsedFileService.getSampleNames(uploadedFile?.parsedFile)
+
+        def samplesInAssay = uploadedFile?.assay ? uploadedFile.assay.samples : []
+        def sampleNamesInAssay = samplesInAssay*.name
+
+//        def sampleNamesInAssay = uploadedFile?.assay?.samples*.name
+
+        sampleNamesInAssay.intersect(sampleNamesInFile).size()
     }
 
     Map handleUpdateFormAction(params) {
@@ -236,11 +243,9 @@ class ParseConfigurationController {
 
 			parsedFileService.getHeaderRow(parsedFile).each { headerColumns += [sTitle: it] }
 
-            //parsedFile.matrix
-
 			dataTablesObject = [
                     aoColumns: headerColumns,
-                    message: 'Done',
+                    message: buildSampleMappingString(),
                     parseInfo: parsedFile.parseInfo,
                     isColumnOriented: parsedFile.isColumnOriented,
                     sampleColumnIndex : parsedFile.sampleColumnIndex,

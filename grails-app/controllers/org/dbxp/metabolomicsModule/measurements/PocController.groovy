@@ -1,6 +1,6 @@
 package org.dbxp.metabolomicsModule.measurements
 
-import grails.converters.*
+import grails.converters.JSON
 
 class PocController {
 	
@@ -11,7 +11,7 @@ class PocController {
 			
 		measurementFactoryService.findAllMeasurementPlatforms().each { mp ->
 			measurementFactoryService.findAllMeasurementPlatformVersions(['measurementPlatform': mp]).each { mpv ->
-				render "<h1>${mp.name} (Version: ${mpv.versionnumber})</h1>"
+				render "<h1>${mp.name} (Version: ${mpv.versionNumber})</h1>"
 				render "<h2>Features</h2>"
 				measurementFactoryService.findAllMeasurementPlatformVersionFeatures(['measurementPlatformVersion': mpv]).each { mpvf ->
 					render " - - - - - - - - - - - - -<br />"					
@@ -48,7 +48,7 @@ class PocController {
 			def mp_mpvs = measurementFactoryService.findAllMeasurementPlatformVersions(['measurementPlatform':mp])
 			
 			mp_mpvs.each {
-				render " :: V${it.versionnumber} "
+				render " :: V${it.versionNumber} "
 			}
 			
 			render "<br />"
@@ -62,7 +62,7 @@ class PocController {
 		def mpvs = measurementFactoryService.findAllMeasurementPlatformVersions()
 		
 		mpvs.sort { a,b -> a.measurementPlatform.name <=> b.measurementPlatform.name }.each { mpv ->
-			render "Platform: ${mpv.measurementPlatform.name} - V${mpv.versionnumber}<br />"			
+			render "Platform: ${mpv.measurementPlatform.name} - V${mpv.versionNumber}<br />"
 		}
 		
 		

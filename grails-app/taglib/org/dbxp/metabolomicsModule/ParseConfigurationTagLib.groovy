@@ -48,7 +48,7 @@ class ParseConfigurationTagLib {
         out << '<optgroup label="' + platform.name + '">'
             measurementFactoryService.findAllMeasurementPlatformVersions(measurementPlatform:platform).each { platformVersion ->
 
-                out << '<option value="' + platformVersion.id + '" ' + ((platformVersion.id == attrs.platformVersionId) ? 'selected' : '') + '>' + platformVersion.versionnumber + '</option>'
+                out << '<option value="' + platformVersion.id + '" ' + ((platformVersion.id == attrs.platformVersionId) ? 'selected' : '') + '>' + platformVersion.versionNumber + '</option>'
             }
 
             out << '</optgroup>'

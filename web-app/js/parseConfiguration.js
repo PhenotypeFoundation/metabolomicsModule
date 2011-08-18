@@ -86,7 +86,7 @@ function updateDialog(data) {
 
             var options = '';
 
-            for (var i = 0; i < this.fnGetData()[0].length; i++) {
+            for (var i = 0; i < columnCount; i++) {
                 options += '<option value="' + i + '">' + (i+1) + '</option>';
             }
             $("select#sampleColumnIndex").html(options);

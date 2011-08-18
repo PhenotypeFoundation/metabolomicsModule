@@ -3,18 +3,18 @@ package org.dbxp.metabolomicsModule.measurements
 class MeasurementPlatformVersion {
 	
 	MeasurementPlatform measurementPlatform	
-	Float versionnumber
-	String changelist
+	Float versionNumber
+	String changeList
 
     static constraints = {
-		changelist(nullable: true)
+		changeList(nullable: true)
     }
 	
 	/*
 	* returns the object as a HashMap to be used in the API
 	*/
 	HashMap toApi() {
-		return ['measurement_platform': this.measurementPlatform.toApi(), 'version_number': this.versionnumber, 'changelist': this.changelist ?: '']
+		return ['measurement_platform': this.measurementPlatform.toApi(), 'version_number': this.versionNumber, 'changelist': this.changeList ?: '']
 	}
 	
 	/*******************************************************************************************************************************************************

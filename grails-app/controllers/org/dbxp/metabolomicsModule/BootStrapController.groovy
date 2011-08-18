@@ -1,11 +1,10 @@
 package org.dbxp.metabolomicsModule
 
-import org.dbxp.dbxpModuleStorage.AssayWithUploadedFile
-
 import org.dbxp.metabolomicsModule.identity.Feature
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersionFeature
+import org.dbxp.moduleBase.Assay
 import org.dbxp.moduleBase.Auth
 import org.dbxp.moduleBase.Study
 import org.dbxp.moduleBase.User
@@ -64,7 +63,7 @@ class BootStrapController {
 			def mp = new MeasurementPlatform(name: "MP-" + (1 + rand.nextInt(100000))).save()
 			
 			rand.nextInt(3).times { // create MeasurementPlatformVersions
-				def mpv = new MeasurementPlatformVersion(measurementPlatform: mp, versionnumber: it + 1 as Float).save()
+				def mpv = new MeasurementPlatformVersion(measurementPlatform: mp, versionNumber: it + 1 as Float).save()
 				
 				// setup features (only platform version specific feature properties)
 				Feature.list().each { feature ->
@@ -111,7 +110,7 @@ class BootStrapController {
         study.addToAuth(auth)
         user.addToAuth(auth)
 
-        def assay = new AssayWithUploadedFile(
+        def assay = new Assay(
                 assayToken: 'token' + rand.nextInt(intLimit),
                 name:       'name'  + rand.nextInt(intLimit)
         )

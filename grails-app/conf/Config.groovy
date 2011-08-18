@@ -78,10 +78,6 @@ log4j = {
 // jQuery plugin
 grails.views.javascript.library="jquery"
 
-// tell org.dbxp.moduleBase.SynchronizationService to use our extended Assay instead of the base Assay
-module.synchronization.classes.assay = 'org.dbxp.dbxpModuleStorage.AssayWithUploadedFile'
-
-
 // set default properties here in case default.properties in not placed in classpath and no external config
 gscf.baseURL='http://localhost:8080/gscf'
 module.consumerId='http://localhost:8083/metabolomicsModule'
