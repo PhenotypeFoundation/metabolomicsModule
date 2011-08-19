@@ -102,17 +102,15 @@ class ParseConfigurationController {
 
     def handleSaveFormAction(params) {
 
-        def uploadedFile = session.uploadedFile
-
         updatePlatformVersionId(params)
         updateSampleColumnAndFeatureRow(params)
 
-        // make sure we have an id for uploadedFile by saving it
-        if (!uploadedFile.id)
-            uploadedFile.save(failOnError: true)
-
         updateAssayIfNeeded(params)
-        uploadedFile.save(failOnError: true)
+
+        // Workaround for a bug introduced in Mongo GORM 1.0.0 M7, omitting this step would result in NPE
+        UploadedFile.get(session.uploadedFile.id)
+
+        session.uploadedFile.save(failOnError:true)
     }
 
     def updatePlatformVersionId(def params) {
@@ -165,8 +163,6 @@ class ParseConfigurationController {
         def samplesInAssay = uploadedFile?.assay ? uploadedFile.assay.samples : []
         def sampleNamesInAssay = samplesInAssay*.name
 
-//        def sampleNamesInAssay = uploadedFile?.assay?.samples*.name
-
         sampleNamesInAssay.intersect(sampleNamesInFile).size()
     }
 
@@ -196,7 +192,9 @@ class ParseConfigurationController {
                     session.uploadedFile.parsedFile = parsedFileService.parseUploadedFile(uploadedFile, [sheetIndex: params.sheetIndex as int])
                 } catch (e) {
                     session.uploadedFile.parsedFile.matrix = []
-                    session.uploadedFile.parsedFile.parseInfo.sheetIndex = params.sheetIndex
+                    session.uploadedFile.parsedFile.rows = 0
+                    session.uploadedFile.parsedFile.columns = 0
+                    session.uploadedFile.parsedFile.parseInfo.sheetIndex = params.sheetIndex as int
                     session.uploadedFile.parsedFile.save()
                     flash.errorMessage = e.message
                 }
@@ -249,7 +247,6 @@ class ParseConfigurationController {
                     parseInfo: parsedFile.parseInfo,
                     isColumnOriented: parsedFile.isColumnOriented,
                     sampleColumnIndex : parsedFile.sampleColumnIndex,
-                    featurRowIndex : '',
                     ajaxSource: g.createLink(action: 'ajaxDataTablesSource')
             ]
         }
