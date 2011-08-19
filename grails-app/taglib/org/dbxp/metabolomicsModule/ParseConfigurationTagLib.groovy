@@ -41,7 +41,7 @@ class ParseConfigurationTagLib {
     def platformControl = { attrs, body ->
         //out << "Platform: " + g.select(name:"platform", from:platformList)
         out << "Platform:  <br />"
-        out << '<select name="platformVersionId" size="8" style="width:100%;">'
+        out << '<select name="platformVersionId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
 
         measurementFactoryService.findAllMeasurementPlatforms().each { platform ->
         // if new studygroup create new label
@@ -65,7 +65,7 @@ class ParseConfigurationTagLib {
      */
     def assaysControl = { attrs, body ->
         out << "Assay: <br />"
-        out << '<select name="assayId" size="8" style="width:100%;">'
+        out << '<select name="assayId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
 
         // if new studygroup create new label
         assayService.getAssaysReadableByUserAndGroupedByStudy(session.user).each { assaysGroupedByStudy ->
@@ -104,7 +104,8 @@ class ParseConfigurationTagLib {
                 from: attrs.delimiterNameMap.entrySet(),
                 value: attrs.value,
                 optionKey: "value",
-                optionValue: "key")
+                optionValue: "key",
+                disabled: attrs.disabled)
     }
 
     /**
@@ -113,7 +114,7 @@ class ParseConfigurationTagLib {
      * @param sheetIndex currently selected sheet index
      */
     def sheetSelectControl = { attrs, body ->
-        out << pc.rangeSelectWithLabel(label: 'Sheet', name: 'sheetIndex', maxIndex: attrs.numberOfSheets, value: attrs.sheetIndex)
+        out << pc.rangeSelectWithLabel(label: 'Sheet', name: 'sheetIndex', maxIndex: attrs.numberOfSheets, value: attrs.sheetIndex, disabled: attrs.disabled)
     }
 
     /**
@@ -121,7 +122,7 @@ class ParseConfigurationTagLib {
      * @param featureRowIndex currently selected feature row
      */
     def featureRowControl = { attrs, body ->
-        out << pc.rangeSelectWithLabel(label: 'Feature row', name: 'featureRowIndex', maxIndex: 5, value: attrs.featureRowIndex)
+        out << pc.rangeSelectWithLabel(label: 'Feature row', name: 'featureRowIndex', maxIndex: 5, value: attrs.featureRowIndex, disabled: attrs.disabled)
     }
 
     /**
@@ -129,7 +130,7 @@ class ParseConfigurationTagLib {
      * @param sampleColumnIndex currently selected sample column
      */
     def sampleColumnControl = { attrs, body ->
-        out << pc.rangeSelectWithLabel(label: 'Sample column', name: 'sampleColumnIndex', maxIndex: attrs.maxIndex, value: attrs.sampleColumnIndex)
+        out << pc.rangeSelectWithLabel(label: 'Sample column', name: 'sampleColumnIndex', maxIndex: attrs.maxIndex, value: attrs.sampleColumnIndex, disabled: attrs.disabled)
     }
 
     /**
@@ -143,17 +144,13 @@ class ParseConfigurationTagLib {
 
         def rangeMap = [:]
 
-        (0..attrs.maxIndex-1).each { rangeMap[it+1] = it }
+        if (attrs.disabled)
+            rangeMap = [0: 0]
+        else
+            (0..attrs.maxIndex-1).each { rangeMap[it+1] = it }
 
-        out << "${attrs.label}: "
-        out << g.select(name: attrs.name, from: rangeMap, value: attrs.value, optionKey: 'value', optionValue: 'key')
-    }
-
-    /**
-     * Checkbox control for normalized data.
-     */
-    def normalizedControl = { attrs, body ->
-        out << "Normalized: " + g.checkBox(name:"normalized")
+        out << "${attrs.label}: " +
+        g.select(name: attrs.name, from: rangeMap, value: attrs.value, optionKey: 'value', optionValue: 'key', disabled: attrs.disabled)
     }
 
     /**

@@ -7,17 +7,9 @@ body {
     width: 100%;
     height: 300px;
 }
-
-#configInfo {
- clear: both;
-}
-
 .assays {
     width: 50%;
     height: 130px;
-    /*border: 1px;*/
-    /*border-style: dotted;*/
-    /*border-color: #dddddd;*/
     margin-top: 4px;
     float:left;
 }
@@ -25,9 +17,6 @@ body {
 .platform {
     width: 50%;
     height: 130px;
-    /*border: 1px;*/
-    /*border-style: dotted;*/
-    /*border-color: #dddddd;*/
     margin-top: 4px;
     float: right;
 }
@@ -35,19 +24,12 @@ body {
 .fileType {
     width: 220px;
     height: 20px;
-    /*border: 1px;*/
-    /*border-style: dotted;*/
-    /*border-color: #dddddd;*/
     margin-top: 4px;
     float: left;
 }
 
 .orientation {
-    /*width: 220px;*/
     height: 20px;
-    /*border: 1px;*/
-    /*border-style: dotted;*/
-    /*border-color: #dddddd;*/
     margin-top: 4px;
     float: right;
 }
@@ -58,23 +40,9 @@ body {
     float: left;
 }
 
-/*.normalized {*/
-    /*width: 220px;*/
-    /*height: 20px;*/
-    /*border: 1px;*/
-    /*border-style: dotted;*/
-    /*border-color: #dddddd;*/
-    /*margin-top: 4px;*/
-    /*float: right;*/
-/*}*/
-
 .dataMatrixContainer {
     width: 100%;
     height: 200px;
-    /*border: 1px;*/
-    /*border-style: dotted;*/
-    /*border-color: #dddddd;*/
-    /*background-color: #f6f5f5;*/
     float: left;
     margin-top: 4px;
 }
@@ -84,9 +52,6 @@ body {
     padding: 0;
     margin: 0;
     width: 100%;
-    /*border: 1px;*/
-    /*border-style: dotted;*/
-    /*border-color: #dddddd;*/
     margin-top: 20px;
     float: left;
 }
@@ -111,6 +76,7 @@ td {
     white-space: nowrap;
 }
 
-/*.dataTables_scrollHead {*/
-    /*display: none;*/
-/*}*/
+.clickableListItem {
+    text-decoration: underline;
+    cursor: pointer;
+}

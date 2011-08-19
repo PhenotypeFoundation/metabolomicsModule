@@ -35,7 +35,9 @@
   <meta http-equiv="Expires" content="0">
 
   <script>
-    $(document).ready(function(){initParseConfigurationDialogListeners();});
+    <g:if test="${!controlsDisabled}">
+      $(document).ready(function(){initParseConfigurationDialogListeners();});
+    </g:if>
   </script>
 
   <title>Parse Configuration panel</title>
@@ -50,30 +52,28 @@
 
     <div class="matrixOptions">
       <g:if test="${parseInfo?.parserClassName=='ExcelParser'}">
-        <pc:sheetSelectControl numberOfSheets="${parseInfo.numberOfSheets}" sheetIndex="${parseInfo.sheetIndex}"/>
+        <pc:sheetSelectControl numberOfSheets="${parseInfo.numberOfSheets}" sheetIndex="${parseInfo.sheetIndex}" disabled="${controlsDisabled}" />
       </g:if>
       <g:elseif test="${parseInfo?.parserClassName=='CsvParser'}">
-        <pc:delimiterControl value="${parseInfo.delimiter}" delimiterNameMap="${parseInfo.delimiterNameMap}" />
+        <pc:delimiterControl value="${parseInfo.delimiter}" delimiterNameMap="${parseInfo.delimiterNameMap}" disabled="${controlsDisabled}" />
       </g:elseif>
-
-      <pc:sampleColumnControl sampleColumnIndex="${uploadedFile?.parsedFile?.sampleColumnIndex}" maxIndex="${uploadedFile?.parsedFile?.columns}"/>
-      <pc:featureRowControl featureRowIndex="${uploadedFile?.parsedFile?.featureRowIndex}"/>
-
+      <pc:sampleColumnControl sampleColumnIndex="${uploadedFile?.parsedFile?.sampleColumnIndex}" maxIndex="${uploadedFile?.parsedFile?.columns}" disabled="${controlsDisabled}" />
+      <pc:featureRowControl featureRowIndex="${uploadedFile?.parsedFile?.featureRowIndex}" disabled="${controlsDisabled}" />
     </div>
 
     <div class="orientation">
-      <pc:orientationControl isColumnOriented="${uploadedFile.parsedFile?.isColumnOriented}" disabled="${disabled}"/>
+      <pc:orientationControl isColumnOriented="${uploadedFile?.parsedFile?.isColumnOriented}" disabled="${controlsDisabled}" />
     </div>
 
     <div class="dataMatrixContainer">
     </div>
 
     <div class="platform">
-      <pc:platformControl platformVersionId="${uploadedFile.platformVersionId}" />
+      <pc:platformControl platformVersionId="${platformVersionId}" />
     </div>
 
     <div class="assays">
-      <pc:assaysControl assayId="${uploadedFile.assay?.id}" />
+      <pc:assaysControl assayId="${uploadedFile?.assay?.id}" />
     </div>
 
     <div class="status">

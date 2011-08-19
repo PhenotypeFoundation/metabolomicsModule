@@ -45,19 +45,13 @@ class ParseConfigurationController {
         }
 
         session.uploadedFile = UploadedFile.get(params.uploadedFileId)
+        def platformVersionId = session.uploadedFile['platformVersionId']
 
         def errorMessage = ''
 
-        def parsedFile = session.uploadedFile?.parsedFile
-
-        if (!parsedFile) {
+        if (!session.uploadedFile?.parsedFile) {
             try {
-                // Read the uploaded file and parse it
-                parsedFile = parsedFileService.parseUploadedFile(session.uploadedFile).save(failOnError: true)
-
-                // Store the parsed file in the 'uploadedFile' object
-                session.uploadedFile.parsedFile = parsedFile
-
+                session.uploadedFile.parse()
             } catch (e) {
                 e.printStackTrace()
                 errorMessage = e.message
@@ -66,8 +60,9 @@ class ParseConfigurationController {
 
         [       uploadedFile: session.uploadedFile,
                 errorMessage: errorMessage,
-                parseInfo: parsedFile?.parseInfo,
-                disabled: errorMessage?true:false]
+                parseInfo: session.uploadedFile.parsedFile?.parseInfo,
+                controlsDisabled: errorMessage?true:false,
+                platformVersionId: platformVersionId]
     }
 
     /**
@@ -87,9 +82,7 @@ class ParseConfigurationController {
                 render(handleUpdateFormAction(params) as JSON)
                 break
             case 'save':
-                handleSaveFormAction(params)
-                def returnStatus = [formAction:params.formAction, message: buildSampleMappingString()]
-                render returnStatus as JSON
+                render(handleSaveFormAction(params) as JSON)
                 break
             default:
                 render ''
@@ -111,18 +104,26 @@ class ParseConfigurationController {
         UploadedFile.get(session.uploadedFile.id)
 
         session.uploadedFile.save(failOnError:true)
+
+        [message: buildSampleMappingString()]
     }
 
     def updatePlatformVersionId(def params) {
         if (params.platformVersionId) {
-            session.uploadedFile.platformVersionId = params.platformVersionId as int
+
+            // Workaround for a bug introduced in Mongo GORM 1.0.0 M7, omitting this step would result in NPE
+            UploadedFile.get(session.uploadedFile.id)
+
+            session.uploadedFile['platformVersionId'] = params.platformVersionId as Long
         }
     }
 
     def updateSampleColumnAndFeatureRow(params) {
         def parsedFile = session.uploadedFile.parsedFile
-        parsedFile.sampleColumnIndex = params.sampleColumnIndex as int
-        parsedFile.featureRowIndex = params.featureRowIndex as int
+        if (parsedFile) {
+            parsedFile.sampleColumnIndex = params.sampleColumnIndex as int
+            parsedFile.featureRowIndex = params.featureRowIndex as int
+        }
     }
 
     def buildSampleMappingString() {
@@ -134,13 +135,18 @@ class ParseConfigurationController {
         def assay = Assay.get(uploadedFile?.assay?.id)
 
         if (parsedFile && assay) {
+
+            // Workaround for a bug introduced in Mongo GORM 1.0.0 M7, omitting this step would result in NPE
+            ParsedFile.get(parsedFile.id)
+
             def fileSampleCount = parsedFileService.sampleCount(parsedFile)
             def assaySampleCount = assay.samples.size()
-            def unmappedSampleCount = fileSampleCount - parsedFile.amountOfSamplesWithData
+            def unmappedSampleCount = fileSampleCount - (parsedFile['amountOfSamplesWithData'] ?: 0)
 
-            "$parsedFile.amountOfSamplesWithData of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
+            "${parsedFile['amountOfSamplesWithData'] ?: 0} of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
 
-        } else 'File is not associated with an assay.'
+        } else if (assay) 'File is linked to the assay.'
+        else 'File is not linked with an assay.'
     }
 
     def updateAssayIfNeeded(params) {
@@ -151,8 +157,13 @@ class ParseConfigurationController {
 
             session.uploadedFile.assay = assay
 
-            if (session.uploadedFile.parsedFile)
-                session.uploadedFile.parsedFile.amountOfSamplesWithData = determineAmountOfSamplesWithData(session.uploadedFile)
+            if (session.uploadedFile.parsedFile) {
+                // Workaround for a bug introduced in Mongo GORM 1.0.0 M7, omitting this step would result in NPE
+                ParsedFile.get(session.uploadedFile.parsedFile.id)
+
+                if (session.uploadedFile.parsedFile)
+                    session.uploadedFile.parsedFile['amountOfSamplesWithData'] = determineAmountOfSamplesWithData(session.uploadedFile)
+            }
         }
     }
 
@@ -191,6 +202,7 @@ class ParseConfigurationController {
                 try {
                     session.uploadedFile.parsedFile = parsedFileService.parseUploadedFile(uploadedFile, [sheetIndex: params.sheetIndex as int])
                 } catch (e) {
+                    //TODO: figure out whether all this is really necessary and if so, whether it should be put into a service
                     session.uploadedFile.parsedFile.matrix = []
                     session.uploadedFile.parsedFile.rows = 0
                     session.uploadedFile.parsedFile.columns = 0

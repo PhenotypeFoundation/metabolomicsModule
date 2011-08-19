@@ -56,16 +56,18 @@ function submitSaveForm() {
  */
 function updateDialog(data) {
 
-    if (data.formAction=="save") {
-        updateStatus(data.message);
-        return;
-    }
-
     if (data.errorMessage != undefined) {
         updateStatus(data.errorMessage);
         destroyDataTable();
         return;
     }
+
+    if (data.message != undefined) {
+        updateStatus(data.message);
+    }
+
+    // if there is no data source defined, return. Only updating the message was necessary.
+    if (data.ajaxSource == undefined) return;
 
     updateControls(data);
 

@@ -71,6 +71,7 @@ class MetabolomicsModuleTagLib {
         def readableStudiesWithAssays = assayService.getAssaysReadableByUserAndGroupedByStudy(session.user)
         out << '<ul class=studyList>'
 
+        // TODO: make assay always appear in same order
         readableStudiesWithAssays.each { study, assays ->
             out << studyTag(study: study, assays: assays)
         }
@@ -93,25 +94,33 @@ class MetabolomicsModuleTagLib {
 
     def assayTag = { attrs ->
 
+        //TODO: present the information in a better/nicer way
+
         def assay = attrs.assay
 
-        // TODO: make assay clickable with a link to relevant pop-up when assay is associated with an uploaded file.
         def sampleMsg = "${assay.samples?.size()} samples"
 
         UploadedFile uploadedFile = UploadedFile.findByAssay(assay)
 
-        def parsedFile = uploadedFile?.parsedFile
+        def classString = "assayTag"
+        def onclickString = ''
 
-        if (parsedFile) sampleMsg += " (${parsedFile.amountOfSamplesWithData} assigned)"
 
-        if (uploadedFile?.platformVersionId) {
+        if (uploadedFile) {
+            def parsedFile = uploadedFile.parsedFile
+            if (parsedFile) sampleMsg += " (${parsedFile['amountOfSamplesWithData'] ?: 0} assigned)";
 
-            def mpv = MeasurementPlatformVersion.get(uploadedFile.platformVersionId)
+            if (uploadedFile['platformVersionId']) {
+                def mpv = MeasurementPlatformVersion.get((Long) uploadedFile['platformVersionId'])
+                sampleMsg += " ${mpv.measurementPlatform.name} ($mpv.versionNumber)"
+            }
 
-            sampleMsg += " ${mpv.measurementPlatform.name} ($mpv.versionNumber)"
+            onclickString = "onclick=\"openParseConfigurationDialog(\' ${uploadedFile.fileName} \', ${uploadedFile.id} );\""
+            classString += " clickableListItem"
         }
 
-        out << '<li class=assayTag>' + assay.name + '<span class=sampleCount>' + sampleMsg + '</span></li>'
+        out << "<li class=\"${classString}\" ${onclickString} >" + assay.name +
+                '<span class=sampleCount>' + sampleMsg + '</span></li>'
 
     }
 }
