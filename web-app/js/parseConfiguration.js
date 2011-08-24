@@ -55,6 +55,7 @@ function submitSaveForm() {
  * Update the datatables datamatrix
  */
 function updateDialog(data) {
+    var maxSampleColumnIndex=10;
 
     if (data.errorMessage != undefined) {
         updateStatus(data.errorMessage);
@@ -66,6 +67,9 @@ function updateDialog(data) {
         updateStatus(data.message);
     }
 
+    // save action, so submit the form again in update mode
+    if (data.formAction == "update") { submitForm(data.formAction); return }
+
     // if there is no data source defined, return. Only updating the message was necessary.
     if (data.ajaxSource == undefined) return;
 
@@ -75,16 +79,26 @@ function updateDialog(data) {
 
     dataMatrixTable = $('#dataMatrix').dataTable({
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-			var dataCellObject = $('td:eq(' + data.sampleColumnIndex +')', nRow)
+			var dataCellObject = $('td:eq(' + data.sampleColumnIndex +')', nRow);
+            var sampleName = aData[data.sampleColumnIndex];
 
-            dataCellObject.html('<img src="images/sample.png" class="sampleColumnIcon"/>' + dataCellObject.html());
-			dataCellObject.addClass('sampleColumnIndex')
+            // If the datamatrix is linked to an assay it will contain the assay sample names
+            if (data.assaySampleNames.length) {
+                // the datamatrix sample name also exists in the assay sample collection?
+                if ( $.inArray(sampleName, data.assaySampleNames) != -1 ) {
+                    dataCellObject.html('<img src="images/sample_green.png" class="sampleColumnIcon"/>' + dataCellObject.html());
+                } else {
+                    dataCellObject.html('<img src="images/sample_red.png" class="sampleColumnIcon"/>' + dataCellObject.html());
+                }
+            }
+
+            dataCellObject.addClass('sampleColumnIndex');
 
 			return nRow;
 		},
 
         "fnInitComplete": function() {
-            var columnCount = this.fnGetData()[0].length;
+            var columnCount = Math.min(this.fnGetData()[0].length, maxSampleColumnIndex);
 
             var options = '';
 

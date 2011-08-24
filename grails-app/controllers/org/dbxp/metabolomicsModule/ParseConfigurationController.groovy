@@ -93,6 +93,19 @@ class ParseConfigurationController {
         getDataTablesObject(session.uploadedFile.parsedFile)
     }
 
+    /**
+     *
+     * @param uploadedFile uploaded file
+     * @return sample names from the Assay object (IF there is an assay linked to this uploaded file)
+     */
+    def getAssaySampleNames(uploadedFile) {
+
+        // somehow uploadedFile.assay sometimes equals to 'false', getting the assay this way prevents that
+        def assay = Assay.get(uploadedFile?.assay?.id)
+
+        assay ? assay?.samples*.name : []
+    }
+
     def handleSaveFormAction(params) {
 
         updatePlatformVersionId(params)
@@ -105,7 +118,7 @@ class ParseConfigurationController {
 
         session.uploadedFile.save(failOnError:true)
 
-        [message: buildSampleMappingString()]
+        [message: buildSampleMappingString(), formAction:"update"]
     }
 
     def updatePlatformVersionId(def params) {
@@ -141,6 +154,7 @@ class ParseConfigurationController {
 
             def fileSampleCount = parsedFileService.sampleCount(parsedFile)
             def assaySampleCount = assay.samples.size()
+
             def unmappedSampleCount = fileSampleCount - (parsedFile['amountOfSamplesWithData'] ?: 0)
 
             "${parsedFile['amountOfSamplesWithData'] ?: 0} of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
@@ -178,16 +192,34 @@ class ParseConfigurationController {
     }
 
     Map handleUpdateFormAction(params) {
+        def parsedFile = session.uploadedFile.parsedFile
+
         transposeMatrixIfNeeded(params)
         parseFileAgainIfNeeded(params)
 
         // Get the current datatable object and add the params - these are control settings which are changed
         // by the user, but we do not want to store yet
         def currentDataTablesObject = getCurrentDataTablesObject()
-        if (currentDataTablesObject) currentDataTablesObject.sampleColumnIndex = params.sampleColumnIndex
+
+        // the sample column index was changed so for preview purposes remove the assay sample names
+        if (parsedFile.sampleColumnIndex != params.sampleColumnIndex.toInteger() )
+                currentDataTablesObject = removeAssaySampleNamesFromDataTables(params, currentDataTablesObject)
 
         //currentDataTablesObject ?: [errorMessage: flash.errorMessage ?: "No parsed data available."]
         currentDataTablesObject ?: [message: 'Could not parse datamatrix, no data found.']
+    }
+
+    /**
+     *
+     * @param params (sampleColumnIndex)
+     * @param dataTablesObject Datatables object
+     * @return datatables object with the assay sample names removed
+     */
+    def removeAssaySampleNamesFromDataTables(params, dataTablesObject) {
+        dataTablesObject.assaySampleNames = []
+        dataTablesObject.sampleColumnIndex = params.sampleColumnIndex
+
+        dataTablesObject
     }
 
     def parseFileAgainIfNeeded(params) {
@@ -240,9 +272,10 @@ class ParseConfigurationController {
 
     /**
      * @dataMatrix two dimensional dataMatrix containing data
-     * @return Map containing: [iTotalRecords, iColumns, iTotalDisplayRecords, aoColumns, aaData]
+     * @return Map containing: [iTotalRecords, iColumns, iTotalDisplayRecords, aoColumns]
      */
     Map getDataTablesObject(ParsedFile parsedFile) {
+        def uploadedFile = session.uploadedFile
 
         if (!parsedFile) return [:]
 
@@ -259,6 +292,7 @@ class ParseConfigurationController {
                     parseInfo: parsedFile.parseInfo,
                     isColumnOriented: parsedFile.isColumnOriented,
                     sampleColumnIndex : parsedFile.sampleColumnIndex,
+                    assaySampleNames: getAssaySampleNames(uploadedFile),
                     ajaxSource: g.createLink(action: 'ajaxDataTablesSource')
             ]
         }
@@ -268,6 +302,7 @@ class ParseConfigurationController {
 
     def ajaxDataTablesSource = {
         def parsedFile = session.uploadedFile.parsedFile
+        def uploadedFile = session.uploadedFile
 
         int rows = parsedFile.rows
 
@@ -298,7 +333,8 @@ class ParseConfigurationController {
                 sEcho: params.sEcho,
                 iTotalRecords: rows-parsedFile.featureRowIndex-1,
                 iTotalDisplayRecords: rows-parsedFile.featureRowIndex-1,
-                aaData: choppedData
+                aaData: choppedData,
+                assaySampleNames: getAssaySampleNames(uploadedFile)
         ]
 
         render response as JSON
