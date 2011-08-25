@@ -46,6 +46,9 @@ function submitForm(formAction) {
     $('#pcform').submit();
 }
 
+/**
+ * Sends all form values to the controller
+ */
 function submitSaveForm() {
     var $hiddenInput = $('<input/>',{type:'hidden',id:"save",value:"save"});
     $hiddenInput.appendTo('form');
@@ -79,6 +82,7 @@ function updateDialog(data) {
 
     dataMatrixTable = $('#dataMatrix').dataTable({
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+            // Find the column in the row
 			var dataCellObject = $('td:eq(' + data.sampleColumnIndex +')', nRow);
             var sampleName = aData[data.sampleColumnIndex];
 
@@ -87,7 +91,7 @@ function updateDialog(data) {
                 // the datamatrix sample name also exists in the assay sample collection?
                 if ( $.inArray(sampleName, data.assaySampleNames) != -1 ) {
                     dataCellObject.html('<img src="images/sample_green.png" class="sampleColumnIcon"/>' + dataCellObject.html());
-                } else {
+                } else { // the datamatrix samples doesn't exist in the assay sample collection
                     dataCellObject.html('<img src="images/sample_red.png" class="sampleColumnIcon"/>' + dataCellObject.html());
                 }
             }
@@ -98,13 +102,17 @@ function updateDialog(data) {
 		},
 
         "fnInitComplete": function() {
+            // Amount of columnt in a row
             var columnCount = Math.min(this.fnGetData()[0].length, maxSampleColumnIndex);
 
             var options = '';
 
+            // Generate a list with options based on the amount of columns
             for (var i = 0; i < columnCount; i++) {
                 options += '<option value="' + i + '">' + (i+1) + '</option>';
             }
+
+            // Put the options list in the sampleColumnIndex dropdown box
             $("select#sampleColumnIndex").html(options);
             $("select#sampleColumnIndex option[value='" + data.sampleColumnIndex + "']").attr("selected", "selected");
 
@@ -136,10 +144,18 @@ function updateDialog(data) {
     });
 }
 
+/**
+* Destroys/removes the datatables from the DOM
+*/
 function destroyDataTable() {
     $('div.dataMatrixContainer').html('<table id="dataMatrix"></table>');
 }
 
+/**
+* Read the data object and set the form controls according to it
+*
+* @param data JSON-object containing information about the parse settings
+*/
 function updateControls(data) {
     $('#samplePerRow').attr('checked', !data.isColumnOriented);
     $('#samplePerColumn').attr('checked', data.isColumnOriented);

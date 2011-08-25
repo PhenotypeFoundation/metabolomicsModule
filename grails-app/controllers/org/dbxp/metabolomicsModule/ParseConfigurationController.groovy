@@ -1,7 +1,7 @@
 /**
  *  ParseConfigurationController, a controller for handling the Configuration Dialog
  *
- *  Copyright (C) 2011 Tjeerd Abma
+ *  Copyright (C) 2011 Tjeerd Abma, Siemen Sikkema
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ class ParseConfigurationController {
      */
     def handleForm = {
         if (!session.uploadedFile) return
-        
+
         switch (params.formAction) {
             case 'init':
                 render(getCurrentDataTablesObject() as JSON)
@@ -89,6 +89,10 @@ class ParseConfigurationController {
         }
     }
 
+    /**
+     *
+     * @return a Datatables object generated from the uploaded  and parsed file
+     */
     def getCurrentDataTablesObject() {
         getDataTablesObject(session.uploadedFile.parsedFile)
     }
@@ -106,6 +110,11 @@ class ParseConfigurationController {
         assay ? assay?.samples*.name : []
     }
 
+    /**
+     *
+     * @param params form parameters (sampleColumnIndex, featureRow, assay et cetera)
+     * @return status message and next action
+     */
     def handleSaveFormAction(params) {
 
         updatePlatformVersionId(params)
@@ -121,6 +130,11 @@ class ParseConfigurationController {
         [message: buildSampleMappingString(), formAction:"update"]
     }
 
+    /**
+     *
+     * @param params (platformVersionId)
+     * @return void
+     */
     def updatePlatformVersionId(def params) {
         if (params.platformVersionId) {
 
@@ -131,6 +145,11 @@ class ParseConfigurationController {
         }
     }
 
+    /**
+     *
+     * @param params sampleColumnIndex and featureRowIndex
+     * @return void
+     */
     def updateSampleColumnAndFeatureRow(params) {
         def parsedFile = session.uploadedFile.parsedFile
         if (parsedFile) {
@@ -139,6 +158,12 @@ class ParseConfigurationController {
         }
     }
 
+    /**
+     * This method reads the uploaded file from the session and generates a message with
+     * information about the amount of samples found and (un)mapped.
+     *
+     * @return  status message
+     */
     def buildSampleMappingString() {
 
         def uploadedFile = session.uploadedFile
@@ -163,6 +188,11 @@ class ParseConfigurationController {
         else 'File is not linked with an assay.'
     }
 
+    /**
+     *
+     * @param params assayId
+     * @return void
+     */
     def updateAssayIfNeeded(params) {
 
         def assay = Assay.get(params.assayId)
@@ -181,6 +211,12 @@ class ParseConfigurationController {
         }
     }
 
+    /**
+     * Method to determine samples with data associated to it
+     *
+     * @param uploadedFile
+     * @return amount of samples
+     */
     def determineAmountOfSamplesWithData(UploadedFile uploadedFile) {
 
         def sampleNamesInFile = parsedFileService.getSampleNames(uploadedFile?.parsedFile)
@@ -191,6 +227,11 @@ class ParseConfigurationController {
         sampleNamesInAssay.intersect(sampleNamesInFile).size()
     }
 
+    /**
+     *
+     * @param params all form parameters (sampleColumnIndex, featureRow, orientation et cetera)
+     * @return on succes return Datatables object with datamatrix, otherwise return failure message
+     */
     Map handleUpdateFormAction(params) {
         def parsedFile = session.uploadedFile.parsedFile
 
@@ -203,9 +244,8 @@ class ParseConfigurationController {
 
         // the sample column index was changed so for preview purposes remove the assay sample names
         if (parsedFile.sampleColumnIndex != params.sampleColumnIndex.toInteger() )
-                currentDataTablesObject = removeAssaySampleNamesFromDataTables(params, currentDataTablesObject)
+            currentDataTablesObject = removeAssaySampleNamesFromDataTables(params, currentDataTablesObject)
 
-        //currentDataTablesObject ?: [errorMessage: flash.errorMessage ?: "No parsed data available."]
         currentDataTablesObject ?: [message: 'Could not parse datamatrix, no data found.']
     }
 
@@ -222,6 +262,13 @@ class ParseConfigurationController {
         dataTablesObject
     }
 
+    /**
+     * Method which checks the parameters passed and if these have changed it will try to re-parse the uploaded file
+     * and store the parsed file.
+     *
+     * @param params form parameters (sheetIndex (in case of Excel),, sampleColumnIndex, featureRow, orientation et cetera)
+     * @return void
+     */
     def parseFileAgainIfNeeded(params) {
 
         def uploadedFile = session.uploadedFile
@@ -258,6 +305,13 @@ class ParseConfigurationController {
         }
     }
 
+    /**
+     * This method checks if the form parameter for orientation is changed and if so will try to
+     * transpose the parsed file
+     *
+     * @param params form parameter columnOrientation
+     * @return void
+     */
     def transposeMatrixIfNeeded(params) {
 
         def requestedColumnOrientation = params.isColumnOriented.toBoolean()
@@ -271,22 +325,26 @@ class ParseConfigurationController {
     }
 
     /**
-     * @dataMatrix two dimensional dataMatrix containing data
-     * @return Map containing: [iTotalRecords, iColumns, iTotalDisplayRecords, aoColumns]
+     *  Method to return the parsed file datamatrix as a map, also included in this function is the ajaxSource which
+     *  is a reference to the ajaxDataTables source
+     *
+     * @parsedFile parsed file object containing datamatrix
+     * @return Map containing parsed file information
+     * @see ajaxDataTablesSource
      */
     Map getDataTablesObject(ParsedFile parsedFile) {
         def uploadedFile = session.uploadedFile
 
         if (!parsedFile) return [:]
 
-		def headerColumns = []
+        def headerColumns = []
 
-		def dataTablesObject = [:]
-		if (parsedFile.matrix) {
+        def dataTablesObject = [:]
+        if (parsedFile.matrix) {
 
-			parsedFileService.getHeaderRow(parsedFile).each { headerColumns += [sTitle: it] }
+            parsedFileService.getHeaderRow(parsedFile).each { headerColumns += [sTitle: it] }
 
-			dataTablesObject = [
+            dataTablesObject = [
                     aoColumns: headerColumns,
                     message: buildSampleMappingString(),
                     parseInfo: parsedFile.parseInfo,
@@ -297,9 +355,18 @@ class ParseConfigurationController {
             ]
         }
 
-		dataTablesObject
+        dataTablesObject
     }
 
+    /**
+     * Method which retrieves the uploaded and parsed file from the session and performs several data "shaping" steps:
+     *  - limit the string length of the values in the datamatrix
+     *  - round double values
+     * In the end it builds up a Datatables JSON object so the Datatables (JavaScript) library can use this object to render the data
+     * visually
+     *
+     *  @return Datatables JSON-formatted object
+     */
     def ajaxDataTablesSource = {
         def parsedFile = session.uploadedFile.parsedFile
         def uploadedFile = session.uploadedFile
