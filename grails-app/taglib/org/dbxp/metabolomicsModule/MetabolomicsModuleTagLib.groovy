@@ -26,12 +26,13 @@ class MetabolomicsModuleTagLib {
 
         def uploadedFiles = uploadedFileService.getUploadedFilesForUser(session.user)
 
-        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: 'up', maxVisible: 5) {
-
+        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: 'up', maxVisible: 8, rating: true, colorPicker: true, voting: false) {
             uploadedFiles.each { uploadedFile ->
-
                 uploadr.file(name: uploadedFile.fileName) {
-                    uploadr.fileSize { uploadedFile.fileSize }
+					uploadr.deletable { ((uploadedFile.uploader.id == session.user.id || session.user.isAdministrator)) }
+					if (uploadedFile.hasProperty('color') && uploadedFile.color) uploadr.color { "${uploadedFile.color}" }
+					if (uploadedFile.hasProperty('rating') && uploadedFile.rating) uploadr.rating { "${uploadedFile.rating}" }
+					uploadr.fileSize { uploadedFile.fileSize }
                     uploadr.fileModified { uploadedFile.lastUpdated.time }
                     uploadr.fileId { uploadedFile.id }
                 }
@@ -60,6 +61,10 @@ class MetabolomicsModuleTagLib {
             uploadr.onDelete {
 				out << g.render(template:'/js/uploadr/onDelete', model:[])
             }
+
+			uploadr.onChangeColor {
+				out << g.render(template:'/js/uploadr/onChangeColor', model:[])
+			}
         }
     }
 
