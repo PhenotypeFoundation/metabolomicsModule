@@ -117,15 +117,21 @@ class MetabolomicsModuleTagLib {
 
             if (uploadedFile['platformVersionId']) {
                 def mpv = MeasurementPlatformVersion.get((Long) uploadedFile['platformVersionId'])
-                sampleMsg += " ${mpv.measurementPlatform.name} ($mpv.versionNumber)"
+				if (mpv){
+					sampleMsg += " ${mpv.measurementPlatform?.name} ($mpv.versionNumber)"
+				}
             }
 
             onclickString = "onclick=\"openParseConfigurationDialog(\' ${uploadedFile.fileName} \', ${uploadedFile.id} );\""
             classString += " clickableListItem"
         }
 
-        out << "<li class=\"${classString}\" ${onclickString} >" + assay.name +
-                '<span class=sampleCount>' + sampleMsg + '</span></li>'
+        out << "<li class=\"${classString}\" ${onclickString} >"
+		out << 		g.link(action:"view", controller:"assay", id: assay.id) { assay.name }
+        out << "	<span class=sampleCount>"
+		out <<			sampleMsg
+		out << "	</span>"
+		out << "</li>"
 
     }
 }
