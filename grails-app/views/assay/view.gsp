@@ -17,6 +17,7 @@
   	<g:each in="${measurementPlatformVersions}" var="measurementPlatformVersion">
   			
  		<h3>${measurementPlatformVersion.measurementPlatform.name} V${measurementPlatformVersion.versionNumber}</h3>
+ 		<g:link controller="measurementPlatform" action="view" id="${measurementPlatformVersion.measurementPlatform.id}">- - - view - - -</g:link><br />
   		
   		<g:if test="${measurementPlatformVersion.measurementPlatform.description}">
   			<p>${measurementPlatformVersion.measurementPlatform.description}</p>  			
@@ -36,8 +37,5 @@
   		</g:if>
   	</g:each>
   </g:if>  
-  
-  
-  
 </body>
 </html>  
