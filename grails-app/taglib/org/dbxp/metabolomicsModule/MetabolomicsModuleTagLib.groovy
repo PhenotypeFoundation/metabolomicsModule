@@ -1,6 +1,7 @@
 package org.dbxp.metabolomicsModule
 
 import org.dbxp.dbxpModuleStorage.UploadedFile
+
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
 
 /**
@@ -107,10 +108,6 @@ class MetabolomicsModuleTagLib {
 
         UploadedFile uploadedFile = UploadedFile.findByAssay(assay)
 
-        def classString = "assayTag"
-        def onclickString = ''
-
-
         if (uploadedFile) {
             def parsedFile = uploadedFile.parsedFile
             if (parsedFile) sampleMsg += " (${parsedFile['amountOfSamplesWithData'] ?: 0} assigned)";
@@ -121,12 +118,9 @@ class MetabolomicsModuleTagLib {
 					sampleMsg += " ${mpv.measurementPlatform?.name} ($mpv.versionNumber)"
 				}
             }
-
-            onclickString = "onclick=\"openParseConfigurationDialog(\' ${uploadedFile.fileName} \', ${uploadedFile.id} );\""
-            classString += " clickableListItem"
         }
 
-        out << "<li class=\"${classString}\" ${onclickString} >"
+        out << "<li class=\"assayTag\" >"
 		out << 		g.link(action:"view", controller:"assay", id: assay.id) { assay.name }
         out << "	<span class=sampleCount>"
 		out <<			sampleMsg

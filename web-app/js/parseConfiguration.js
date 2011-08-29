@@ -34,7 +34,8 @@ function openParseConfigurationDialog(uploadedFileName, uploadedFileId) {
                 width: 680,
                 height: 520,
                 // necessary to destroy object to make datatables appear after opening dialog for a second time
-                beforeClose: function(event, ui) { $(this).remove(); }
+                beforeClose: function(event, ui) { $(this).remove(); },
+                resizeStop: function(event, ui) { dataMatrixTable.fnAdjustColumnSizing(); }
         });
 }
 
