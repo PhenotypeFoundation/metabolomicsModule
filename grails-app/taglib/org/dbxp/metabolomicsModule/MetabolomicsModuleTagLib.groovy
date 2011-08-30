@@ -1,7 +1,6 @@
 package org.dbxp.metabolomicsModule
 
 import org.dbxp.dbxpModuleStorage.UploadedFile
-
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
 
 /**
@@ -77,7 +76,6 @@ class MetabolomicsModuleTagLib {
         def readableStudiesWithAssays = assayService.getAssaysReadableByUserAndGroupedByStudy(session.user)
         out << '<ul class=studyList>'
 
-        // TODO: make assay always appear in same order
         readableStudiesWithAssays.each { study, assays ->
             out << studyTag(study: study, assays: assays)
         }
