@@ -16,6 +16,7 @@ grails.project.dependency.resolution = {
         grailsPlugins()
         grailsHome()
         grailsCentral()
+		mavenCentral()
 
         mavenRepo "http://nexus.nmcdsp.org/content/repositories/releases"
         mavenRepo "http://nexus.nmcdsp.org/content/repositories/snapshots"
@@ -31,7 +32,7 @@ grails.project.dependency.resolution = {
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-
+		// runtime 'com.github.groovy-wslite:groovy-wslite:0.1'
         // runtime 'mysql:mysql-connector-java:5.1.13'
     }
 }

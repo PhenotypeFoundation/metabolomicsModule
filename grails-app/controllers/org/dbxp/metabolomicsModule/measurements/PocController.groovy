@@ -1,6 +1,7 @@
 package org.dbxp.metabolomicsModule.measurements
 
 import grails.converters.JSON
+//import wslite.rest.*
 
 class PocController {
 	
@@ -83,4 +84,9 @@ class PocController {
 		render (outHashMap as JSON)
 	}
 	
+//	def restTest = {
+//		def client = new RESTClient("http://www.fresnostatenews.com/feed/")
+//		def response = client.get()
+//		println response.dump()
+//	}	
 }
