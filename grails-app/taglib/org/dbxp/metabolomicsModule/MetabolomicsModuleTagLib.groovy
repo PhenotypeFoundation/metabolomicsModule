@@ -21,17 +21,17 @@ class MetabolomicsModuleTagLib {
     def uploadedFileService
 
     def uploadedFileList = { attrs ->
-
         out << '<h1>Uploaded files</h1>'
 
         def uploadedFiles = uploadedFileService.getUploadedFilesForUser(session.user)
 
-        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: 'up', maxVisible: 8, rating: true, colorPicker: true, voting: false) {
+        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: 'up', maxVisible: 8, rating: true, colorPicker: true, voting: true) {
             uploadedFiles.each { uploadedFile ->
+				// add file to the uploadr
                 uploadr.file(name: uploadedFile.fileName) {
 					uploadr.deletable { ((uploadedFile.uploader.id == session.user.id || session.user.isAdministrator)) }
 					if (uploadedFile.hasProperty('color') && uploadedFile.color) uploadr.color { "${uploadedFile.color}" }
-					if (uploadedFile.hasProperty('rating') && uploadedFile.rating) uploadr.rating { "${uploadedFile.rating}" }
+					uploadr.rating { "${uploadedFile.getRating()}" }
 					uploadr.fileSize { uploadedFile.fileSize }
                     uploadr.fileModified { uploadedFile.lastUpdated.time }
                     uploadr.fileId { uploadedFile.id }

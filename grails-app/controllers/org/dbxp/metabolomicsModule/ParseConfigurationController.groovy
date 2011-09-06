@@ -218,13 +218,7 @@ class ParseConfigurationController {
      * @return amount of samples
      */
     def determineAmountOfSamplesWithData(UploadedFile uploadedFile) {
-
-        def sampleNamesInFile = parsedFileService.getSampleNames(uploadedFile?.parsedFile)
-
-        def samplesInAssay = uploadedFile?.assay ? uploadedFile.assay.samples : []
-        def sampleNamesInAssay = samplesInAssay*.name
-
-        sampleNamesInAssay.intersect(sampleNamesInFile).size()
+		uploadedFile.determineAmountOfSamplesWithData()
     }
 
     /**
