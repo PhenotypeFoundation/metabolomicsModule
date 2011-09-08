@@ -22,11 +22,11 @@ class AssayController {
 	 * params.id is required to load the assay
 	 */
 	def view = {
-		
-		if (!params.id) redirect(url: request.getHeader('Referer')) // id of an assay must be present
 				
+		if (!params.id) redirect(url: request.getHeader('Referer')) // id of an assay must be present
+		
 		// load assay from id (for session.user)
-		def assay = assayService.getAssayReadableByUserById(session.user, params.id)
+		def assay = assayService.getAssayReadableByUserById(session.user, params.id as Long)
 		
 		def assayFiles = UploadedFile.findAllByAssay(assay) ?: []
 		
