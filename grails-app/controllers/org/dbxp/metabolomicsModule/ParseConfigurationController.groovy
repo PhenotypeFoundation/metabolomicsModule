@@ -205,8 +205,10 @@ class ParseConfigurationController {
                 // Workaround for a bug introduced in Mongo GORM 1.0.0 M7, omitting this step would result in NPE
                 ParsedFile.get(session.uploadedFile.parsedFile.id)
 
-                if (session.uploadedFile.parsedFile)
-                    session.uploadedFile.parsedFile['amountOfSamplesWithData'] = determineAmountOfSamplesWithData(session.uploadedFile)
+                if (session.uploadedFile.parsedFile){
+                    //session.uploadedFile.parsedFile['amountOfSamplesWithData'] = determineAmountOfSamplesWithData(session.uploadedFile)
+					session.uploadedFile.parsedFile['amountOfSamplesWithData'] = session.uploadedFile.determineAmountOfSamplesWithData()
+                }
             }
         }
     }
