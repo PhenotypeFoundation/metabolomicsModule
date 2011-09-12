@@ -23,12 +23,11 @@ class MetabolomicsModuleTagLib {
     def uploadedFileList = { attrs ->
 		// get file list from attributes
 		def uploadedFiles
-		if (attrs.get('files')) {
+		if (attrs.containsKey('files')) {
 			uploadedFiles = attrs.get('files')
 		} else {
 			throw new Exception("required attribute 'files' is missing from the <uploadedFilesList files=\"...\"/> tag")
 		}
-//		def uploadedFiles = (attrs.get('files')) ? attrs.get('files') : uploadedFileService.getUploadedFilesForUser(session.user)
 
 		// output file uploadr
         out << '<h1>Uploaded files</h1>'
