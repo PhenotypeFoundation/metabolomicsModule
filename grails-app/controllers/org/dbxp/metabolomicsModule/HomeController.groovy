@@ -4,7 +4,8 @@ class HomeController {
 	def uploadedFileService
 
 	def index = {
+		def files = uploadedFileService.getUploadedFilesForUser(session.user)
 
-		render(view: 'index', model:[ files: uploadedFileService.getUploadedFilesForUser(session.user) ])
+		render(view: 'index', model:[ files: files ])
 	}
 }

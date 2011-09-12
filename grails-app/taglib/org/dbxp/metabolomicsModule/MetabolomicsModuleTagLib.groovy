@@ -22,7 +22,7 @@ class MetabolomicsModuleTagLib {
 
     def uploadedFileList = { attrs ->
 		// get file list from attributes
-		def uploadedFiles
+  		def uploadedFiles
 		if (attrs.containsKey('files')) {
 			uploadedFiles = attrs.get('files')
 		} else {
