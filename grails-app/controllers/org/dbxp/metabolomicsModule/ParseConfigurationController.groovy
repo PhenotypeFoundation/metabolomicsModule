@@ -326,7 +326,6 @@ class ParseConfigurationController {
      *
      * @parsedFile parsed file object containing datamatrix
      * @return Map containing parsed file information
-     * @see ajaxDataTablesSource
      */
     Map getDataTablesObject(ParsedFile parsedFile) {
         def uploadedFile = session.uploadedFile

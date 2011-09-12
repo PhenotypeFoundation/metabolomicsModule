@@ -12,8 +12,6 @@ class AssayController {
 	def assayService
 
 	
-    def index = { redirect(url: request.getHeader('Referer')) }
-	
 	/*
 	 * Metabolomics Assay page
 	 * - list basic assay info (name, members etc)
@@ -22,11 +20,12 @@ class AssayController {
 	 * params.id is required to load the assay
 	 */
 	def view = {
-				
-		if (!params.id) redirect(url: request.getHeader('Referer')) // id of an assay must be present
+		if (!params.id) response.sendError(400, "No assay id specified.") // id of an assay must be present
 		
 		// load assay from id (for session.user)
 		def assay = assayService.getAssayReadableByUserById(session.user, params.id as Long)
+
+        if (!assay) response.sendError(404, "No assay found with id $params.id")
 		
 		def assayFiles = UploadedFile.findAllByAssay(assay) ?: []
 		
@@ -36,13 +35,15 @@ class AssayController {
 			
 			// get MeasurementPlatformVersion from AssayFile
 			def mpv = MeasurementPlatformVersion.get((Long) assayFile['platformVersionId'])
-			
-			// add MeasurementPlatformVersion to List
-			measurementPlatformVersions.add(mpv)
-			
-			// prepare a Map with MeasuremtentPlatformVersions and their linked files
-			if (!measurementPlatformVersionUploadedFiles[mpv.id]) { measurementPlatformVersionUploadedFiles[mpv.id] = [] }
-			measurementPlatformVersionUploadedFiles[mpv.id] << assayFile
+
+            if (mpv) {
+                // add MeasurementPlatformVersion to List
+                measurementPlatformVersions.add(mpv)
+
+                // prepare a Map with MeasuremtentPlatformVersions and their linked files
+                if (!measurementPlatformVersionUploadedFiles[mpv.id]) { measurementPlatformVersionUploadedFiles[mpv.id] = [] }
+                measurementPlatformVersionUploadedFiles[mpv.id] << assayFile
+            }
 		}
 				
 		[assay: assay, assayFiles: assayFiles, measurementPlatformVersions: measurementPlatformVersions, measurementPlatformVersionUploadedFiles: measurementPlatformVersionUploadedFiles]
