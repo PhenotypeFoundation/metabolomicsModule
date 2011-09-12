@@ -50,9 +50,7 @@
 <body>
 
 <div id="uploadedFiles">
-
-  <mm:uploadedFileList/>
-
+  <mm:uploadedFileList files="${files}" />
 </div>
 
 <div id="studyOverview">
