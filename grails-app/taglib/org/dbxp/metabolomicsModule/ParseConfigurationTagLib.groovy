@@ -114,7 +114,10 @@ class ParseConfigurationTagLib {
      * @param sheetIndex currently selected sheet index
      */
     def sheetSelectControl = { attrs, body ->
-        out << pc.rangeSelectWithLabel(label: 'Sheet', name: 'sheetIndex', maxIndex: attrs.numberOfSheets, value: attrs.sheetIndex, disabled: attrs.disabled)
+        if (attrs.numberOfSheets > 1) {
+            out << pc.rangeSelectWithLabel(label: 'Sheet', name: 'sheetIndex', maxIndex: attrs.numberOfSheets, value: attrs.sheetIndex, disabled: attrs.disabled)
+            out << "/${attrs.numberOfSheets}"
+        }
     }
 
     /**
