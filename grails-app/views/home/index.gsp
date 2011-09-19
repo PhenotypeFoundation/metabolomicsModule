@@ -54,7 +54,7 @@
 </div>
 
 <div id="studyOverview">
-      <mm:studyList/>
+	<g:render template="studyList"/>
 </div>
 
 <br/>

@@ -8,4 +8,8 @@ class HomeController {
 
 		render(view: 'index', model:[ files: files ])
 	}
+
+	def studyList = {
+		render(template: "studyList")
+	}
 }
