@@ -37,14 +37,14 @@ function openParseConfigurationDialog(uploadedFileName, uploadedFileId) {
                 beforeClose: function(event, ui) {
 					$(this).remove();
 
-//					// update studylist
-//					$.ajax({
-//						url: 'home/studyList',
-//						cache: false,
-//						success: function(html) {
-//							$('div#studyOverview').html(html);
-//						}
-//					});
+					// update studylist
+					$.ajax({
+						url: baseUrl + '/home/studyList',
+						cache: false,
+						success: function(html) {
+							$('div#studyOverview').html(html);
+						}
+					});
 				},
                 resizeStop: function(event, ui) { dataMatrixTable.fnAdjustColumnSizing(); }
         });
