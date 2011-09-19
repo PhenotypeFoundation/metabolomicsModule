@@ -12,6 +12,10 @@ function initParseConfigurationDialogListeners() {
         submitForm("update");
     });
 
+    $('#assayId').change( function() {
+        submitForm("updateAssay");
+    });
+
     // When the page is ready, read the parameters set in the form and send
     // them to the server. The returned JSON will update the data preview.
     submitForm("init");

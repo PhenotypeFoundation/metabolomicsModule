@@ -65,7 +65,7 @@ class ParseConfigurationTagLib {
      */
     def assaysControl = { attrs, body ->
         out << "Assay: <br />"
-        out << '<select name="assayId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
+        out << '<select id="assayId" name="assayId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
 
         // if new studygroup create new label
         assayService.getAssaysReadableByUserAndGroupedByStudy(session.user).each { assaysGroupedByStudy ->

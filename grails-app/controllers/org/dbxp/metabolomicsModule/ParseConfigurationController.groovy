@@ -81,6 +81,10 @@ class ParseConfigurationController {
             case 'update':
                 render(handleUpdateFormAction(params) as JSON)
                 break
+            case 'updateAssay':
+                updateAssayIfNeeded(params);
+                render([message: buildSampleMappingString()] as JSON)
+                break
             case 'save':
                 render(handleSaveFormAction(params) as JSON)
                 break
@@ -171,18 +175,18 @@ class ParseConfigurationController {
 
         // somehow uploadedFile.assay sometimes equals to 'false', getting the assay this way prevents that
         def assay = Assay.get(uploadedFile?.assay?.id)
-
         if (parsedFile && assay) {
-
             // Workaround for a bug introduced in Mongo GORM 1.0.0 M7, omitting this step would result in NPE
             ParsedFile.get(parsedFile.id)
 
             def fileSampleCount = parsedFileService.sampleCount(parsedFile)
             def assaySampleCount = assay.samples.size()
 
-            def unmappedSampleCount = fileSampleCount - (parsedFile['amountOfSamplesWithData'] ?: 0)
+            def unmappedSampleCount = fileSampleCount - (uploadedFile.determineAmountOfSamplesWithData() ?: 0)
+//            def unmappedSampleCount = fileSampleCount - (parsedFile['amountOfSamplesWithData'] ?: 0)
 
-            "${parsedFile['amountOfSamplesWithData'] ?: 0} of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
+            "${uploadedFile.determineAmountOfSamplesWithData()} of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
+//            "${parsedFile['amountOfSamplesWithData'] ?: 0} of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
 
         } else if (assay) 'File is linked to the assay.'
         else 'File is not linked with an assay.'
@@ -196,32 +200,30 @@ class ParseConfigurationController {
     def updateAssayIfNeeded(params) {
 
         def assay = Assay.get(params.assayId)
-
         if (params.assayId != session.uploadedFile.assay?.id) {
-
             session.uploadedFile.assay = assay
 
-            if (session.uploadedFile.parsedFile) {
-                // Workaround for a bug introduced in Mongo GORM 1.0.0 M7, omitting this step would result in NPE
-                ParsedFile.get(session.uploadedFile.parsedFile.id)
-
-                if (session.uploadedFile.parsedFile){
-                    //session.uploadedFile.parsedFile['amountOfSamplesWithData'] = determineAmountOfSamplesWithData(session.uploadedFile)
-					session.uploadedFile.parsedFile['amountOfSamplesWithData'] = session.uploadedFile.determineAmountOfSamplesWithData()
-                }
-            }
+//            if (session.uploadedFile.parsedFile) {
+//                // Workaround for a bug introduced in Mongo GORM 1.0.0 M7, omitting this step would result in NPE
+//                ParsedFile.get(session.uploadedFile.parsedFile.id)
+//
+////                if (session.uploadedFile.parsedFile){
+////                    //session.uploadedFile.parsedFile['amountOfSamplesWithData'] = determineAmountOfSamplesWithData(session.uploadedFile)
+////					session.uploadedFile.parsedFile['amountOfSamplesWithData'] = session.uploadedFile.determineAmountOfSamplesWithData()
+////                }
+//            }
         }
     }
 
-    /**
-     * Method to determine samples with data associated to it
-     *
-     * @param uploadedFile
-     * @return amount of samples
-     */
-    def determineAmountOfSamplesWithData(UploadedFile uploadedFile) {
-		uploadedFile.determineAmountOfSamplesWithData()
-    }
+//    /**
+//     * Method to determine samples with data associated to it
+//     *
+//     * @param uploadedFile
+//     * @return amount of samples
+//     */
+//    def determineAmountOfSamplesWithData(UploadedFile uploadedFile) {
+//		uploadedFile.determineAmountOfSamplesWithData()
+//    }
 
     /**
      *
