@@ -11,7 +11,7 @@
 	<g:render template="studyList"/>
 </div>
 <g:if env="development">
-	<g:render template="development" model="[files:files]"/>
+<g:render template="development" model="[files:files]"/>
 </g:if>
 </body>
 </html>

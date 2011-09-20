@@ -11,6 +11,7 @@
 	box-shadow: 0 0 10px #CCC;
 	z-index: 10;
 	background-color: #fed900;
+	overflow: hidden;
 }
 
 #development .label {
@@ -29,6 +30,23 @@
 	z-index: 5;
 }
 
-#development .button {
+#development .actions {
 	display: inline-block;
+	height: 30px;
+	line-height: 30px;
+	overflow-y: hidden;
+}
+
+#development .actions .wait {
+}
+
+#development .actions .wait img {
+	height: 15px;
+	vertical-align: middle;
+}
+
+#development .actions .button {
+	display: inline-block;
+	height: 30px;
+	line-height: 30px;
 }

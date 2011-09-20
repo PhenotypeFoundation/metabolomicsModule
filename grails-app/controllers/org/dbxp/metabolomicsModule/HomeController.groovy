@@ -12,4 +12,8 @@ class HomeController {
 	def studyList = {
 		render(template: "studyList")
 	}
+
+	def developmentBar = {
+		render(template: "developmentActions")
+	}
 }
