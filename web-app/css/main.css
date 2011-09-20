@@ -1,22 +1,22 @@
 #uploadedFiles {
-  float: left;
-  width: 50%;
+	float: left;
+	width: 50%;
 }
 
 #studyOverview {
-  float: left;
-  width: auto;
+	float: left;
+	width: auto;
 }
 
 .sampleCount {
-  float: right;
+	float: right;
 }
 
 .studyList {
-  width: 100%;
+	width: 100%;
 }
 
 /*prevent our floating divs from overlapping footer */
 #footer {
-  clear: both;
+	clear: both;
 }
