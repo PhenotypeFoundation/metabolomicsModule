@@ -57,12 +57,12 @@
       <g:elseif test="${parseInfo?.parserClassName=='CsvParser'}">
         <pc:delimiterControl value="${parseInfo.delimiter}" delimiterNameMap="${parseInfo.delimiterNameMap}" disabled="${controlsDisabled}" />
       </g:elseif>
-      <pc:sampleColumnControl sampleColumnIndex="${uploadedFile?.parsedFile?.sampleColumnIndex}" maxIndex="${uploadedFile?.parsedFile?.columns}" disabled="${controlsDisabled}" />
-      <pc:featureRowControl featureRowIndex="${uploadedFile?.parsedFile?.featureRowIndex}" disabled="${controlsDisabled}" />
+      <pc:sampleColumnControl sampleColumnIndex="${uploadedFile?.sampleColumnIndex}" maxIndex="${uploadedFile?.columns}" disabled="${controlsDisabled}" />
+      <pc:featureRowControl featureRowIndex="${uploadedFile?.featureRowIndex}" disabled="${controlsDisabled}" />
     </div>
 
     <div class="orientation">
-      <pc:orientationControl isColumnOriented="${uploadedFile?.parsedFile?.isColumnOriented}" disabled="${controlsDisabled}" />
+      <pc:orientationControl isColumnOriented="${uploadedFile?.isColumnOriented}" disabled="${controlsDisabled}" />
     </div>
 
     <div class="dataMatrixContainer">

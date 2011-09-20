@@ -113,8 +113,7 @@ class MetabolomicsModuleTagLib {
         UploadedFile uploadedFile = UploadedFile.findByAssay(assay)
 
         if (uploadedFile) {
-            def parsedFile = uploadedFile.parsedFile
-            if (parsedFile) sampleMsg += " (${parsedFile['amountOfSamplesWithData'] ?: 0} assigned)";
+            if (uploadedFile.matrix) sampleMsg += " (${uploadedFile.determineAmountOfSamplesWithData()} assigned)";
 
             if (uploadedFile['platformVersionId']) {
                 def mpv = MeasurementPlatformVersion.get((Long) uploadedFile['platformVersionId'])

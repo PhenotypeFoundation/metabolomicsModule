@@ -17,7 +17,6 @@ import org.dbxp.moduleBase.User
 class BootStrapController {
 
     def uploadedFileService
-    def parsedFileService
 
     def index = { render 'index' }
 
