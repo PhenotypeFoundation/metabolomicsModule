@@ -1,3 +1,4 @@
+<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder" %>
 <html>
 <head>
 	<meta name="layout" content="main"/>
@@ -9,6 +10,6 @@
 <div id="studyOverview">
 	<g:render template="studyList"/>
 </div>
-<g:if env="development"><g:render template="development"/></g:if>
+<g:if test="${((ConfigurationHolder.config.development.bar).contains(grails.util.GrailsUtil.environment))}"><g:render template="development"/></g:if>
 </body>
 </html>

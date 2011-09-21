@@ -80,6 +80,9 @@ log4j = {
 // jQuery plugin
 grails.views.javascript.library="jquery"
 
+// define in which environments the development bar should be available
+development.bar=['development','ci']
+
 // set default properties here in case default.properties in not placed in classpath and no external config
 gscf.baseURL='http://localhost:8080/gscf'
 module.consumerId='http://localhost:8083/metabolomicsModule'
