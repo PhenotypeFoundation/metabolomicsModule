@@ -118,7 +118,7 @@ function updateDialog(data) {
 		},
 
         "fnInitComplete": function() {
-            // Amount of columnt in a row
+            // Amount of columns in a row
             var columnCount = Math.min(this.fnGetData()[0].length, maxSampleColumnIndex);
 
             var options = '';

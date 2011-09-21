@@ -80,7 +80,7 @@ class ParseConfigurationController {
                 render(handleUpdateFormAction(params) as JSON)
                 break
             case 'updateAssay':
-                updateAssayIfNeeded(params);
+                updateAssayIfNeeded(params)
                 render([message: buildSampleMappingString()] as JSON)
                 break
             case 'save':
@@ -197,6 +197,7 @@ class ParseConfigurationController {
     Map handleUpdateFormAction(params) {
         transposeMatrixIfNeeded(params)
         parseFileAgainIfNeeded(params)
+		updateSampleColumnAndFeatureRow(params)
 
         // Get the current datatable object and add the params - these are control settings which are changed
         // by the user, but we do not want to store yet
