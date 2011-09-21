@@ -15,7 +15,7 @@
  */
 %>
 <div id="development">
-	<div class="label">development</div>
+	<div class="label">${grails.util.GrailsUtil.environment}<g:if env="development"></g:if><g:else>#${meta(name: 'app.build.svn.revision')}</g:else></div>
 	<div class="actions">
 	<g:render template="developmentActions"/>
 	</div>
