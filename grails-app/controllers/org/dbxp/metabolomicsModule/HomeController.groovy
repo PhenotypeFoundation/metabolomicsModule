@@ -1,5 +1,7 @@
 package org.dbxp.metabolomicsModule
 
+import org.codehaus.groovy.grails.commons.GrailsApplication
+
 class HomeController {
 	def uploadedFileService
 
@@ -14,6 +16,11 @@ class HomeController {
 	}
 
 	def developmentBar = {
-		render(template: "developmentActions")
+		// make super sure this only works in development
+		if (grails.util.GrailsUtil.environment == GrailsApplication.ENV_DEVELOPMENT) {
+			render(template: "developmentActions")
+		} else {
+			render 'This functionality is not available...'
+		}
 	}
 }

@@ -1,40 +1,13 @@
+<%
+/**
+ * Buttons in the development bar. The accompanying JavaScript should
+ * be in the (parent) _development.gsp. This template is rendered from
+ * that view AND via Ajax and the developmentBar action in the
+ * HomeController
+ *
+ *  $Author: duh $
+ *  $Rev: 74532 $
+ *  $Date: 2011-09-19 15:56:33 +0200 (Mon, 19 Sep 2011) $
+ */
+%>
 <div class="button"><input type="button" id="deleteAllFiles" value="delete all files" onclick="if (confirm('are you really super massive sure?')) { deleteAllFiles(this); } else { return false; }"/></div>
-
-<r:script>
-function before(element, message) {
-	var parent = $(element).parent().parent();
-	parent.html('<div class="wait"><img src="'+baseUrl+'/images/development-spinner.gif"/></div>');
-	$('img',parent).tipTip({content: (message) ? message : 'please wait...'});
-}
-function after(element) {
-	// refresh the development bar
-//	document.location = document.location;
-	// update studylist
-	$.ajax({
-		url: baseUrl + '/home/developmentBar',
-		cache: false,
-		success: function(html) {
-			$('div#development').html(html);
-		}
-	});
-}
-
-// delete all files
-function deleteAllFiles(element) {
-	before(element,'please wait while all files are deleted...');
-
-	var a = $.ajax(
-		'<g:createLink plugin="dbxpModuleStorage" controller="uploadedFile" action="deleteAllUploadedFilesForCurrentUser"/>',
-		{
-			async: false,
-			headers: {
-				'X-File-Name': 'a',
-				'X-File-Id': 'b'
-			},
-			success: function(data) {
-				after(element);
-			}
-		}
-	);
-}
-</r:script>
