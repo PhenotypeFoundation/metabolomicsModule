@@ -1,3 +1,5 @@
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+
 modules = {
 	metabolomicsModule {
 		dependsOn 'moduleBase, uploadr'
@@ -7,7 +9,7 @@ modules = {
         resource id:'main-css', url:[dir:'css', file:'main.css']
 
 		// add development resources?
-		if (grails.util.GrailsUtil.environment == "development") {
+		if ((ConfigurationHolder.config.development.bar).contains(grails.util.GrailsUtil.environment)) {
 			resource id:'dev-css', url:[dir:'css', file: 'development.css']
 		}
 	}
