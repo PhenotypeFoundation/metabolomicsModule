@@ -85,5 +85,5 @@ development.bar=['development','ci']
 
 // set default properties here in case default.properties in not placed in classpath and no external config
 gscf.baseURL='http://localhost:8080/gscf'
-module.consumerId='http://localhost:8083/metabolomicsModule'
+module.consumerId='http://localhost:8083/metabolomicsModule' //replace @runtime by resource(dir: '/', absolute: true)
 module.name='Metabolomics Module'
