@@ -5,7 +5,7 @@
 </head>
 <body>
 <div id="uploadedFiles">
-	<mm:uploadedFileList files="${files}"/>
+	<mm:uploadedFileList files="${files}" dialogProperties="[title: 'Please choose the uploaded file data type', buttons: ['close']]"/>
 </div>
 <div id="studyOverview">
 	<g:render template="studyList"/>

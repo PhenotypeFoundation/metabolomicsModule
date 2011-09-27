@@ -1,7 +1,6 @@
 // Global variable holding the datamatrix
 var dataMatrixTable;
 var parseConfigurationDialog;
-var parseConfigurationDialogController = "parseConfiguration";
 
 /**
  * Add control element listeners so when a control is changed the preview is updated
@@ -23,32 +22,56 @@ function initParseConfigurationDialogListeners() {
 
 /**
  * Method to open up a dialog to configure the parsing of the uploaded file
- * @param uploadedFileName filename of uploaded file
- * @param uploadedFileId id of uploaded file
+ * @param dialogProperties a map containing:
+ * 	- title: title of popup
+ * 	- buttons: array of strings describing which buttons to display (can contain 'save' and 'close')
+ * 	- assayId: assay id (or null)
+ * 	- fileId: id of uploadedFile
+ * 	- fileName: name of uploadedFile
  */
-function openParseConfigurationDialog(uploadedFileName, uploadedFileId) {
+function openParseConfigurationDialog(dialogProperties) {
+
+ 	var buttonMap = {};
+
+	$.each(dialogProperties.buttons, function(index, value){
+		switch (value) {
+			case 'save':
+				buttonMap['Save'] = function() { submitForm("save") };
+				break;
+			case 'close':
+				buttonMap['Close'] = function() { $(this).dialog('close') };
+			break
+		}
+	});
 
     // Assign the dialog to the global variable
-    parseConfigurationDialog = $("<div><img src='images/spinner.gif'></div>")
-        .load(parseConfigurationDialogController + "?uploadedFileId=" + encodeURI(uploadedFileId))
+    parseConfigurationDialog = $("<div><img src='" + dialogProperties.baseUrl +  "/images/spinner.gif'></div>")
+		.load(
+			dialogProperties.baseUrl + dialogProperties.controllerName + '/' + dialogProperties.actionName + '/' +
+				"?fileName=" + encodeURI(dialogProperties.fileName) +
+				"&uploadedFileId=" + encodeURI(dialogProperties.uploadedFileId) +
+				(dialogProperties.dataType ? "&dataType=" + dialogProperties.dataType : '')
+		)
         .dialog({
                 modal: true,
-                title: "Data Interpretation Settings - " + uploadedFileName,
-                buttons: { 'Save': function() { submitForm("save"); }, 'Close': function() {$(this).dialog('close')} },
+                title: dialogProperties.title + " - " + dialogProperties.fileName,
+                buttons: buttonMap,
                 width: 680,
                 height: 520,
                 // necessary to destroy object to make datatables appear after opening dialog for a second time
                 beforeClose: function(event, ui) {
 					$(this).remove();
 
-					// update studylist
-					$.ajax({
-						url: baseUrl + '/home/studyList',
-						cache: false,
-						success: function(html) {
-							$('div#studyOverview').html(html);
-						}
-					});
+					if (dialogProperties.refreshStudyList) {
+						// update studylist
+						$.ajax({
+							url: baseUrl + '/home/studyList',
+							cache: false,
+							success: function(html) {
+								$('div#studyOverview').html(html);
+							}
+						});
+					}
 				},
                 resizeStop: function(event, ui) { dataMatrixTable.fnAdjustColumnSizing(); }
         });

@@ -36,7 +36,36 @@ class ParseConfigurationController {
     def uploadedFileService
     static final int tableCellMaxContentLength = 40
 
-    def index = {
+	def index = {
+
+		// knoppen
+
+		// determine whether we're on an assay page or on home page
+
+		println params
+
+		[dialogProperties:
+			[	uploadedFileId: params.uploadedFileId,
+				fileName: params.fileName,
+				baseUrl: resource('/', absolute: true),
+				controllerName: params.controller
+			]]
+	}
+
+	def features = {
+		render 'Features'
+	}
+
+    def data = {
+
+//		println params
+//
+//		render("$params.dataType");
+//		return
+
+		// Decide RAW or clean ...
+
+		println params
 
         if (!params.uploadedFileId) {
             throw new RuntimeException('The uploadedFileId was not set, please report this error message to the system administrator.')
@@ -293,7 +322,7 @@ class ParseConfigurationController {
     Map getDataTablesObject() {
         def uploadedFile = session.uploadedFile
 
-        if (!uploadedFile.matrix) return [:]
+        if (!uploadedFile?.matrix) return [:]
 
         def headerColumns = []
 

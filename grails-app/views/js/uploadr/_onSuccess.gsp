@@ -12,7 +12,7 @@ $.ajax(
 			'X-File-Name': file.fileName
 		},
 		success: function(data) {
-			file.fileId = data.fileId;
+			file.fileId = data.uploadedFileId;
 			callback();
 		}
 	}

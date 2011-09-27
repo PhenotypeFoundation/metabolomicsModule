@@ -21,6 +21,11 @@ class MetabolomicsModuleTagLib {
     def uploadedFileService
 
     def uploadedFileList = { attrs ->
+
+		attrs.dialogProperties['baseUrl'] = resource('/', absolute: true);
+		attrs.dialogProperties['controllerName'] = 'parseConfiguration'
+		attrs.dialogProperties['actionName'] = 'index'
+
 		// get file list from attributes
   		def uploadedFiles
 		if (attrs.containsKey('files')) {
@@ -56,8 +61,9 @@ class MetabolomicsModuleTagLib {
                 "console.log('aborted uploading ' + file.fileName);"
             }
 
-            uploadr.onView {
-				out << g.render(template:'/js/uploadr/onView', model:[])
+			uploadr.onView {
+				out << g.render(template:'/js/uploadr/onView',
+					model:[dialogProperties: attrs.dialogProperties]);
             }
 
             uploadr.onDownload {

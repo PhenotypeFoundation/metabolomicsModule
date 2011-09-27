@@ -17,7 +17,7 @@ class MeasurementPlatformController {
    }
    
    def list = {
-	   
+
 	   /**
 	    * List all accessible MeasurementPlatforms
 	    */
