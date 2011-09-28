@@ -6,7 +6,7 @@ class HomeController {
 	def uploadedFileService
 
 	def index = {
-		def files = uploadedFileService.getUploadedFilesForUser(session.user)
+		def files = uploadedFileService.getUnassignedUploadedFilesForUser(session.user)
 
 		render(view: 'index', model:[ files: files ])
 	}

@@ -27,7 +27,7 @@ class AssayController {
 
         if (!assay) response.sendError(404, "No assay found with id $params.id")
 		
-		def assayFiles = UploadedFile.findAllByAssay(assay) ?: []
+		def assayFiles = UploadedFile.findAllByAssay(assay)
 		
 		def measurementPlatformVersions = []
 		def measurementPlatformVersionUploadedFiles = [:]
@@ -46,6 +46,9 @@ class AssayController {
             }
 		}
 				
-		[assay: assay, assayFiles: assayFiles, measurementPlatformVersions: measurementPlatformVersions, measurementPlatformVersionUploadedFiles: measurementPlatformVersionUploadedFiles]
+		[	assay: assay,
+			assayFiles: assayFiles,
+			measurementPlatformVersions: measurementPlatformVersions,
+			measurementPlatformVersionUploadedFiles: measurementPlatformVersionUploadedFiles]
 	}
 }

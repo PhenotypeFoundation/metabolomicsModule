@@ -57,16 +57,6 @@ class ParseConfigurationController {
 	}
 
     def data = {
-
-//		println params
-//
-//		render("$params.dataType");
-//		return
-
-		// Decide RAW or clean ...
-
-		println params
-
         if (!params.uploadedFileId) {
             throw new RuntimeException('The uploadedFileId was not set, please report this error message to the system administrator.')
         }
@@ -264,34 +254,15 @@ class ParseConfigurationController {
         def uploadedFile = session.uploadedFile
         def parseInfo = uploadedFile?.parseInfo
 
-        if (parseInfo?.parserClassName == 'ExcelParser') {
-
-            if (params.sheetIndex != null && parseInfo.sheetIndex != params.sheetIndex as int) {
-                try {
-                    session.uploadedFile = uploadedFileService.parseUploadedFile(uploadedFile, [sheetIndex: params.sheetIndex as int])
-                } catch (e) {
-                    //TODO: figure out whether all this is really necessary and if so, whether it should be put into a service
-                    session.uploadedFile.matrix = []
-                    session.uploadedFile.rows = 0
-                    session.uploadedFile.columns = 0
-                    session.uploadedFile.parseInfo.sheetIndex = params.sheetIndex as int
-                    session.uploadedFile.save(failOnError: true)
-                    flash.errorMessage = e.message
-                }
-            }
-
-        } else if (parseInfo?.parserClassName == 'CsvParser') {
-
-            if (params.delimiter != null && parseInfo.delimiter != params.delimiter) {
-                try {
-                    parseInfo.delimiter = params.delimiter
-                    session.uploadedFile = uploadedFileService.parseUploadedFile(uploadedFile, [delimiter: params.delimiter as byte])
-                } catch (e) {
-                    session.uploadedFile.matrix = []
-                    flash.errorMessage = e.message
-                }
-            }
-        }
+		if ((parseInfo?.parserClassName == 'ExcelParser') 	&& (params.sheetIndex != null && parseInfo.sheetIndex != params.sheetIndex as int) ||
+			(parseInfo?.parserClassName == 'CsvParser')		&& (params.delimiter != null && parseInfo.delimiter != params.delimiter)) {
+			try {
+				session.uploadedFile.parse([sheetIndex: params.sheetIndex as int, delimiter: params.delimiter as byte])
+			} catch (e) {
+				session.uploadedFile.clearParsedData()
+                flash.errorMessage = e.message
+			}
+		}
     }
 
     /**

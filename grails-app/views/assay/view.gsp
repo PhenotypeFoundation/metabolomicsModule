@@ -7,15 +7,8 @@
 <h1>${assay.name} <small>(${assay.study.token()})</small></h1>
 
 <div id="uploadedFiles">
-	<mm:uploadedFileList files="${files}" dialogProperties="[title: 'Please choose the uploaded file data type', buttons: ['close']], assayId: ${id}"/>
+	<mm:uploadedFileList files="${assayFiles}" dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['close'], assayId: id, controllerName: 'parseConfiguration', actionName: 'data']}"/>
 </div>
-
-<g:if test="${assayFiles}">
-	<h2>Related files</h2>
-	<g:each in="${assayFiles}" var="assayFile">
-		${assayFile.id} :: ${assayFile.fileName} (${assayFile.lastUpdated}) <br/>
-	</g:each>
-</g:if>
 
 <g:if test="${measurementPlatformVersions}">
 	<h2>Measurement Platforms</h2>

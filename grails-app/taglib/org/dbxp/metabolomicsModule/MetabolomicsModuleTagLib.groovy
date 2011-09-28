@@ -23,8 +23,7 @@ class MetabolomicsModuleTagLib {
     def uploadedFileList = { attrs ->
 
 		attrs.dialogProperties['baseUrl'] = resource('/', absolute: true);
-		attrs.dialogProperties['controllerName'] = 'parseConfiguration'
-		attrs.dialogProperties['actionName'] = 'index'
+
 
 		// get file list from attributes
   		def uploadedFiles
