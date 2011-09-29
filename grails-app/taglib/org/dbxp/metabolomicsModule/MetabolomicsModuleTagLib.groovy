@@ -24,7 +24,6 @@ class MetabolomicsModuleTagLib {
 
 		attrs.dialogProperties['baseUrl'] = resource('/', absolute: true);
 
-
 		// get file list from attributes
   		def uploadedFiles
 		if (attrs.containsKey('files')) {

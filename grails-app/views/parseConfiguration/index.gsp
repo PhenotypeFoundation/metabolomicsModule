@@ -16,7 +16,8 @@
 
 <br>
 
-<g:link controller="measurementPlatform" action="list" params="[uploadedFileId: dialogProperties.uploadedFileId]">
+<g:link uri="/#"
+		onclick="parseConfigurationDialog.dialog('close'); parseConfigurationDialog = openParseConfigurationDialog(${(dialogProperties + [buttons: ['save', 'close']] + [actionName: 'features'] + [title: 'Feature List']) as JSON});">
 	Features
 </g:link>
 
