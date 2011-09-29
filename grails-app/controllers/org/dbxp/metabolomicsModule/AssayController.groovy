@@ -13,6 +13,18 @@ class AssayController {
 
 	
 	/*
+	 * Assay by Token (for GSCF integration)
+	 */
+	def showByToken = {
+		if (params.id){
+			def assay = MetabolomicsAssay.findByAssayToken(params.id as String)
+			redirect (action: "view", id: assay.id, params: params)
+		}
+		
+		response.sendError(400, "No assayToken specified.") 
+	}
+	
+	/*
 	 * Metabolomics Assay page
 	 * - list basic assay info (name, members etc)
 	 * - list files related to this assay
