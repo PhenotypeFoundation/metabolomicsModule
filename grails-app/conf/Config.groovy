@@ -87,3 +87,4 @@ development.bar=['development','ci']
 gscf.baseURL='http://localhost:8080/gscf'
 module.consumerId='http://localhost:8083/metabolomicsModule' //replace @runtime by resource(dir: '/', absolute: true)
 module.name='Metabolomics Module'
+module.synchronization.classes.assay = 'org.dbxp.metabolomicsModule.MetabolomicsAssay'

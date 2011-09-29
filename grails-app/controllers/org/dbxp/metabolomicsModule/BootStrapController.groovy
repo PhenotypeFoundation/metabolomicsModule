@@ -78,6 +78,15 @@ class BootStrapController {
 				}
 			}
 		}
+		
+		MetabolomicsAssay.list().each {
+			it.measurementPlatformVersion = MeasurementPlatformVersion.get(1)
+			it.save()
+		}
+//		MetabolomicsAssay.list().each { metAssay ->
+//			metAssay.measurementPlatformVersion = MeasurementPlatformVersion.find()
+//			metAssay.save()
+//		}
 
 		render 'done loading mock data'
 	}
