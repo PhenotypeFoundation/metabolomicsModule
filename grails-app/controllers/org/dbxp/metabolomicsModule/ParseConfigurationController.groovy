@@ -42,8 +42,6 @@ class ParseConfigurationController {
 
 		// determine whether we're on an assay page or on home page
 
-		println params
-
 		[dialogProperties:
 			[	uploadedFileId: params.uploadedFileId,
 				fileName: params.fileName,
@@ -53,7 +51,11 @@ class ParseConfigurationController {
 	}
 
 	def features = {
-		render 'Features'
+		def uploadedFile = UploadedFile.get(params.uploadedFileId);
+		if (!uploadedFile.matrix) uploadedFile.parse();
+
+		[	columns: uploadedFileService.getHeaderRow(uploadedFile).collect {[sTitle: it]},
+			data: uploadedFile.matrix]
 	}
 
     def data = {

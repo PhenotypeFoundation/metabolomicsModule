@@ -77,6 +77,27 @@ function openParseConfigurationDialog(dialogProperties) {
         });
 }
 
+function initFeaturesPage(data) {
+
+	$('div.dataMatrixContainer').html('<table id="dataMatrix"></table>');
+
+    dataMatrixTable = $('#dataMatrix').dataTable(
+	{
+        "oLanguage": {
+            "sInfo": "Showing rows _START_ to _END_ of _TOTAL_.",
+            "sInfoFiltered": ''
+        },
+        "sScrollX": "100%",
+        "bScrollCollapse": false,
+        "iDisplayLength": 5,
+        "bLengthChange": false,
+        "bSort" : false,
+        "bFilter" : false,
+		"aaData": data.aaData,
+        "aoColumns": data.aoColumns
+    });
+}
+
 /**
  * Submit the parser configuration form to the server
  */
