@@ -29,8 +29,8 @@ class BootStrapController {
 		def uploadedFile    = uploadedFileService.createUploadedFileFromFile(file, session.user)
 			uploadedFile.parse([delimiter: '\t'])
 			uploadedFile.assay = assayYYY
-			uploadedFile.save()	
-			
+			uploadedFile.save()
+
 		/*
 		 * this will load example data into:
 		 * - org.dbxp.metabolomicsModule.identity.Feature
@@ -60,37 +60,33 @@ class BootStrapController {
 				assayYYY.measurementPlatformVersion = mpv
 				assayYYY.save()
 				
-				def rand  = new Random() //very handy to generate fake data
-				
-				// setup features (only platform version specific feature properties)
-				Feature.list().each { feature ->
-					new MeasurementPlatformVersionFeature(
-							measurementPlatformVersion: mpv,
-							feature: feature,
-							props: [
-								'mass'	: (((1 + rand.nextInt(1000)) * 0.2627) as Float),	// mass
-								'rt'	: (((1 + rand.nextInt(60*60)) * 0.2672) as Float),	// time it comes from the column
-								'is_id'	: 'IS-' + (1 + rand.nextInt(40)) as String 			// internal standard used to correct
-							]
-						).save()
+				/*
+				 * Import features with labels and misc. properties from file
+				 */
+
+				file = new File('testData/feature_mock_data.xls')
+				def uploadedFeatureFile    = uploadedFileService.createUploadedFileFromFile(file, session.user)
+					uploadedFeatureFile.parse()
+
+				def propertyNames = uploadedFeatureFile.matrix[0][1..-1]
+
+				uploadedFeatureFile.matrix[1..-1].each { row ->
+					def props = [:]
+
+					propertyNames.eachWithIndex { name, index ->
+						props[name] = row[index+1]
+					}
+
+					def feature = Feature.findByLabel(row[0]) ?: new Feature(label: row[0])
+					feature.save()
+					
+					def mpvf = new MeasurementPlatformVersionFeature(feature: feature, props: props, measurementPlatformVersion: mpv)
+					mpvf.save()
 				}
 			}
 		}
-		
-		MetabolomicsAssay.list().each {
-			it.measurementPlatformVersion = MeasurementPlatformVersion.get(1)
-			it.save()
-		}
-		
-		println assayYYY.measurementPlatformVersion.features.collect { it.label }
-		
-		assayYYY.uploadedfiles.each { uf -> 
-			println uploadedFileService.getFeatureNames(uf)
-		}
-		
-		
 
-		render ("Done!")
-		//redirect(url: request.getHeader('Referer'))
+		if (request.getHeader('Referer')) redirect(url: request.getHeader('Referer'))
+		else redirect(controller: 'home')
 	}
 }
