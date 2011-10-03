@@ -7,7 +7,7 @@
 <h1>${assay.name} <small>(${assay.study.token()})</small></h1>
 
 <div id="uploadedFiles">
-	<mm:uploadedFileList files="${assayFiles}" dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['close'], assayId: id, controllerName: 'parseConfiguration', actionName: 'data']}"/>
+	<mm:uploadedFileList files="${assayFiles}" dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['save', 'close'], assayId: id, controllerName: 'parseConfiguration', actionName: 'data']}"/>
 </div>
 
 <g:if test="${measurementPlatformVersions}">

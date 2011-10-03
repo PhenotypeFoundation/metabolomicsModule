@@ -27,14 +27,12 @@ server.groovy =
 							strResponse = '{"username":"admin","id":1,"isAdministrator":true}'
 							break
 						case 'gscf/rest/getStudyVersions':
-							strResponse = '''[
-{"studyToken":"0082669f-2969-4ba8-9d38-3606bdd59cf5","version":2},
-{"studyToken":"7bbba0fb-821e-4e16-903a-3887e1b54e59","version":2}]'''
+							strResponse = '''[{"studyToken":"aaa","version":1},{"studyToken":"bbb","version":1}]'''
 							break
 						case 'gscf/rest/getStudies':
 							strResponse = '''[
-{"studyToken":"0082669f-2969-4ba8-9d38-3606bdd59cf5","public":false,"title":"NuGO PPS human study","description":"Human study performed at RRI; centres involved: RRI, IFR, TUM, Maastricht U.","code":"PPSH","startDate":"2008-01-13T23:00:00Z","published":false,"Objectives":null,"Consortium":null,"Cohort name":null,"Lab id":null,"Institute":null,"Study protocol":null,"version":2},
-{"studyToken":"7bbba0fb-821e-4e16-903a-3887e1b54e59","public":false,"title":"NuGO PPS3 mouse study leptin module","description":"C57Bl/6 mice were fed a high fat (45 en%) or low fat (10 en%) diet after a four week run-in on low fat diet.","code":"PPS3_leptin_module","startDate":"2008-01-01T23:00:00Z","published":false,"Objectives":null,"Consortium":null,"Cohort name":null,"Lab id":null,"Institute":null,"Study protocol":null,"version":2}]'''
+{"studyToken":"aaa","public":false,"title":"Study A","description":"Description A","code":"SA","startDate":"2008-01-13T23:00:00Z","published":false,"Objectives":null,"Consortium":null,"Cohort name":null,"Lab id":null,"Institute":null,"Study protocol":null,"version":1},
+{"studyToken":"bbb","public":false,"title":"Study B","description":"Description B","code":"SB","startDate":"2008-01-01T23:00:00Z","published":false,"Objectives":null,"Consortium":null,"Cohort name":null,"Lab id":null,"Institute":null,"Study protocol":null,"version":1}]'''
 							break
 						case 'gscf/rest/getAuthorizationLevel':
 							strResponse = '{"isOwner":false,"canRead":true,"canWrite":true}'
@@ -45,14 +43,14 @@ server.groovy =
 							println request.parameters.studyToken
 
 							switch (request.parameters.studyToken) {
-								case '0082669f-2969-4ba8-9d38-3606bdd59cf5':
+								case 'aaa':
 									strResponse = '''[
-{"assayToken":"2be22ca0-8681-4614-985c-9b00ad603003","name":"Lipidomics profile after","module":{"class":"org.dbnp.gdt.AssayModule","id":2,"name":"Metabolomics module","notify":false,"openInFrame":true,"url":"http://localhost:8083/metabolomicsModule"},"Description":null,"Spectrometry technique":{"class":"org.dbnp.gdt.TemplateFieldListItem","id":25,"name":"GC/MS","parent":{"class":"TemplateField","id":88}},"parentStudyToken":"0082669f-2969-4ba8-9d38-3606bdd59cf5"},
-{"assayToken":"a2495ea3-9143-4d22-a1e0-f4ae2905c986","name":"Lipidomics profile before","module":{"class":"org.dbnp.gdt.AssayModule","id":2,"name":"Metabolomics module","notify":false,"openInFrame":true,"url":"http://localhost:8083/metabolomicsModule"},"Description":null,"Spectrometry technique":{"class":"org.dbnp.gdt.TemplateFieldListItem","id":25,"name":"GC/MS","parent":{"class":"TemplateField","id":88}},"parentStudyToken":"0082669f-2969-4ba8-9d38-3606bdd59cf5"}]'''
+{"assayToken":"yyy","name":"Assay Y","module":{"class":"org.dbnp.gdt.AssayModule","id":2,"name":"Metabolomics module","notify":false,"openInFrame":true,"url":"http://localhost:8083/metabolomicsModule"},"Description":null,"Spectrometry technique":{"class":"org.dbnp.gdt.TemplateFieldListItem","id":25,"name":"LC/MS","parent":{"class":"TemplateField","id":88}},"parentStudyToken":"aaa"},
+{"assayToken":"zzz","name":"Assay Z","module":{"class":"org.dbnp.gdt.AssayModule","id":2,"name":"Metabolomics module","notify":false,"openInFrame":true,"url":"http://localhost:8083/metabolomicsModule"},"Description":null,"Spectrometry technique":{"class":"org.dbnp.gdt.TemplateFieldListItem","id":25,"name":"GC/MS","parent":{"class":"TemplateField","id":88}},"parentStudyToken":"aaa"}]'''
 									break
-								case '7bbba0fb-821e-4e16-903a-3887e1b54e59':
+								case 'bbb':
 									strResponse = '''[
-{"assayToken":"bbe75294-e488-468f-be98-13e9469b261d","name":"Lipidomics profile","module":{"class":"org.dbnp.gdt.AssayModule","id":2,"name":"Metabolomics module","notify":false,"openInFrame":true,"url":"http://localhost:8083/metabolomicsModule"},"Description":null,"Spectrometry technique":{"class":"org.dbnp.gdt.TemplateFieldListItem","id":26,"name":"LC/MS","parent":{"class":"TemplateField","id":88}},"parentStudyToken":"7bbba0fb-821e-4e16-903a-3887e1b54e59"}]'''
+{"assayToken":"xxx","name":"Assay X","module":{"class":"org.dbnp.gdt.AssayModule","id":2,"name":"Metabolomics module","notify":false,"openInFrame":true,"url":"http://localhost:8083/metabolomicsModule"},"Description":null,"Spectrometry technique":{"class":"org.dbnp.gdt.TemplateFieldListItem","id":26,"name":"MS/MS","parent":{"class":"TemplateField","id":88}},"parentStudyToken":"bbb"}]'''
 									break
 							}
 							break
@@ -62,13 +60,13 @@ server.groovy =
 							println request.parameters.assayToken
 
 							switch (request.parameters.assayToken) {
-								case '2be22ca0-8681-4614-985c-9b00ad603003':
+								case 'xxx':
 									strResponse = new File('static/assay1_samples').text
 									break
-								case 'a2495ea3-9143-4d22-a1e0-f4ae2905c986':
+								case 'yyy':
 									strResponse = new File('static/assay2_samples').text
 									break
-								case 'bbe75294-e488-468f-be98-13e9469b261d':
+								case 'zzz':
 									strResponse = new File('static/assay3_samples').text
 									break
 							}

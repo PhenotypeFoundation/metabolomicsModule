@@ -66,13 +66,13 @@
     </div>
 
     <div class="dataMatrixContainer">
-    </div>
+    </div><%--
 
     <div class="platform">
       <pc:platformControl platformVersionId="${platformVersionId}" />
     </div>
 
-    <div class="assays">
+    --%><div class="assays">
       <pc:assaysControl assayId="${uploadedFile?.assay?.id}" />
     </div>
 

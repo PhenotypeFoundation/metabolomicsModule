@@ -17,24 +17,20 @@ import org.dbxp.moduleBase.User
 class BootStrapController {
 
     def uploadedFileService
-
-    def index = { render 'index' }
-
-    def loadSmallDataSet = {
-
-        def file            = new File('testData/DiogenesMockData_mini.txt')
-        def uploadedFile    = uploadedFileService.createUploadedFileFromFile(file, null)
-
-        uploadedFile.parse([delimiter: '\t'])
-
-        uploadedFile.save()
-
-        render 'done loading mock data'
-
-    }
 	
-	def loadMP = {
+	def index = {
 		
+		def assayYYY = MetabolomicsAssay.findByName("Assay Y")
+		
+		/*
+		 * Import example data for assay aaa
+		 */
+		def file            = new File('testData/assay_yyy_test_data.txt')
+		def uploadedFile    = uploadedFileService.createUploadedFileFromFile(file, session.user)
+			uploadedFile.parse([delimiter: '\t'])
+			uploadedFile.assay = assayYYY
+			uploadedFile.save()	
+			
 		/*
 		 * this will load example data into:
 		 * - org.dbxp.metabolomicsModule.identity.Feature
@@ -42,8 +38,6 @@ class BootStrapController {
 		 * - org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
 		 * - org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersionFeature
 		 */
-
-		def rand  = new Random() //very handy to generate fake data
 		
 		// setup features (including feature specific properties)
 		def f0 = new Feature(label: "PA(12:0/13:0)", props: ['pubchem_sid':'4266297','hmdb_id':'','lipidmaps_id':'LMGP10010001']).save()
@@ -58,11 +52,15 @@ class BootStrapController {
 		def f9 = new Feature(label: "PA(12:0/18:2(9Z,12Z))", props: ['pubchem_sid':'123066212','hmdb_id':'','lipidmaps_id':'LMGP10010051']).save()
 
 		// setup measurement platform
-		3.times { // create MeasurementPlatforms
-			def mp = new MeasurementPlatform(name: "MP-" + (1 + rand.nextInt(100000))).save()
+		1.times { // create MeasurementPlatforms
+			def mp = new MeasurementPlatform(name: "MP-AAA").save()
 			
-			rand.nextInt(3).times { // create MeasurementPlatformVersions
-				def mpv = new MeasurementPlatformVersion(measurementPlatform: mp, versionNumber: it + 1 as Float).save()
+			1.times { // create MeasurementPlatformVersions
+				def mpv = new MeasurementPlatformVersion(measurementPlatform: mp, versionNumber: "0.1" as Float).save()
+				assayYYY.measurementPlatformVersion = mpv
+				assayYYY.save()
+				
+				def rand  = new Random() //very handy to generate fake data
 				
 				// setup features (only platform version specific feature properties)
 				Feature.list().each { feature ->
@@ -83,60 +81,8 @@ class BootStrapController {
 			it.measurementPlatformVersion = MeasurementPlatformVersion.get(1)
 			it.save()
 		}
-//		MetabolomicsAssay.list().each { metAssay ->
-//			metAssay.measurementPlatformVersion = MeasurementPlatformVersion.find()
-//			metAssay.save()
-//		}
 
-		render 'done loading mock data'
+		render ("Done!")
+		//redirect(url: request.getHeader('Referer'))
 	}
-
-    def createStudy = {
-
-        def rand = new Random()
-        def intLimit = 1000000
-
-        def user = new User(
-                identifier:         rand.nextInt(intLimit),
-                username:           'userName' + rand.nextInt(intLimit),
-                isAdministrator:    false
-        ).save()
-
-        session.user = user
-
-        def study = new Study(
-                studyToken: 'token' + rand.nextInt(intLimit),
-                name:       'name'  + rand.nextInt(intLimit),
-        )
-
-        def auth = new Auth(
-                canRead:    true,
-                canWrite:   true,
-                isOwner:    true
-        )
-
-        study.addToAuth(auth)
-        user.addToAuth(auth)
-
-        def assay = new Assay(
-                assayToken: 'token' + rand.nextInt(intLimit),
-                name:       'name'  + rand.nextInt(intLimit)
-        )
-
-        study.addToAssays(assay)
-
-        rand.nextInt(10).times{
-            assay.addToSamples(
-                    sampleToken:    'token'     + it,
-                    name:           'name'      + it,
-                    subject:        'subject'   + it,
-                    event:          'event'     + it
-            )
-        }
-
-        study.save()
-
-        render 'done'
-
-    }
 }
