@@ -1,6 +1,7 @@
 package org.dbxp.metabolomicsModule
 
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
+import org.dbxp.dbxpModuleStorage.UploadedFile
 import org.dbxp.moduleBase.Assay
 
 class MetabolomicsAssay extends Assay {
@@ -11,4 +12,10 @@ class MetabolomicsAssay extends Assay {
     static constraints = {
 		measurementPlatformVersion(nullable: true)
     }
+	
+	static transients = ['uploadedfiles']
+	
+	def getUploadedfiles() {
+		return UploadedFile.findAllByAssay(this)
+	}
 }

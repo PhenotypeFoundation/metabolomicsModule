@@ -7,6 +7,7 @@ GrettyServer server = []
 server.groovy =
 	[
 		localAddress: new InetSocketAddress("localhost", 8080),
+		//localAddress: new InetSocketAddress(InetAddress.localHost.canonicalHostName, 8080),
 
 		defaultHandler:
 		{
@@ -61,10 +62,10 @@ server.groovy =
 
 							switch (request.parameters.assayToken) {
 								case 'xxx':
-									strResponse = new File('static/assay1_samples').text
+									strResponse = new File('static/assay2_samples').text
 									break
 								case 'yyy':
-									strResponse = new File('static/assay2_samples').text
+									strResponse = new File('static/assay1_samples').text
 									break
 								case 'zzz':
 									strResponse = new File('static/assay3_samples').text

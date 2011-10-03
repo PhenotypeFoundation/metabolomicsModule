@@ -81,6 +81,14 @@ class BootStrapController {
 			it.measurementPlatformVersion = MeasurementPlatformVersion.get(1)
 			it.save()
 		}
+		
+		println assayYYY.measurementPlatformVersion.features.collect { it.label }
+		
+		assayYYY.uploadedfiles.each { uf -> 
+			println uploadedFileService.getFeatureNames(uf)
+		}
+		
+		
 
 		render ("Done!")
 		//redirect(url: request.getHeader('Referer'))
