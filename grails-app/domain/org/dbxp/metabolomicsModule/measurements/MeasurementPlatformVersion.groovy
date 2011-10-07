@@ -25,7 +25,8 @@ class MeasurementPlatformVersion {
 	static transients = ['features', 'featuresfolder', 'featuresfile']
 	
 	// fetch features linked to this version
-	List getFeatures(){ return MeasurementPlatformVersionFeature.findAllByMeasurementPlatformVersion(this).collect { it.feature } }	
+	//List getFeatures(){ return MeasurementPlatformVersionFeature.findAllByMeasurementPlatformVersion(this).collect { it.features } }
+    List getFeatures(){ return MeasurementPlatformVersionFeature.findAllByMeasurementPlatformVersion(this) }
 	
 	// returns the folder to store the feature file in
 	String getFeaturesfolder(){

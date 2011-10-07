@@ -35,12 +35,18 @@ class AssayController {
 		if (!params.id) response.sendError(400, "No assay id specified.") // id of an assay must be present
 		
 		// load assay from id (for session.user)
-		def assay = assayService.getAssayReadableByUserById(session.user, params.id as Long)
+		MetabolomicsAssay assay = assayService.getAssayReadableByUserById(session.user, params.id as Long)
 
-        if (!assay) response.sendError(404, "No assay found with id $params.id")
+        if (!assay) {
+            response.sendError(404, "No assay found with id $params.id")
+            return
+        } else if (params.platformVersionId) {
+            assay.measurementPlatformVersion = MeasurementPlatformVersion.get(params.platformVersionId)
+            assay.save()
+        }
 		
 		def assayFiles = UploadedFile.findAllByAssay(assay)
-		
+
 		def measurementPlatformVersions = []
 		def measurementPlatformVersionUploadedFiles = [:]
 		assayFiles.each{ assayFile ->
@@ -48,6 +54,7 @@ class AssayController {
 			// get MeasurementPlatformVersion from AssayFile
 			def mpv = MeasurementPlatformVersion.get((Long) assayFile['platformVersionId'])
 
+            println mpv
             if (mpv) {
                 // add MeasurementPlatformVersion to List
                 measurementPlatformVersions.add(mpv)
@@ -57,10 +64,21 @@ class AssayController {
                 measurementPlatformVersionUploadedFiles[mpv.id] << assayFile
             }
 		}
+
+        def assayFeatures = [:]
+        def featureFeatures = [:]
+
+        assay.measurementPlatformVersion?.features?.each { mpvf ->
+            assayFeatures[mpvf.feature.label] = mpvf.props
+            featureFeatures[mpvf.feature.label] = mpvf.feature.props
+        }
 				
 		[	assay: assay,
 			assayFiles: assayFiles,
 			measurementPlatformVersions: measurementPlatformVersions,
-			measurementPlatformVersionUploadedFiles: measurementPlatformVersionUploadedFiles]
+			measurementPlatformVersionUploadedFiles: measurementPlatformVersionUploadedFiles,
+            assayFeatures: assayFeatures,
+            featureFeatures: featureFeatures
+        ]
 	}
 }

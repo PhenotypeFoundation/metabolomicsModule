@@ -123,10 +123,6 @@ class ParseConfigurationController {
 	 */
 	def handleFeatureForm = {
 
-println 'handleFeatureForm'
-		println params
-		println session.uploadedFile
-
 		if (!session.uploadedFile) return
 
 		def uploadedFile = session.uploadedFile
@@ -156,7 +152,7 @@ println 'handleFeatureForm'
 					}
 
 					def feature = Feature.findByLabel(row[0]) ?: new Feature(label: row[0])
-					feature.save()
+					feature.save(failOnError: true)
 
 					def mpvf = new MeasurementPlatformVersionFeature(feature: feature, props: props, measurementPlatformVersion: mpv)
 					mpvf.save(failOnError: true)

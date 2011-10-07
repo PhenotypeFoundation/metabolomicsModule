@@ -65,23 +65,23 @@ function openParseConfigurationDialog(dialogProperties) {
                 // necessary to destroy object to make datatables appear after opening dialog for a second time
                 beforeClose: function(event, ui) {
 					$(this).remove();
-console.log(dialogProperties);
 					if (dialogProperties.refreshStudyList) {
-						// update studylist
-						$.ajax({
-							url: baseUrl + 'home/studyList',
-							cache: false,
-							success: function(html) {
-								$('div#studyOverview').html(html);
-							}
-						});
-						$.ajax({
-							url: baseUrl + 'home/uploadedFileList',
-							cache: false,
-							success: function(html) {
-								$('div#uploadedFiles').html(html);
-							}
-						});
+//						// update studylist
+//						$.ajax({
+//							url: baseUrl + 'home/studyList',
+//							cache: false,
+//							success: function(html) {
+//								$('div#studyOverview').html(html);
+//							}
+//						});
+//						$.ajax({
+//							url: baseUrl + 'home/uploadedFileList',
+//							cache: false,
+//							success: function(html) {
+//								$('div#uploadedFiles').html(html);
+//							}
+//						});
+                        window.location.replace(baseUrl);
 					}
 				},
                 resizeStop: function(event, ui) { dataMatrixTable.fnAdjustColumnSizing(); }

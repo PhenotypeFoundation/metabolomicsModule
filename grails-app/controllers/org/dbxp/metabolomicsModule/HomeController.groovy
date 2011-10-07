@@ -11,18 +11,22 @@ class HomeController {
 		render(view: 'index', model:[ files: files ])
 	}
 
-	def studyList = {
-		render(template: "studyList")
-	}
-
-	def uploadedFileList = {
-
-		def files = uploadedFileService.getUnassignedUploadedFilesForUser(session.user)
-		
-		println files
-		
-		render(template: "uploadedFileList", model: [files: files])
-	}
+//	def studyList = {
+//
+//        println 'studyList'
+//
+//		render(template: "studyList")
+//	}
+//
+//	def uploadedFileList = {
+//
+//        println 'uploadedFileList'
+//
+//		def files = uploadedFileService.getUnassignedUploadedFilesForUser(session.user)
+//        println files
+//
+//		render(template: "uploadedFileList", model: [files: files])
+//	}
 
 	def developmentBar = {
 		// make super sure this only works in development

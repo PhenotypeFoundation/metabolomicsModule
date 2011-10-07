@@ -6,35 +6,43 @@
 <body>
 <h1>${assay.name} <small>(${assay.study.token()})</small></h1>
 
+<mm:assayPlatformChooser assay="${assay}" />
+
 <div id="uploadedFiles">
 	<mm:uploadedFileList files="${assayFiles}" dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['save', 'close'], assayId: id, controllerName: 'parseConfiguration', actionName: 'data']}"/>
 </div>
 
-<g:if test="${measurementPlatformVersions}">
-	<h2>Measurement Platforms</h2>
-	<g:each in="${measurementPlatformVersions}" var="measurementPlatformVersion">
+${assayFeatures}
 
-		<h3>${measurementPlatformVersion.measurementPlatform.name} V${measurementPlatformVersion.versionNumber}</h3>
-		<g:link controller="measurementPlatform" action="view"
-				id="${measurementPlatformVersion.measurementPlatform.id}">- - - view - - -</g:link><br/>
+<h2>Data vs. Features</h2>
+<g:each in="${assayFiles}" var="assayFile">
 
-		<g:if test="${measurementPlatformVersion.measurementPlatform.description}">
-			<p>${measurementPlatformVersion.measurementPlatform.description}</p>
-		</g:if>
+    <table>
+        <thead>
+        <tr>
+            <th>1</th>
+            <th>2</th>
+        </tr>
 
-		<g:if test="${measurementPlatformVersion.features}">
-			identifiable features: ${measurementPlatformVersion.features.asList()*.label.join(', ')}
-		</g:if>
+        </thead>
+        <tbody>
 
-		<g:if test="${measurementPlatformVersionUploadedFiles[measurementPlatformVersion.id]}">
-			<h4>Related files</h4>
-			<ul>
-				<g:each in="${measurementPlatformVersionUploadedFiles[measurementPlatformVersion.id]}" var="assayFile">
-					<li>${assayFile.fileName} (${assayFile.lastUpdated})</li>
-				</g:each>
-			</ul>
-		</g:if>
-	</g:each>
-</g:if>
+        <g:each in="${assayFile.dataColumnHeaders}" var="dataColumnHeader">
+            <tr>
+                <td>
+                    ${dataColumnHeader}
+                </td>
+                <td>
+                    ${(dataColumnHeader in assayFeatures.keySet()) ? assayFeatures[dataColumnHeader] : ''}
+                </td>
+            </tr>
+        </g:each>
+
+        </tbody>
+    
+    </table>
+
+</g:each>
+
 </body>
 </html>  

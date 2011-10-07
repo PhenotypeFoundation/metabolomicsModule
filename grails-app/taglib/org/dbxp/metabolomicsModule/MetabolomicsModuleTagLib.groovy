@@ -19,6 +19,7 @@ class MetabolomicsModuleTagLib {
 
     def assayService
     def uploadedFileService
+    def measurementFactoryService
 
     def uploadedFileList = { attrs ->
 
@@ -114,7 +115,8 @@ class MetabolomicsModuleTagLib {
 
         def sampleMsg = "${assay.samples?.size()} samples"
 
-        UploadedFile uploadedFile = UploadedFile.findByAssay(assay)
+        Long uploadedFileId = UploadedFile.findByAssay(assay)?.id
+        UploadedFile uploadedFile = UploadedFile.get(uploadedFileId)
 
         if (uploadedFile) {
             if (uploadedFile.matrix) sampleMsg += " (${uploadedFile.determineAmountOfSamplesWithData()} assigned)";
@@ -135,4 +137,34 @@ class MetabolomicsModuleTagLib {
 		out << "</li>"
 
     }
+
+    /**
+     * Dropdown list control to choose the platform used (DCL lipodomics, et cetera).
+     *
+     * @param assay
+     */
+    def assayPlatformChooser = { attrs, body ->
+        out << "Platform:  <br />"
+        out << '<form>'
+        out << '<select name="platformVersionId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
+
+        measurementFactoryService.findAllMeasurementPlatforms().each { platform ->
+			// if new studygroup create new label
+			out << '<optgroup label="' + platform.name + '">'
+            measurementFactoryService.findAllMeasurementPlatformVersions(measurementPlatform:platform).each { platformVersion ->
+
+                out << '<option value="' + platformVersion.id + '" ' + ((platformVersion.id == attrs.assay.measurementPlatformVersion.id) ? 'selected' : '') + '>' + platformVersion.versionNumber + '</option>'
+            }
+
+            out << '</optgroup>'
+
+			out << '<option value="' + platform.id + '">' + platform.name + '</option>'
+
+        }
+
+        out << '</select>'
+        out << '<input type="submit" value="Submit" />'
+        out << '</form>'
+    }
+
 }
