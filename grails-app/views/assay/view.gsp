@@ -8,20 +8,21 @@
 
 <mm:assayPlatformChooser assay="${assay}" />
 
-<div id="uploadedFiles">
+<div id="uploadedAssayFiles">
 	<mm:uploadedFileList files="${assayFiles}" dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['save', 'close'], assayId: id, controllerName: 'parseConfiguration', actionName: 'data']}"/>
 </div>
 
-${assayFeatures}
+%{--${assayFeatures}--}%
 
+<div id=dataVersusFeatures>
 <h2>Data vs. Features</h2>
 <g:each in="${assayFiles}" var="assayFile">
 
     <table>
         <thead>
         <tr>
-            <th>1</th>
-            <th>2</th>
+            <th>Feature</th>
+            <th>Properties</th>
         </tr>
 
         </thead>
@@ -43,6 +44,6 @@ ${assayFeatures}
     </table>
 
 </g:each>
-
+</div>
 </body>
 </html>  

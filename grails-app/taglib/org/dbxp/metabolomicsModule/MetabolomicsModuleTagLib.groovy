@@ -158,8 +158,6 @@ class MetabolomicsModuleTagLib {
 
             out << '</optgroup>'
 
-			out << '<option value="' + platform.id + '">' + platform.name + '</option>'
-
         }
 
         out << '</select>'
