@@ -30,6 +30,10 @@ package org.dbxp.metabolomicsModule
 import grails.converters.JSON
 import org.dbxp.dbxpModuleStorage.UploadedFile
 import org.dbxp.moduleBase.Assay
+import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
+import org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
+import org.dbxp.metabolomicsModule.identity.Feature
+import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersionFeature
 
 class ParseConfigurationController {
 
@@ -37,10 +41,6 @@ class ParseConfigurationController {
     static final int tableCellMaxContentLength = 40
 
 	def index = {
-
-		// knoppen
-
-		// determine whether we're on an assay page or on home page
 
 		[dialogProperties:
 			[	uploadedFileId: params.uploadedFileId,
@@ -52,10 +52,16 @@ class ParseConfigurationController {
 
 	def features = {
 		def uploadedFile = UploadedFile.get(params.uploadedFileId);
+		if (!uploadedFile) {
+			response.sendError(400)
+			return
+		}
+		session.uploadedFile = uploadedFile
 		if (!uploadedFile.matrix) uploadedFile.parse();
 
-		[	columns: uploadedFileService.getHeaderRow(uploadedFile).collect {[sTitle: it]},
-			data: uploadedFile.matrix]
+		[	uploadedFile: uploadedFile,
+			columns: uploadedFileService.getHeaderRow(uploadedFile).collect {[sTitle: it]},
+			data: uploadedFile.matrix[1..-1]]
 	}
 
     def data = {
@@ -111,6 +117,61 @@ class ParseConfigurationController {
                 render ''
         }
     }
+
+	/**
+	 * Same as handleForm but specifically for the features pop-up dialog
+	 */
+	def handleFeatureForm = {
+
+println 'handleFeatureForm'
+		println params
+		println session.uploadedFile
+
+		if (!session.uploadedFile) return
+
+		def uploadedFile = session.uploadedFile
+
+        switch (params.formAction) {
+            case 'save':
+
+				// generate new measurement platform version
+				MeasurementPlatform mp = MeasurementPlatform.get(params.platformVersionId)
+				if (!mp) {
+					response.sendError(400)
+					return
+				}
+
+				def newVersionNumber = mp.versions*.versionNumber.sort()[-1]+0.1
+
+				def mpv = new MeasurementPlatformVersion(measurementPlatform: mp, versionNumber: newVersionNumber).save()
+
+				// parse matrix contents and save to measurement platform
+				def propertyNames = uploadedFile.matrix[0][1..-1]
+
+				uploadedFile.matrix[1..-1].each { row ->
+					def props = [:]
+
+					propertyNames.eachWithIndex { name, index ->
+						props[name] = row[index+1]
+					}
+
+					def feature = Feature.findByLabel(row[0]) ?: new Feature(label: row[0])
+					feature.save()
+
+					def mpvf = new MeasurementPlatformVersionFeature(feature: feature, props: props, measurementPlatformVersion: mpv)
+					mpvf.save(failOnError: true)
+				}
+
+				// if successful, delete uploaded file
+				uploadedFileService.deleteUploadedFile(uploadedFile)
+
+				render ''
+
+                break
+            default:
+                render ''
+        }
+	}
 
     /**
      *
@@ -253,11 +314,11 @@ class ParseConfigurationController {
      */
     def parseFileAgainIfNeeded(params) {
 
-        def uploadedFile = session.uploadedFile
+        def uploadedFile = UploadedFile.get(session.uploadedFile.id)
         def parseInfo = uploadedFile?.parseInfo
 
-		if ((parseInfo?.parserClassName == 'ExcelParser') 	&& (params.sheetIndex != null && parseInfo.sheetIndex != params.sheetIndex as int) ||
-			(parseInfo?.parserClassName == 'CsvParser')		&& (params.delimiter != null && parseInfo.delimiter != params.delimiter)) {
+		if ((parseInfo?.parserClassName == 'ExcelParser'	&& (params.sheetIndex != null && (parseInfo.sheetIndex as int != params.sheetIndex as int))) ||
+			(parseInfo?.parserClassName == 'CsvParser'		&& (params.delimiter != null &&  (parseInfo.delimiter as Byte != params.delimiter as Byte)))) {
 			try {
 				session.uploadedFile.parse([sheetIndex: params.sheetIndex as int, delimiter: params.delimiter as byte])
 			} catch (e) {

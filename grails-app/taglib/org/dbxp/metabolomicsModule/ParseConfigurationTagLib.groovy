@@ -44,14 +44,17 @@ class ParseConfigurationTagLib {
         out << '<select name="platformVersionId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
 
         measurementFactoryService.findAllMeasurementPlatforms().each { platform ->
-        // if new studygroup create new label
-        out << '<optgroup label="' + platform.name + '">'
-            measurementFactoryService.findAllMeasurementPlatformVersions(measurementPlatform:platform).each { platformVersion ->
+//			// if new studygroup create new label
+//			out << '<optgroup label="' + platform.name + '">'
+//            measurementFactoryService.findAllMeasurementPlatformVersions(measurementPlatform:platform).each { platformVersion ->
+//
+//                out << '<option value="' + platformVersion.id + '" ' + ((platformVersion.id == attrs.platformVersionId) ? 'selected' : '') + '>' + platformVersion.versionNumber + '</option>'
+//            }
+//
+//            out << '</optgroup>'
 
-                out << '<option value="' + platformVersion.id + '" ' + ((platformVersion.id == attrs.platformVersionId) ? 'selected' : '') + '>' + platformVersion.versionNumber + '</option>'
-            }
+			out << '<option value="' + platform.id + '">' + platform.name + '</option>'
 
-            out << '</optgroup>'
         }
 
         out << '</select>'

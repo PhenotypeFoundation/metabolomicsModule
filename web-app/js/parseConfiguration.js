@@ -2,6 +2,8 @@
 var dataMatrixTable;
 var parseConfigurationDialog;
 
+var baseUrl;
+
 /**
  * Add control element listeners so when a control is changed the preview is updated
  */
@@ -31,6 +33,8 @@ function initParseConfigurationDialogListeners() {
  */
 function openParseConfigurationDialog(dialogProperties) {
 
+	baseUrl = dialogProperties.baseUrl
+
  	var buttonMap = {};
 
 	$.each(dialogProperties.buttons, function(index, value){
@@ -45,9 +49,9 @@ function openParseConfigurationDialog(dialogProperties) {
 	});
 
     // Assign the dialog to the global variable
-    parseConfigurationDialog = $("<div><img src='" + dialogProperties.baseUrl +  "/images/spinner.gif'></div>")
+    parseConfigurationDialog = $("<div id='parseConfigurationDialog'><img src='" + baseUrl +  "/images/spinner.gif'></div>")
 		.load(
-			dialogProperties.baseUrl + dialogProperties.controllerName + '/' + dialogProperties.actionName + '/' +
+			baseUrl + dialogProperties.controllerName + '/' + dialogProperties.actionName + '/' +
 				"?fileName=" + encodeURI(dialogProperties.fileName) +
 				"&uploadedFileId=" + encodeURI(dialogProperties.uploadedFileId) +
 				(dialogProperties.dataType ? "&dataType=" + dialogProperties.dataType : '')
@@ -61,11 +65,18 @@ function openParseConfigurationDialog(dialogProperties) {
                 // necessary to destroy object to make datatables appear after opening dialog for a second time
                 beforeClose: function(event, ui) {
 					$(this).remove();
-
+console.log(dialogProperties);
 					if (dialogProperties.refreshStudyList) {
 						// update studylist
 						$.ajax({
-							url: baseUrl + '/home/studyList',
+							url: baseUrl + 'home/studyList',
+							cache: false,
+							success: function(html) {
+								$('div#studyOverview').html(html);
+							}
+						});
+						$.ajax({
+							url: baseUrl + 'home/uploadedFileList',
 							cache: false,
 							success: function(html) {
 								$('div#studyOverview').html(html);
@@ -150,9 +161,9 @@ function updateDialog(data) {
             if (data.assaySampleNames.length) {
                 // the datamatrix sample name also exists in the assay sample collection?
                 if ( $.inArray(sampleName, data.assaySampleNames) != -1 ) {
-                    dataCellObject.html('<img src="images/sample_green.png" class="sampleColumnIcon"/>' + dataCellObject.html());
+                    dataCellObject.html('<img src="' + baseUrl + 'images/sample_green.png" class="sampleColumnIcon"/>' + dataCellObject.html());
                 } else { // the datamatrix samples doesn't exist in the assay sample collection
-                    dataCellObject.html('<img src="images/sample_red.png" class="sampleColumnIcon"/>' + dataCellObject.html());
+                    dataCellObject.html('<img src="' + baseUrl + 'images/sample_red.png" class="sampleColumnIcon"/>' + dataCellObject.html());
                 }
             }
 

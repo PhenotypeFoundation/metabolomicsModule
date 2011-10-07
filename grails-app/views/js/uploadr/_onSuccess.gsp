@@ -12,7 +12,6 @@ $.ajax(
 			'X-File-Name': file.fileName
 		},
 		success: function(data) {
-			console.log('just downloaded');
 			file.fileId = data.fileId;
 			file.fileRating = data.fileRating;
 			file.fileModified = data.fileModified;

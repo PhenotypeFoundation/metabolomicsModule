@@ -12,7 +12,17 @@ class HomeController {
 	}
 
 	def studyList = {
+
+		println 'home/studyList'
+
 		render(template: "studyList")
+	}
+
+	def uploadedFileList = {
+
+		println 'home/uploadedFileList'
+
+		render(template: "uploadedFileList")
 	}
 
 	def developmentBar = {
