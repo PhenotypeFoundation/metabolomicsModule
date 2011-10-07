@@ -5,10 +5,11 @@
 </head>
 <body>
 <div id="uploadedFiles">
-	<mm:uploadedFileList files="${files}" dialogProperties="[title: 'Please choose the uploaded file data type', buttons: ['close'], controllerName: 'parseConfiguration', actionName: 'index']"/>
+	<%--<mm:uploadedFileList files="${files}" dialogProperties="[title: 'Please choose the uploaded file data type', buttons: ['close'], controllerName: 'parseConfiguration', actionName: 'index']"/>--%>
+	<g:render template="uploadedFileList" />
 </div>
 <div id="studyOverview">
-	<g:render template="studyList"/>
+	<g:render template="studyList" />
 </div>
 <g:if test="${((ConfigurationHolder.config.development.bar).contains(grails.util.GrailsUtil.environment))}"><g:render template="development"/></g:if>
 </body>

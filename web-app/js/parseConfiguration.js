@@ -79,7 +79,7 @@ console.log(dialogProperties);
 							url: baseUrl + 'home/uploadedFileList',
 							cache: false,
 							success: function(html) {
-								$('div#studyOverview').html(html);
+								$('div#uploadedFiles').html(html);
 							}
 						});
 					}

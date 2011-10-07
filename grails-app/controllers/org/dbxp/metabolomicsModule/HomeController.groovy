@@ -12,17 +12,16 @@ class HomeController {
 	}
 
 	def studyList = {
-
-		println 'home/studyList'
-
 		render(template: "studyList")
 	}
 
 	def uploadedFileList = {
 
-		println 'home/uploadedFileList'
-
-		render(template: "uploadedFileList")
+		def files = uploadedFileService.getUnassignedUploadedFilesForUser(session.user)
+		
+		println files
+		
+		render(template: "uploadedFileList", model: [files: files])
 	}
 
 	def developmentBar = {
