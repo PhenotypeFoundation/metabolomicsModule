@@ -19,7 +19,7 @@ class MetabolomicsModuleTagLib {
 
     def assayService
     def uploadedFileService
-    def measurementFactoryService
+    def measurementService
 
     def uploadedFileList = { attrs ->
 
@@ -148,10 +148,10 @@ class MetabolomicsModuleTagLib {
         out << '<form>'
         out << '<select name="platformVersionId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
 
-        measurementFactoryService.findAllMeasurementPlatforms().each { platform ->
+        measurementService.findAllMeasurementPlatforms().each { platform ->
 			// if new studygroup create new label
 			out << '<optgroup label="' + platform.name + '">'
-            measurementFactoryService.findAllMeasurementPlatformVersions(measurementPlatform:platform).each { platformVersion ->
+            measurementService.findAllMeasurementPlatformVersions(measurementPlatform:platform).each { platformVersion ->
 
                 out << '<option value="' + platformVersion.id + '" ' + ((platformVersion.id == attrs.assay.measurementPlatformVersion.id) ? 'selected' : '') + '>' + platformVersion.versionNumber + '</option>'
             }

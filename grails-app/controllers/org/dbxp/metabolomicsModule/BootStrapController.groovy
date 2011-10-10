@@ -1,13 +1,6 @@
 package org.dbxp.metabolomicsModule
 
-import org.dbxp.metabolomicsModule.identity.Feature
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
-import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
-import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersionFeature
-import org.dbxp.moduleBase.Assay
-import org.dbxp.moduleBase.Auth
-import org.dbxp.moduleBase.Study
-import org.dbxp.moduleBase.User
 
 /**
  * This is a temporary controller, solely for development purposes. This is a place where you
@@ -17,73 +10,40 @@ import org.dbxp.moduleBase.User
 class BootStrapController {
 
     def uploadedFileService
+	def measurementService
 	
 	def index = {
 		
 		def assayYYY = MetabolomicsAssay.findByName("Assay Y")
-		
-		/*
-		 * Import example data for assay aaa
-		 */
-		def file            = new File('testData/assay_yyy_test_data.txt')
-		def uploadedFile    = uploadedFileService.createUploadedFileFromFile(file, session.user)
-			uploadedFile.parse([delimiter: '\t'])
-			uploadedFile.assay = assayYYY
-			uploadedFile.save()
 
-		/*
-		 * this will load example data into:
-		 * - org.dbxp.metabolomicsModule.identity.Feature
-		 * - org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
-		 * - org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
-		 * - org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersionFeature
-		 */
-		
-		// setup features (including feature specific properties)
-//		def f0 = new Feature(label: "PA(12:0/13:0)", props: ['pubchem_sid':'4266297','hmdb_id':'','lipidmaps_id':'LMGP10010001']).save()
-//		def f1 = new Feature(label: "PA(16:0/18:1(9Z))", props: ['pubchem_sid':'4266298','hmdb_id':'HMDB07859','lipidmaps_id':'LMGP10010002']).save()
-//		def f2 = new Feature(label: "PA(17:0/14:1(9Z))", props: ['pubchem_sid':'4266302','hmdb_id':'','lipidmaps_id':'LMGP10010006']).save()
-//		def f3 = new Feature(label: "PA(6:0/6:0)", props: ['pubchem_sid':'14714439','hmdb_id':'','lipidmaps_id':'LMGP10010020']).save()
-//		def f4 = new Feature(label: "PA(8:0/8:0)", props: ['pubchem_sid':'14714440','hmdb_id':'','lipidmaps_id':'LMGP10010021']).save()
-//		def f5 = new Feature(label: "PA(10:0/10:0)", props: ['pubchem_sid':'14714441','hmdb_id':'','lipidmaps_id':'LMGP10010022']).save()
-//		def f6 = new Feature(label: "PA(18:0/18:0)", props: ['pubchem_sid':'14714447','hmdb_id':'','lipidmaps_id':'LMGP10010028']).save()
-//		def f7 = new Feature(label: "PA(12:0/12:0)", props: ['pubchem_sid':'14714449','hmdb_id':'','lipidmaps_id':'LMGP10010030']).save()
-//		def f8 = new Feature(label: "PA(12:0/15:0)", props: ['pubchem_sid':'123066206','hmdb_id':'','lipidmaps_id':'LMGP10010045']).save()
-//		def f9 = new Feature(label: "PA(12:0/18:2(9Z,12Z))", props: ['pubchem_sid':'123066212','hmdb_id':'','lipidmaps_id':'LMGP10010051']).save()
+		if (assayYYY) {
 
-		// setup measurement platform
-		1.times { // create MeasurementPlatforms
+			/*
+			 * Import example data for assay aaa
+			 */
+			def file            = new File('testData/assay_yyy_test_data.txt')
+			def uploadedFile    = uploadedFileService.createUploadedFileFromFile(file, session.user)
+				uploadedFile.parse([delimiter: '\t'])
+				uploadedFile.assay = assayYYY
+				uploadedFile.save()
+
+			/*
+			 * this will load example data into:
+			 * - org.dbxp.metabolomicsModule.identity.Feature
+			 * - org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
+			 * - org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
+			 * - org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersionFeature
+			 */
+
 			def mp = new MeasurementPlatform(name: "MP-AAA").save()
-			
-			1.times { // create MeasurementPlatformVersions
-				def mpv = new MeasurementPlatformVersion(measurementPlatform: mp, versionNumber: "0.1" as Float).save()
-				assayYYY.measurementPlatformVersion = mpv
-				assayYYY.save()
-				
-				/*
-				 * Import features with labels and misc. properties from file
-				 */
 
-				file = new File('testData/feature_mock_data.xls')
-				def uploadedFeatureFile    = uploadedFileService.createUploadedFileFromFile(file, session.user)
-					uploadedFeatureFile.parse()
+			file = new File('testData/feature_mock_data.xls')
+			def uploadedFeatureFile = uploadedFileService.createUploadedFileFromFile(file, session.user)
+				uploadedFeatureFile.parse()
 
-				def propertyNames = uploadedFeatureFile.matrix[0][1..-1]
-
-				uploadedFeatureFile.matrix[1..-1].each { row ->
-					def props = [:]
-
-					propertyNames.eachWithIndex { name, index ->
-						props[name] = row[index+1]
-					}
-
-					def feature = Feature.findByLabel(row[0]) ?: new Feature(label: row[0])
-					feature.save()
-					
-					def mpvf = new MeasurementPlatformVersionFeature(feature: feature, props: props, measurementPlatformVersion: mpv)
-					mpvf.save()
-				}
-			}
+			assayYYY.measurementPlatformVersion = measurementService.createMeasurementPlatformVersion(uploadedFeatureFile, [versionNumber: 0.1f, measurementPlatform: mp])
+			assayYYY.measurementPlatformVersion.save(failOnError: true)
+			assayYYY.save(failOnError: true)
 		}
 
 		if (request.getHeader('Referer')) redirect(url: request.getHeader('Referer'))

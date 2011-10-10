@@ -5,16 +5,16 @@ import grails.converters.JSON
 
 class PocController {
 	
-	def measurementFactoryService
+	def measurementService
 	def identityFactoryService
 
     def index = {
 			
-		measurementFactoryService.findAllMeasurementPlatforms().each { mp ->
-			measurementFactoryService.findAllMeasurementPlatformVersions(['measurementPlatform': mp]).each { mpv ->
+		measurementService.findAllMeasurementPlatforms().each { mp ->
+			measurementService.findAllMeasurementPlatformVersions(['measurementPlatform': mp]).each { mpv ->
 				render "<h1>${mp.name} (Version: ${mpv.versionNumber})</h1>"
 				render "<h2>Features</h2>"
-				measurementFactoryService.findAllMeasurementPlatformVersionFeatures(['measurementPlatformVersion': mpv]).each { mpvf ->
+				measurementService.findAllMeasurementPlatformVersionFeatures(['measurementPlatformVersion': mpv]).each { mpvf ->
 					render " - - - - - - - - - - - - -<br />"					
 					render "<h3>Feature <i><font color=\"blue\">${mpvf.feature.label}</font></i></h3>"					
 					render "<b>Properties (feature specific)</b><br />"
@@ -41,12 +41,12 @@ class PocController {
 		/*
 		 * Fetch all Measurement Platform versions (per platform) 
 		 */
-		def mps = measurementFactoryService.findAllMeasurementPlatforms()
+		def mps = measurementService.findAllMeasurementPlatforms()
 		
 		mps.sort { a,b -> a.name <=> b.name }.each { mp ->
 			render "<b>${mp.name}</b><br />has version(s): "
 			
-			def mp_mpvs = measurementFactoryService.findAllMeasurementPlatformVersions(['measurementPlatform':mp])
+			def mp_mpvs = measurementService.findAllMeasurementPlatformVersions(['measurementPlatform':mp])
 			
 			mp_mpvs.each {
 				render " :: V${it.versionNumber} "
@@ -60,7 +60,7 @@ class PocController {
 		/*
 		* Fetch all Measurement Platform versions (in one go)
 		*/
-		def mpvs = measurementFactoryService.findAllMeasurementPlatformVersions()
+		def mpvs = measurementService.findAllMeasurementPlatformVersions()
 		
 		mpvs.sort { a,b -> a.measurementPlatform.name <=> b.measurementPlatform.name }.each { mpv ->
 			render "Platform: ${mpv.measurementPlatform.name} - V${mpv.versionNumber}<br />"

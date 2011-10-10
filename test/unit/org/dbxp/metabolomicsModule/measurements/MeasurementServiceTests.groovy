@@ -2,7 +2,7 @@ package org.dbxp.metabolomicsModule.measurements
 
 import grails.test.*
 
-class MeasurementFactoryServiceTests extends GrailsUnitTestCase {
+class MeasurementServiceTests extends GrailsUnitTestCase {
     protected void setUp() {
         super.setUp()
     }

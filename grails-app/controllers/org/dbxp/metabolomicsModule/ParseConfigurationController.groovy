@@ -38,6 +38,7 @@ import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersionFeatur
 class ParseConfigurationController {
 
     def uploadedFileService
+	def measurementService
     static final int tableCellMaxContentLength = 40
 
 	def index = {
@@ -139,24 +140,7 @@ class ParseConfigurationController {
 
 				def newVersionNumber = mp.versions*.versionNumber.sort()[-1]+0.1
 
-				def mpv = new MeasurementPlatformVersion(measurementPlatform: mp, versionNumber: newVersionNumber).save()
-
-				// parse matrix contents and save to measurement platform
-				def propertyNames = uploadedFile.matrix[0][1..-1]
-
-				uploadedFile.matrix[1..-1].each { row ->
-					def props = [:]
-
-					propertyNames.eachWithIndex { name, index ->
-						props[name] = row[index+1]
-					}
-
-					def feature = Feature.findByLabel(row[0]) ?: new Feature(label: row[0])
-					feature.save(failOnError: true)
-
-					def mpvf = new MeasurementPlatformVersionFeature(feature: feature, props: props, measurementPlatformVersion: mpv)
-					mpvf.save(failOnError: true)
-				}
+				measurementService.createMeasurementPlatformVersion(uploadedFile, [versionNumber: newVersionNumber, measurementPlatform: mp]).save(failOnError: true)
 
 				// if successful, delete uploaded file
 				uploadedFileService.deleteUploadedFile(uploadedFile)
