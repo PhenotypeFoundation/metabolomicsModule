@@ -43,7 +43,10 @@ class AssayController {
         } else if (params.platformVersionId) {
             assay.measurementPlatformVersion = MeasurementPlatformVersion.get(params.platformVersionId)
             assay.save()
-        }
+        } else if (params.comments) {
+			assay.comments = params.comments
+			assay.save()
+		}
 		
 		def assayFiles = UploadedFile.findAllByAssay(assay)
 

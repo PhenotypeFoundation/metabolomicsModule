@@ -7,6 +7,7 @@
 <h1>${assay.name} <small>(${assay.study.token()})</small></h1>
 
 <mm:assayPlatformChooser assay="${assay}" />
+<mm:commentFieldEditor assay="${assay}" />
 
 <div id="uploadedAssayFiles">
 	<mm:uploadedFileList files="${assayFiles}" dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['save', 'close'], assayId: id, controllerName: 'parseConfiguration', actionName: 'data']}"/>

@@ -165,4 +165,16 @@ class MetabolomicsModuleTagLib {
         out << '</form>'
     }
 
+	def commentFieldEditor = { attrs, body ->
+
+		out << "Comments: <br />"
+		out << '<form>'
+		out << '<textarea name="comments" rows="8" style="width:100%;padding:0;">'
+		out << attrs.assay.comments
+		out << '</textarea>'
+		out << '<br /><input type="submit" value="Submit" />'
+		out << '</form>'
+
+	}
+
 }

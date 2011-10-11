@@ -8,6 +8,7 @@ class MetabolomicsAssay extends Assay {
 	
 	// all Metabolomics Assay's will be linked to one measurementPlatformVersion
 	MeasurementPlatformVersion measurementPlatformVersion
+	String comments = ''
 
     static constraints = {
 		measurementPlatformVersion(nullable: true)

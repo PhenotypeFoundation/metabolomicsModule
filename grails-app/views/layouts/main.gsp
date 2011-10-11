@@ -10,7 +10,7 @@
 	<body>
 	<content tag="topnav">
 		<!-- Insert only li tags for the top navigation, without surrounding ul -->
-		<li><a href="${resource(dir: '')}">Home</a></li>
+		<li><a href="${grailsApplication.config.grails.serverURL}">Home</a></li>
 		<li>
 			<a href="#" onClick="return false;">GSCF</a>
 			<ul class="subnav">
