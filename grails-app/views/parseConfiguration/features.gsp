@@ -4,7 +4,7 @@
 	  
 	  <script>
 		  $(document).ready(function(){
-			  initFeaturesPage( ${[aaData: data, aoColumns: columns] as JSON} );
+			  initFeaturesPage( ${[aaData: data, aoColumns: columns, headerSuggestions: headerSuggestions] as JSON} );
 		  });
 	  </script>
 

@@ -24,15 +24,9 @@ if (a.status != 200 || (a.status == 200 && result.status != 200)) {
 		}
 	});
 } else {
-    $.ajax(
-        '<g:createLink controller="home" action="studyList"/>',
-        {
-            cache: false,
-            success: function(html) {
-                $('div#studyOverview').html(html);
-            }
-        }
-    );
+
+	window.location.replace("${redirectUrl}");
+
 }
 
 

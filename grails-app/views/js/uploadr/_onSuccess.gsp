@@ -5,7 +5,7 @@ $('.spinner', domObj).tipTip({
 
 // perform ajax request
 $.ajax(
-	'<g:createLink plugin="dbxpModuleStorage" controller="uploadedFile" action="uploadFinished"/>',
+	'<g:createLink plugin="dbxpModuleStorage" controller="uploadedFile" action="uploadFinished" id="${assay?.id}"/>',
 	{
 		async: true,
 		headers: {

@@ -8,25 +8,13 @@ class HomeController {
 	def index = {
 		def files = uploadedFileService.getUnassignedUploadedFilesForUser(session.user)
 
-		render(view: 'index', model:[ files: files ])
-	}
+		def uploadedFileWasMovedToAssay = session.uploadedFileWasMovedToAssay
+		session.removeAttribute('uploadedFileWasMovedToAssay')
 
-//	def studyList = {
-//
-//        println 'studyList'
-//
-//		render(template: "studyList")
-//	}
-//
-//	def uploadedFileList = {
-//
-//        println 'uploadedFileList'
-//
-//		def files = uploadedFileService.getUnassignedUploadedFilesForUser(session.user)
-//        println files
-//
-//		render(template: "uploadedFileList", model: [files: files])
-//	}
+		[ 	files: files,
+			movedFileMessage: uploadedFileWasMovedToAssay?.msg,
+			highlightedAssay: uploadedFileWasMovedToAssay?.assay]
+	}
 
 	def developmentBar = {
 		// make super sure this only works in development

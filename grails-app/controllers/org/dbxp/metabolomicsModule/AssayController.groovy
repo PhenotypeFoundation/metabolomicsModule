@@ -11,7 +11,6 @@ class AssayController {
 	 */
 	def assayService
 
-	
 	/*
 	 * Assay by Token (for GSCF integration)
 	 */
@@ -32,10 +31,14 @@ class AssayController {
 	 * params.id is required to load the assay
 	 */
 	def view = {
+
+		// make sure to ignore the uploaded-file-was-moved-to-assay event here, is only relevant in home controller
+		session.removeAttribute('uploadedFileWasMovedToAssay')
+
 		if (!params.id) response.sendError(400, "No assay id specified.") // id of an assay must be present
 		
 		// load assay from id (for session.user)
-		MetabolomicsAssay assay = assayService.getAssayReadableByUserById(session.user, params.id as Long)
+		MetabolomicsAssay assay = (MetabolomicsAssay) assayService.getAssayReadableByUserById(session.user, params.id as Long)
 
         if (!assay) {
             response.sendError(404, "No assay found with id $params.id")
@@ -57,7 +60,6 @@ class AssayController {
 			// get MeasurementPlatformVersion from AssayFile
 			def mpv = MeasurementPlatformVersion.get((Long) assayFile['platformVersionId'])
 
-            println mpv
             if (mpv) {
                 // add MeasurementPlatformVersion to List
                 measurementPlatformVersions.add(mpv)
@@ -68,20 +70,10 @@ class AssayController {
             }
 		}
 
-        def assayFeatures = [:]
-        def featureFeatures = [:]
-
-        assay.measurementPlatformVersion?.features?.each { mpvf ->
-            assayFeatures[mpvf.feature.label] = mpvf.props
-            featureFeatures[mpvf.feature.label] = mpvf.feature.props
-        }
-				
 		[	assay: assay,
 			assayFiles: assayFiles,
 			measurementPlatformVersions: measurementPlatformVersions,
-			measurementPlatformVersionUploadedFiles: measurementPlatformVersionUploadedFiles,
-            assayFeatures: assayFeatures,
-            featureFeatures: featureFeatures
+			measurementPlatformVersionUploadedFiles: measurementPlatformVersionUploadedFiles
         ]
 	}
 }

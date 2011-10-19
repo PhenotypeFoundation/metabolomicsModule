@@ -3,21 +3,21 @@
 <body>
 
 <g:link uri="/#"
-		onclick="parseConfigurationDialog.dialog('close'); parseConfigurationDialog = openParseConfigurationDialog(${(dialogProperties + [dataType: 'clean', buttons: ['save', 'close'], actionName: 'data', refreshStudyList: true, title: 'Clean Data Interpretation']) as JSON});">
+		onclick="parseConfigurationDialog.dialog('close'); parseConfigurationDialog = openParseConfigurationDialog(${(dialogProperties + [dataType: 'clean', buttons: ['save', 'close'], actionName: 'data', refreshPageAfterClose: true, title: 'Clean Data Interpretation']) as JSON});">
 	Clean Data
 </g:link>
 
 <br>
 
 <g:link uri="/#"
-		onclick="parseConfigurationDialog.dialog('close'); parseConfigurationDialog = openParseConfigurationDialog(${(dialogProperties + [dataType: 'raw', buttons: ['save', 'close'], actionName: 'data', refreshStudyList: true, title: 'Raw Data Interpretation']) as JSON});">
+		onclick="parseConfigurationDialog.dialog('close'); parseConfigurationDialog = openParseConfigurationDialog(${(dialogProperties + [dataType: 'raw', buttons: ['save', 'close'], actionName: 'data', refreshPageAfterClose: true, title: 'Raw Data Interpretation']) as JSON});">
 	Raw Data
 </g:link>
 
 <br>
 
 <g:link uri="/#"
-		onclick="parseConfigurationDialog.dialog('close'); parseConfigurationDialog = openParseConfigurationDialog(${(dialogProperties + [buttons: ['save', 'close'], actionName: 'features', title: 'Feature List', refreshStudyList: true]) as JSON});">
+		onclick="parseConfigurationDialog.dialog('close'); parseConfigurationDialog = openParseConfigurationDialog(${(dialogProperties + [buttons: ['save', 'close'], actionName: 'features', title: 'Feature List', refreshPageAfterClose: true]) as JSON});">
 	Features
 </g:link>
 

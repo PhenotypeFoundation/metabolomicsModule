@@ -23,7 +23,8 @@ class MetabolomicsModuleTagLib {
 
     def uploadedFileList = { attrs ->
 
-		attrs.dialogProperties['baseUrl'] = resource('/', absolute: true);
+		attrs.dialogProperties.baseUrl = resource('/', absolute: true);
+		if (!attrs.dialogProperties.redirectUrl) attrs.dialogProperties.redirectUrl = attrs.dialogProperties.baseUrl
 
 		// get file list from attributes
   		def uploadedFiles
@@ -49,7 +50,7 @@ class MetabolomicsModuleTagLib {
             }
 
             uploadr.onSuccess {
-				out << g.render(template:'/js/uploadr/onSuccess', model:[])
+				out << g.render(template:'/js/uploadr/onSuccess', model:[assay: attrs.assay])
             }
 
             uploadr.onFailure {
@@ -70,7 +71,7 @@ class MetabolomicsModuleTagLib {
             }
 
             uploadr.onDelete {
-				out << g.render(template:'/js/uploadr/onDelete', model:[])
+				out << g.render(template:'/js/uploadr/onDelete', model:[redirectUrl: attrs.dialogProperties.redirectUrl])
             }
 
 			uploadr.onChangeColor {
@@ -88,7 +89,7 @@ class MetabolomicsModuleTagLib {
         out << '<ul class=studyList>'
 
         readableStudiesWithAssays.each { study, assays ->
-            out << studyTag(study: study, assays: assays)
+            out << studyTag(study: study, assays: assays, highlightedAssay: attrs.highlightedAssay)
         }
 
         out << '</ul>'
@@ -100,7 +101,7 @@ class MetabolomicsModuleTagLib {
         out << '<li class="studyTag">' + attrs.study.name + '<span class="sampleCount">' + attrs.assays.collect{it.samples?.size()}.sum() + ' samples</span><ul class="assayList">'
 
         attrs.assays.each { assay ->
-            out << assayTag(assay: assay)
+            out << assayTag(assay: assay, highlight: (assay.id==attrs.highlightedAssay?.id) )
         }
 
         out << '</ul></li>'
@@ -129,7 +130,7 @@ class MetabolomicsModuleTagLib {
             }
         }
 
-        out << "<li class=\"assayTag\" >"
+        out << "<li class=\"assayTag${attrs.highlight ? " highlightedAssay\"" : "\""} >"
 		out << 		g.link(action:"view", controller:"assay", id: assay.id) { assay.name }
         out << "	<span class=sampleCount>"
 		out <<			sampleMsg
@@ -153,7 +154,7 @@ class MetabolomicsModuleTagLib {
 			out << '<optgroup label="' + platform.name + '">'
             measurementService.findAllMeasurementPlatformVersions(measurementPlatform:platform).each { platformVersion ->
 
-                out << '<option value="' + platformVersion.id + '" ' + ((platformVersion.id == attrs.assay.measurementPlatformVersion.id) ? 'selected' : '') + '>' + platformVersion.versionNumber + '</option>'
+                out << '<option value="' + platformVersion.id + '" ' + ((platformVersion.id == attrs.assay.measurementPlatformVersion?.id) ? 'selected' : '') + '>' + platformVersion.versionNumber + '</option>'
             }
 
             out << '</optgroup>'
@@ -175,6 +176,66 @@ class MetabolomicsModuleTagLib {
 		out << '<br /><input type="submit" value="Submit" />'
 		out << '</form>'
 
+	}
+
+	def assayFeatureTables = { attrs, body ->
+
+		def assayFiles = UploadedFile.findAllByAssay(attrs.assay)
+		assayFiles.each{ assayFile ->
+			if (assayFile.matrix)
+				out << mm.assayFeatureTable(assay: attrs.assay, assayFile: assayFile)
+		}
+	}
+
+	def assayFeatureTable = {attrs, body ->
+
+		out << '<table><thead><tr><th>Platform Feature</th><th>Feature in Data File</th>'
+
+		def measurementPlatformVersionFeatures = attrs.assay.measurementPlatformVersion?.features
+		def propertyLabels = measurementPlatformVersionFeatures ? measurementPlatformVersionFeatures[0].props.keySet() : []
+
+
+		def propertyValueMap = [:]
+		measurementPlatformVersionFeatures.each { mpvf ->
+			propertyValueMap[mpvf.feature.label] = mpvf.props.values()
+		}
+
+		for (propertyLabel in propertyLabels) {
+			out << "<th>$propertyLabel</th>"
+		}
+
+		out << '</tr></thead><tbody>'
+
+		def dataColumnHeaders = uploadedFileService.getDataColumnHeaders(attrs.assayFile)
+		def measurementPlatformVersionFeatureLabels = measurementPlatformVersionFeatures*.feature?.label
+
+		Set combinedLabels = dataColumnHeaders + measurementPlatformVersionFeatureLabels
+
+		for (label in combinedLabels) {
+			out << '<tr><td>'
+
+			if (label in measurementPlatformVersionFeatureLabels) out << label
+
+			out << '</td><td>'
+
+			if (label in dataColumnHeaders) out << label + '</td>'
+
+			propertyValueMap[label].each { propertyValue ->
+				out << "<td>${propertyValue}</td>"
+			}
+			out << '</tr>'
+		}
+
+		out << '</tbody></table>'
+	}
+
+	def notification = {attrs, body ->
+
+		out << '<div class="notification">'
+
+		out << body()
+
+		out << '</div>'
 	}
 
 }

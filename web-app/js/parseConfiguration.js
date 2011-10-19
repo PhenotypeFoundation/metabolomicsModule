@@ -65,23 +65,8 @@ function openParseConfigurationDialog(dialogProperties) {
                 // necessary to destroy object to make datatables appear after opening dialog for a second time
                 beforeClose: function(event, ui) {
 					$(this).remove();
-					if (dialogProperties.refreshStudyList) {
-//						// update studylist
-//						$.ajax({
-//							url: baseUrl + 'home/studyList',
-//							cache: false,
-//							success: function(html) {
-//								$('div#studyOverview').html(html);
-//							}
-//						});
-//						$.ajax({
-//							url: baseUrl + 'home/uploadedFileList',
-//							cache: false,
-//							success: function(html) {
-//								$('div#uploadedFiles').html(html);
-//							}
-//						});
-                        window.location.replace(baseUrl);
+					if (dialogProperties.refreshPageAfterClose) {
+                        window.location.replace(dialogProperties.redirectUrl);
 					}
 				},
                 resizeStop: function(event, ui) { dataMatrixTable.fnAdjustColumnSizing(); }
@@ -107,6 +92,41 @@ function initFeaturesPage(data) {
 		"aaData": data.aaData,
         "aoColumns": data.aoColumns
     });
+
+	$('.dataTables_scrollHeadInner table thead tr th').each(function(idx,cell){
+
+		var suggestions = data.headerSuggestions[idx];
+		if (typeof suggestions == "string") {
+			suggestions = [suggestions];
+		}
+
+		if (!suggestions) return;
+
+		var newHTML='<select name=' + cell.innerHTML + '>';
+
+		var preferredFeaturePropertyName = suggestions.splice(0,1);
+
+		newHTML += '<option value="' + cell.innerHTML
+
+		if (!preferredFeaturePropertyName[0]) newHTML += '" selected="true"'
+
+		newHTML += '">original: ' + cell.innerHTML + '</option>';
+
+		if (preferredFeaturePropertyName[0]) {
+			newHTML += '<option value=' + cell.innerHTML + ' selected="true">preferred: ' + preferredFeaturePropertyName + '</option>';
+		}
+
+		for (suggestionIdx in suggestions) {
+			newHTML += '<option value='+suggestions[suggestionIdx]+'>' + suggestions[suggestionIdx] +'</option>'
+		}
+
+		newHTML += '</select>';
+
+		cell.innerHTML = newHTML;
+	});
+
+	dataMatrixTable.fnAdjustColumnSizing();
+
 }
 
 /**

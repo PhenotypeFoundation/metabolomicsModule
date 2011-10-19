@@ -1,1 +1,1 @@
-<mm:studyList/>
+<mm:studyList highlightedAssay="${highlightedAssay}" />

@@ -1,3 +1,15 @@
+.notification {
+	background-color: #ffff66;
+	border: 1px double #1a2977;
+	border-top: 0;
+	box-shadow: 5px 5px 5px #CCC;
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+	text-align: center;
+}
+
 #uploadedFiles {
 	float: left;
 	width: 50%;
@@ -19,4 +31,9 @@
 /*prevent our floating divs from overlapping footer */
 #footer {
 	clear: both;
+}
+
+.highlightedAssay {
+	background-color: #ffff66;
+	border: 1px double #000000;
 }

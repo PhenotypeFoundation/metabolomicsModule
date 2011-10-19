@@ -10,41 +10,15 @@
 <mm:commentFieldEditor assay="${assay}" />
 
 <div id="uploadedAssayFiles">
-	<mm:uploadedFileList files="${assayFiles}" dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['save', 'close'], assayId: id, controllerName: 'parseConfiguration', actionName: 'data']}"/>
+	<mm:uploadedFileList
+		files="${assayFiles}"
+		dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['save', 'close'], assayId: id, controllerName: 'parseConfiguration', actionName: 'data', refreshPageAfterClose: true, redirectUrl:resource('/assay/view/'+assay.id, absolute: true)]}"
+		assay="${assay}" />
 </div>
-
-%{--${assayFeatures}--}%
 
 <div id=dataVersusFeatures>
 <h2>Data vs. Features</h2>
-<g:each in="${assayFiles}" var="assayFile">
-
-    <table>
-        <thead>
-        <tr>
-            <th>Feature</th>
-            <th>Properties</th>
-        </tr>
-
-        </thead>
-        <tbody>
-
-        <g:each in="${assayFile.dataColumnHeaders}" var="dataColumnHeader">
-            <tr>
-                <td>
-                    ${dataColumnHeader}
-                </td>
-                <td>
-                    ${(dataColumnHeader in assayFeatures.keySet()) ? assayFeatures[dataColumnHeader] : ''}
-                </td>
-            </tr>
-        </g:each>
-
-        </tbody>
-    
-    </table>
-
-</g:each>
+<mm:assayFeatureTables assay="${assay}" />
 </div>
 </body>
-</html>  
+</html>
