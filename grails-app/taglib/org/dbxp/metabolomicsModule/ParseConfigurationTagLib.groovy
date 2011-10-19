@@ -41,7 +41,7 @@ class ParseConfigurationTagLib {
     def platformControl = { attrs, body ->
         //out << "Platform: " + g.select(name:"platform", from:platformList)
         out << "Platform:  <br />"
-        out << '<select name="platformVersionId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
+        out << '<select id="platformVersionId" name="platformVersionId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
 
         measurementService.findAllMeasurementPlatforms().each { platform ->
 //			// if new studygroup create new label

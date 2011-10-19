@@ -44,11 +44,14 @@ class ParseConfigurationController {
 	def index = {
 
 		[dialogProperties:
-		[uploadedFileId: params.uploadedFileId,
-			fileName: params.fileName,
-			baseUrl: resource('/', absolute: true),
-			controllerName: params.controller
-		]]
+			[	uploadedFileId: params.uploadedFileId,
+				fileName: params.fileName,
+				baseUrl: resource('/', absolute: true),
+				controllerName: params.controller,
+				buttons: ['save', 'close'],
+				refreshPageAfterClose: true,
+				redirectUrl: resource('/', absolute: true)
+			]]
 	}
 
 	def features = {
@@ -140,7 +143,6 @@ class ParseConfigurationController {
 				MeasurementPlatform mp = MeasurementPlatform.get(params.platformVersionId)
 				if (!mp) {
 					response.sendError(400)
-					// TODO: send back status message saying measurmentplatform is missing
 					return
 				}
 

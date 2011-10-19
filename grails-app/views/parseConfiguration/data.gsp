@@ -31,55 +31,56 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <meta http-equiv="pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
 
-  <script>
-    <g:if test="${!controlsDisabled}">
-      $(document).ready(function(){initParseConfigurationDialogListeners();});
-    </g:if>
-  </script>
+	<script>
+		<g:if test="${!controlsDisabled}">
+		$(document).ready(function() {
+			initParseConfigurationDialogListeners();
+		});
+		</g:if>
+	</script>
 
-  <title>Parse Configuration panel</title>
+	<title>Parse Configuration panel</title>
 </head>
 
 <body>
 <div class="parseConfigDialog" id="parseConfigDialog">
-  <g:formRemote name="pcform" onFailure="updateStatus('server does not respond')"
-                onSuccess="updateDialog(data)" action="handleForm" url="${[action:'handleForm']}">
-    <input type="hidden" name="filename" value="${uploadedFile.fileName}" />
-    <input id="formAction" type="hidden" name="formAction" value="" />
+	<g:formRemote name="pcform" onFailure="updateStatus('server does not respond')"
+				  onSuccess="updateDialog(data)" action="handleForm" url="${[action:'handleForm']}">
+		<input type="hidden" name="filename" value="${uploadedFile.fileName}"/>
+		<input id="formAction" type="hidden" name="formAction" value=""/>
 
-    <div class="matrixOptions">
-      <g:if test="${parseInfo?.parserClassName=='ExcelParser'}">
-        <pc:sheetSelectControl numberOfSheets="${parseInfo.numberOfSheets}" sheetIndex="${parseInfo.sheetIndex}" disabled="${controlsDisabled}" />
-      </g:if>
-      <g:elseif test="${parseInfo?.parserClassName=='CsvParser'}">
-        <pc:delimiterControl value="${parseInfo.delimiter}" delimiterNameMap="${parseInfo.delimiterNameMap}" disabled="${controlsDisabled}" />
-      </g:elseif>
-      <pc:sampleColumnControl sampleColumnIndex="${uploadedFile?.sampleColumnIndex}" maxIndex="${uploadedFile?.columns}" disabled="${controlsDisabled}" />
-      <pc:featureRowControl featureRowIndex="${uploadedFile?.featureRowIndex}" disabled="${controlsDisabled}" />
-    </div>
+		<div class="matrixOptions">
+			<g:if test="${parseInfo?.parserClassName=='ExcelParser'}">
+				<pc:sheetSelectControl numberOfSheets="${parseInfo.numberOfSheets}" sheetIndex="${parseInfo.sheetIndex}"
+									   disabled="${controlsDisabled}"/>
+			</g:if>
+			<g:elseif test="${parseInfo?.parserClassName=='CsvParser'}">
+				<pc:delimiterControl value="${parseInfo.delimiter}" delimiterNameMap="${parseInfo.delimiterNameMap}"
+									 disabled="${controlsDisabled}"/>
+			</g:elseif>
+			<pc:sampleColumnControl sampleColumnIndex="${uploadedFile?.sampleColumnIndex}"
+									maxIndex="${uploadedFile?.columns}" disabled="${controlsDisabled}"/>
+			<pc:featureRowControl featureRowIndex="${uploadedFile?.featureRowIndex}" disabled="${controlsDisabled}"/>
+		</div>
 
-    <div class="orientation">
-      <pc:orientationControl isColumnOriented="${uploadedFile?.isColumnOriented}" disabled="${controlsDisabled}" />
-    </div>
+		<div class="orientation">
+			<pc:orientationControl isColumnOriented="${uploadedFile?.isColumnOriented}" disabled="${controlsDisabled}"/>
+		</div>
 
-    <div class="dataMatrixContainer">
-    </div><%--
+		<div class="dataMatrixContainer">
+		</div>
 
-    <div class="platform">
-      <pc:platformControl platformVersionId="${platformVersionId}" />
-    </div>
+		<div class="assays">
+			<pc:assaysControl assayId="${uploadedFile?.assay?.id}"/>
+		</div>
 
-    --%><div class="assays">
-      <pc:assaysControl assayId="${uploadedFile?.assay?.id}" />
-    </div>
-
-    <div class="status">
-      <pc:statusControl initialStatus="${errorMessage}" />
-    </div>
-  </g:formRemote>
+		<div class="status">
+			<pc:statusControl initialStatus="${errorMessage}"/>
+		</div>
+	</g:formRemote>
 </div>
 </body>
 </html>

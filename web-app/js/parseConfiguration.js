@@ -33,8 +33,7 @@ function initParseConfigurationDialogListeners() {
  */
 function openParseConfigurationDialog(dialogProperties) {
 
-	baseUrl = dialogProperties.baseUrl
-
+	baseUrl = dialogProperties.baseUrl;
  	var buttonMap = {};
 
 	$.each(dialogProperties.buttons, function(index, value){
@@ -64,6 +63,7 @@ function openParseConfigurationDialog(dialogProperties) {
                 height: 520,
                 // necessary to destroy object to make datatables appear after opening dialog for a second time
                 beforeClose: function(event, ui) {
+
 					$(this).remove();
 					if (dialogProperties.refreshPageAfterClose) {
                         window.location.replace(dialogProperties.redirectUrl);
