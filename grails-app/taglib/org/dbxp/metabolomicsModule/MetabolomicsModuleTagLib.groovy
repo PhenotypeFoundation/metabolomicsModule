@@ -2,6 +2,7 @@ package org.dbxp.metabolomicsModule
 
 import org.dbxp.dbxpModuleStorage.UploadedFile
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
+import org.apache.commons.logging.LogFactory
 
 /**
  * The metabolomics module tag library delivers a rich set of tags to make it easier to re-use components
@@ -20,6 +21,7 @@ class MetabolomicsModuleTagLib {
     def assayService
     def uploadedFileService
     def measurementService
+	private static final log = LogFactory.getLog(this);
 
     def uploadedFileList = { attrs ->
 
@@ -114,7 +116,7 @@ $(document).ready(function() {
 
 				def assayNameString
 
-				if (attrs.highlightedAssay == assay)
+				if (attrs.highlightedAssay?.id == assay?.id)
 					assayNameString = "<b>$assay.name</b>"
 				else
 					assayNameString = assay.name
