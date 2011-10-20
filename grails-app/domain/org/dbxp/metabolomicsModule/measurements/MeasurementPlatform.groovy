@@ -10,8 +10,8 @@ class MeasurementPlatform {
     }
 	
 	/*
-	* returns the object as a HashMap to be used in the API
-	*/
+	 * returns the object as a HashMap to be used in the API
+	 */
 	HashMap toApi() {
 		return ['name': this.name, 'description': this.description ?: '']
 	}

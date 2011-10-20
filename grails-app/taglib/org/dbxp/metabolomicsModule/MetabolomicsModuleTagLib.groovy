@@ -44,7 +44,7 @@ class MetabolomicsModuleTagLib {
                 uploadr.file(name: uploadedFile.fileName) {
 					uploadr.deletable { ((uploadedFile.uploader.id == session.user.id || session.user.isAdministrator)) }
 					if (uploadedFile.hasProperty('color') && uploadedFile.color) uploadr.color { "${uploadedFile.color}" }
-					uploadr.rating { "${uploadedFile.getRating()}" }
+					uploadr.rating { "${measurementService.determineUploadedFileRating(uploadedFile)}" }
 					uploadr.fileSize { uploadedFile.fileSize }
                     uploadr.fileModified { uploadedFile.lastUpdated.time }
                     uploadr.fileId { uploadedFile.id }
@@ -130,7 +130,7 @@ $(document).ready(function() {
 				UploadedFile uploadedFile = UploadedFile.get(uploadedFileId)
 
 				if (uploadedFile) {
-					assignedSampleCounts += uploadedFile.matrix ? uploadedFile.determineAmountOfSamplesWithData() : 0
+					assignedSampleCounts += uploadedFile.determineAmountOfSamplesWithData()
 					if (uploadedFile['platformVersionId']) {
 						def mpv = MeasurementPlatformVersion.get((Long) uploadedFile['platformVersionId'])
 						measurementPlatformStrings += mpv ? "${mpv.measurementPlatform?.name} (${mpv.versionNumber})" : ""

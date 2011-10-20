@@ -1,10 +1,14 @@
 package org.dbxp.metabolomicsModule.measurements
 
 import org.dbxp.metabolomicsModule.identity.Feature
+import org.dbxp.dbxpModuleStorage.UploadedFile
+import org.dbxp.moduleBase.Assay
 
 class MeasurementService {
 
 	static transactional = true
+
+	def uploadedFileService
 
 	static featureHeaderSuggestions = [
 		'm/z': 		['mz', 'm z', 'm over z'],
@@ -83,6 +87,45 @@ class MeasurementService {
 			}
 			[null] + otherSuggestions
 		}
+	}
+
+	/**
+	 * Rating calculation:
+	 * 1 = file is uploaded (exists)
+	 * 2 = file is attached to an assay
+	 * 3 = all samples are recognized
+	 * 4 = all features are recognized
+	 * 5 = study is public
+	 */
+	def determineUploadedFileRating(UploadedFile uploadedFile) {
+		def maxPoints = 5
+
+		// 1 point, file uploaded
+		def points = 1
+
+		def assay = Assay.get(uploadedFile.assay.id)
+
+		if (assay) {
+
+			// connected to an assay
+			points++
+
+			// 3 : all samples are recognized
+			if ( uploadedFile.matrix && (assay?.samples?.size() == uploadedFile.determineAmountOfSamplesWithData())) {
+				points++
+
+				// 4 : all features are recognized
+				if (MeasurementPlatformVersion.get(uploadedFile['platformVersionId'])?.features?.size() == uploadedFileService.getFeatureNames(uploadedFile).size()) {
+					points++
+
+					// 5 : study is public
+					if (assay.study.isPublic) points++
+				}
+			}
+		}
+
+		// calculate and return rating
+		return (points / maxPoints)
 	}
 }
 
