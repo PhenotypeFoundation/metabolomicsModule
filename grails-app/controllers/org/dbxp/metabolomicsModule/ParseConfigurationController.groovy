@@ -238,6 +238,8 @@ class ParseConfigurationController {
 
 		def uploadedFile = session.uploadedFile
 
+		def mappingString
+
 		// somehow uploadedFile.assay sometimes equals to 'false', getting the assay this way prevents that
 		def assay = Assay.get(uploadedFile?.assay?.id)
 		if (uploadedFile && assay) {
@@ -247,10 +249,18 @@ class ParseConfigurationController {
 
 			def unmappedSampleCount = fileSampleCount - (uploadedFile.determineAmountOfSamplesWithData() ?: 0)
 
-			"${uploadedFile.determineAmountOfSamplesWithData()} of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
+			mappingString = "${uploadedFile.determineAmountOfSamplesWithData()} of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
 
-		} else if (assay) 'File is linked to the assay.'
-		else 'File is not linked with an assay.'
+		} else if (assay) mappingString = 'File is linked to the assay.'
+		else mappingString = 'File is not linked with an assay.'
+
+		// check for duplicate sample names
+		def sampleNames = uploadedFileService.getSampleNames(uploadedFile)
+		if ((sampleNames+[]).unique().size() < sampleNames.size()) {
+			mappingString += " Warning: duplicate sample names exist in the data file."
+		}
+
+		mappingString
 	}
 
 	/**
