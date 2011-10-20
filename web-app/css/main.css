@@ -17,23 +17,20 @@
 
 #studyOverview {
 	float: left;
-	width: auto;
+	width: 50%;
 }
 
-.sampleCount {
-	float: right;
-}
-
-.studyList {
+#studyOverviewTable {
+	margin-top: 28px;
+	table-layout: fixed;
 	width: 100%;
+}
+
+#studyOverviewTable * {
+	white-space: pre-wrap; /* css-3 */
 }
 
 /*prevent our floating divs from overlapping footer */
 #footer {
 	clear: both;
-}
-
-.highlightedAssay {
-	background-color: #ffff66;
-	border: 1px double #000000;
 }

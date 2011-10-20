@@ -82,61 +82,78 @@ class MetabolomicsModuleTagLib {
 
     def studyList = { attrs ->
 
-        out << '<h1>Study overview</h1>'
+		out << '''
+<script>
+$(document).ready(function() {
+	$('#studyOverviewTable').dataTable(
+	{
+		bFilter: false,
+		bInfo: false,
+		bLengthChange: false,
+		bPaginate: false
+    });
+});
+</script>'''
 
-        // find all studies the user can read and have at least one assay
-        def readableStudiesWithAssays = assayService.getAssaysReadableByUserAndGroupedByStudy(session.user)
-        out << '<ul class=studyList>'
+		out << '<h1>Study overview</h1>'
 
-        readableStudiesWithAssays.each { study, assays ->
-            out << studyTag(study: study, assays: assays, highlightedAssay: attrs.highlightedAssay)
-        }
+		out << '<table id="studyOverviewTable"><thead><tr><th>Studies</th><th>Assays</th><th>Samples</th><th>Assigned</th><th>Platform</th></tr></thead><tbody>'
 
-        out << '</ul>'
+		def readableStudiesWithAssays = assayService.getAssaysReadableByUserAndGroupedByStudy(session.user)
 
-    }
-    
-    def studyTag = { attrs ->
+		for (studyWithAssays in readableStudiesWithAssays) {
 
-        out << '<li class="studyTag">' + attrs.study.name + '<span class="sampleCount">' + attrs.assays.collect{it.samples?.size()}.sum() + ' samples</span><ul class="assayList">'
+			out << "<tr><td>$studyWithAssays.key.name</td><td>"
 
-        attrs.assays.each { assay ->
-            out << assayTag(assay: assay, highlight: (assay.id==attrs.highlightedAssay?.id) )
-        }
+			def assayNames = []
+			def sampleCounts = []
+			def assignedSampleCounts = []
+			def measurementPlatformStrings = []
 
-        out << '</ul></li>'
+			studyWithAssays.value.each { assay ->
 
-    }
+				def assayNameString
 
-    def assayTag = { attrs ->
+				if (attrs.highlightedAssay == assay)
+					assayNameString = "<b>$assay.name</b>"
+				else
+					assayNameString = assay.name
 
-        //TODO: present the information in a better/nicer way
+				assayNames += g.link(action:"view", controller:"assay", id: assay.id) { assayNameString }
 
-        def assay = attrs.assay
+				sampleCounts += assay.samples.size()
 
-        def sampleMsg = "${assay.samples?.size()} samples"
+				// avoiding mongo bugs by obtaining the uploaded file instance like this
+				Long uploadedFileId = UploadedFile.findByAssay(assay)?.id
+				UploadedFile uploadedFile = UploadedFile.get(uploadedFileId)
 
-        Long uploadedFileId = UploadedFile.findByAssay(assay)?.id
-        UploadedFile uploadedFile = UploadedFile.get(uploadedFileId)
-
-        if (uploadedFile) {
-            if (uploadedFile.matrix) sampleMsg += " (${uploadedFile.determineAmountOfSamplesWithData()} assigned)";
-
-            if (uploadedFile['platformVersionId']) {
-                def mpv = MeasurementPlatformVersion.get((Long) uploadedFile['platformVersionId'])
-				if (mpv){
-					sampleMsg += " ${mpv.measurementPlatform?.name} ($mpv.versionNumber)"
+				if (uploadedFile) {
+					assignedSampleCounts += uploadedFile.matrix ? uploadedFile.determineAmountOfSamplesWithData() : 0
+					if (uploadedFile['platformVersionId']) {
+						def mpv = MeasurementPlatformVersion.get((Long) uploadedFile['platformVersionId'])
+						measurementPlatformStrings += mpv ? "${mpv.measurementPlatform?.name} (${mpv.versionNumber})" : ""
+					}
 				}
-            }
-        }
+			}
 
-        out << "<li class=\"assayTag${attrs.highlight ? " highlightedAssay\"" : "\""} >"
-		out << 		g.link(action:"view", controller:"assay", id: assay.id) { assay.name }
-        out << "	<span class=sampleCount>"
-		out <<			sampleMsg
-		out << "	</span>"
-		out << "</li>"
+			out << assayNames.join('<br />')
 
+			out << '</td><td>'
+
+			out << sampleCounts.join('<br />')
+
+			out << '</td><td>'
+
+			out << assignedSampleCounts.join('<br />')
+
+			out << '</td><td>'
+
+			out << measurementPlatformStrings.join('<br />')
+
+			out << '</td></tr>'
+		}
+
+		out << '</tbody></table>'
     }
 
     /**
