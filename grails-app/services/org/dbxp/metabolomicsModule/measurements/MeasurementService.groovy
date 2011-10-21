@@ -103,7 +103,7 @@ class MeasurementService {
 		// 1 point, file uploaded
 		def points = 1
 
-		def assay = Assay.get(uploadedFile.assay.id)
+		def assay = Assay.get(uploadedFile.assay?.id)
 
 		if (assay) {
 

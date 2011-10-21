@@ -3,6 +3,7 @@ package org.dbxp.metabolomicsModule
 import org.dbxp.dbxpModuleStorage.UploadedFile
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
 import org.apache.commons.logging.LogFactory
+import org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
 
 /**
  * The metabolomics module tag library delivers a rich set of tags to make it easier to re-use components
@@ -257,4 +258,39 @@ $(document).ready(function() {
 		out << '</div>'
 	}
 
+	def measurementPlatformOverview = {attrs, body ->
+
+		out << '<table><thead><tr><th>Measurement Platforms</th><th>Versions</th><th>Associated Assays</th></tr></thead><tbody>'
+		
+		attrs.measurementPlatforms.each { MeasurementPlatform measurementPlatform ->
+
+			out << '<tr><td>'
+
+			out << g.link(controller: "measurementPlatform", action: "view", id: "${measurementPlatform.id}") {
+				"${measurementPlatform.name}"
+			}
+
+			def versions = measurementPlatform.versions
+
+			out << """</td><td>${versions.collect { version ->
+				g.link(controller: 'measurementPlatformVersion', action: 'view', id: version.id) { version.versionNumber }
+			}.join('<br/>')}</td><td>"""
+
+			out << versions.collect { MeasurementPlatformVersion version ->
+				MetabolomicsAssay.findAllByMeasurementPlatformVersion(version).join(', ')
+			}.join('<br />')
+
+			out << '</td></tr>'
+		}
+		out << '</tbody></table>'
+	}
+
+	def dataTypeOption = {attrs, body ->
+
+		out << """<div class="dataTypeOption" onclick='parseConfigurationDialog.dialog("close");parseConfigurationDialog=openParseConfigurationDialog(eval(${attrs.dialogProperties}))'>"""
+
+		out <<  body()
+
+		out << '</div>'
+	}
 }

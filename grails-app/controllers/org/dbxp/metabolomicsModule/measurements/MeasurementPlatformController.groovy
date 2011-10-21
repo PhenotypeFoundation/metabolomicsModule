@@ -2,7 +2,7 @@ package org.dbxp.metabolomicsModule.measurements
 
 class MeasurementPlatformController {
 
-    def index = { redirect(url: request.getHeader('Referer')) }
+    def index = { redirect(action: 'list') }
 	
 	/*
 	* Metabolomics MeasurementPlatform page
@@ -11,7 +11,7 @@ class MeasurementPlatformController {
 	*/
    def view = {
 	   
-		if (!params.id) redirect(url: request.getHeader('Referer')) // id of an MeasurementPlatform must be present
+		if (!params.id) redirect(action: 'list')
 		
 		[ measurementPlatform: MeasurementPlatform.get(params.id) ]
    }

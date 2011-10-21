@@ -26,7 +26,7 @@
 			<h2>Features</h2>
 			<ul>		
 				<g:each in="${measurementPlatformVersion?.features}" var="feature">
-					<li>${feature.label} ${feature.props}</li>
+					<li>${feature.props}</li>
 				</g:each>
 			</ul>
 		</g:if>		

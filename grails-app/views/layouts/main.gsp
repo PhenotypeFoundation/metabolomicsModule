@@ -21,6 +21,9 @@
 				</li>
 			</ul>
 		</li>
+		<li>
+			<g:link controller="measurementPlatform" action="list">Measurement Platforms</g:link>
+		</li>
 	</content>
 	<g:layoutBody/>
 	</body>

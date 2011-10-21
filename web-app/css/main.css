@@ -34,3 +34,16 @@
 #footer {
 	clear: both;
 }
+
+.dataTypeOption {
+	width: auto;
+	height: 25%;
+	border: 2px double #ffffff;
+	border-radius: 10px;
+	margin-top: 5px;
+	padding: 5px;
+}
+
+.dataTypeOption:hover {
+	border-color: #3399ff;
+}
