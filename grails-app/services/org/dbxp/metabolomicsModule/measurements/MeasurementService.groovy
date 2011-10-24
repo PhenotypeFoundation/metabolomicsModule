@@ -3,6 +3,7 @@ package org.dbxp.metabolomicsModule.measurements
 import org.dbxp.metabolomicsModule.identity.Feature
 import org.dbxp.dbxpModuleStorage.UploadedFile
 import org.dbxp.moduleBase.Assay
+import org.dbxp.metabolomicsModule.MetabolomicsAssay
 
 class MeasurementService {
 
@@ -103,7 +104,7 @@ class MeasurementService {
 		// 1 point, file uploaded
 		def points = 1
 
-		def assay = Assay.get(uploadedFile.assay?.id)
+		MetabolomicsAssay assay = Assay.get(uploadedFile.assay?.id)
 
 		if (assay) {
 
@@ -115,7 +116,7 @@ class MeasurementService {
 				points++
 
 				// 4 : all features are recognized
-				if (MeasurementPlatformVersion.get(uploadedFile['platformVersionId'])?.features?.size() == uploadedFileService.getFeatureNames(uploadedFile).size()) {
+				if (assay.measurementPlatformVersion?.features?.size() == uploadedFileService.getFeatureNames(uploadedFile).size()) {
 					points++
 
 					// 5 : study is public

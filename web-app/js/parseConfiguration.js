@@ -2,7 +2,7 @@
 var dataMatrixTable;
 var parseConfigurationDialog;
 
-var baseUrl;
+var mmBaseUrl;
 
 /**
  * Add control element listeners so when a control is changed the preview is updated
@@ -33,7 +33,7 @@ function initParseConfigurationDialogListeners() {
  */
 function openParseConfigurationDialog(dialogProperties) {
 
-	baseUrl = dialogProperties.baseUrl;
+	mmBaseUrl = dialogProperties.mmBaseUrl;
  	var buttonMap = {};
 
 	$.each(dialogProperties.buttons, function(index, value){
@@ -48,9 +48,9 @@ function openParseConfigurationDialog(dialogProperties) {
 	});
 
     // Assign the dialog to the global variable
-    parseConfigurationDialog = $("<div id='parseConfigurationDialog'><img src='" + baseUrl +  "/images/spinner.gif'></div>")
+    parseConfigurationDialog = $("<div id='parseConfigurationDialog'><img src='" + mmBaseUrl +  "/images/spinner.gif'></div>")
 		.load(
-			baseUrl + dialogProperties.controllerName + '/' + dialogProperties.actionName + '/' +
+			mmBaseUrl + dialogProperties.controllerName + '/' + dialogProperties.actionName + '/' +
 				"?fileName=" + encodeURI(dialogProperties.fileName) +
 				"&uploadedFileId=" + encodeURI(dialogProperties.uploadedFileId) +
 				(dialogProperties.dataType ? "&dataType=" + dialogProperties.dataType : '')
@@ -181,9 +181,9 @@ function updateDialog(data) {
             if (data.assaySampleNames.length) {
                 // the datamatrix sample name also exists in the assay sample collection?
                 if ( $.inArray(sampleName, data.assaySampleNames) != -1 ) {
-                    dataCellObject.html('<img src="' + baseUrl + 'images/sample_green.png" class="sampleColumnIcon"/>' + dataCellObject.html());
+                    dataCellObject.html('<img src="' + mmBaseUrl + 'images/sample_green.png" class="sampleColumnIcon"/>' + dataCellObject.html());
                 } else { // the datamatrix samples doesn't exist in the assay sample collection
-                    dataCellObject.html('<img src="' + baseUrl + 'images/sample_red.png" class="sampleColumnIcon"/>' + dataCellObject.html());
+                    dataCellObject.html('<img src="' + mmBaseUrl + 'images/sample_red.png" class="sampleColumnIcon"/>' + dataCellObject.html());
                 }
             }
 

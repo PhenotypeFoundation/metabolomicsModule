@@ -26,8 +26,7 @@ class MetabolomicsModuleTagLib {
 
     def uploadedFileList = { attrs ->
 
-		attrs.dialogProperties.baseUrl = resource('/', absolute: true);
-		if (!attrs.dialogProperties.redirectUrl) attrs.dialogProperties.redirectUrl = attrs.dialogProperties.baseUrl
+		if (!attrs.dialogProperties.redirectUrl) attrs.dialogProperties.redirectUrl = attrs.dialogProperties.mmBaseUrl
 
 		// get file list from attributes
   		def uploadedFiles
@@ -39,7 +38,7 @@ class MetabolomicsModuleTagLib {
 
 		// output file uploadr
         out << '<h1>Uploaded files</h1>'
-        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: 'up', maxVisible: 8, rating: true, colorPicker: true, voting: true) {
+        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: 'up', maxVisible: 8, rating: true) {
             uploadedFiles.each { uploadedFile ->
 				// add file to the uploadr
                 uploadr.file(name: uploadedFile.fileName) {
@@ -113,7 +112,7 @@ $(document).ready(function() {
 			def assignedSampleCounts = []
 			def measurementPlatformStrings = []
 
-			studyWithAssays.value.each { assay ->
+			studyWithAssays.value.each { MetabolomicsAssay assay ->
 
 				def assayNameString
 
@@ -132,10 +131,14 @@ $(document).ready(function() {
 
 				if (uploadedFile) {
 					assignedSampleCounts += uploadedFile.determineAmountOfSamplesWithData()
-					if (uploadedFile['platformVersionId']) {
-						def mpv = MeasurementPlatformVersion.get((Long) uploadedFile['platformVersionId'])
-						measurementPlatformStrings += mpv ? "${mpv.measurementPlatform?.name} (${mpv.versionNumber})" : ""
-					}
+
+					def mpv = assay.measurementPlatformVersion
+					measurementPlatformStrings += mpv ? "${mpv.measurementPlatform?.name} (${mpv.versionNumber})" : ""
+//
+//					if (assay.measurementPlatformVersion) {
+////						def mpv = MeasurementPlatformVersion.get((Long) uploadedFile['platformVersionId'])
+//						measurementPlatformStrings += mpv ? "${mpv.measurementPlatform?.name} (${mpv.versionNumber})" : ""
+//					}
 				}
 			}
 

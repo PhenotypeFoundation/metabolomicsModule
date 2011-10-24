@@ -46,7 +46,7 @@ class ParseConfigurationController {
 		[dialogProperties:
 			[	uploadedFileId: params.uploadedFileId,
 				fileName: params.fileName,
-				baseUrl: resource('/', absolute: true),
+				mmBaseUrl: resource('/', absolute: true),
 				controllerName: params.controller,
 				buttons: ['save', 'close'],
 				refreshPageAfterClose: true,
@@ -79,7 +79,6 @@ class ParseConfigurationController {
 		}
 
 		session.uploadedFile = UploadedFile.get(params.uploadedFileId)
-		def platformVersionId = session.uploadedFile['platformVersionId']
 
 		def errorMessage = ''
 
@@ -92,11 +91,10 @@ class ParseConfigurationController {
 			}
 		}
 
-		[uploadedFile: session.uploadedFile,
+		[	uploadedFile: session.uploadedFile,
 			errorMessage: errorMessage,
 			parseInfo: session.uploadedFile.parseInfo,
-			controlsDisabled: errorMessage ? true : false,
-			platformVersionId: platformVersionId]
+			controlsDisabled: errorMessage ? true : false]
 	}
 
 	/**
@@ -189,7 +187,6 @@ class ParseConfigurationController {
 	 */
 	def handleSaveFormAction(params) {
 
-		updatePlatformVersionId(params)
 		updateSampleColumnAndFeatureRow(params)
 
 		updateAssayIfNeeded(params)
@@ -200,21 +197,6 @@ class ParseConfigurationController {
 		session.uploadedFile.save(failOnError: true)
 
 		[message: buildSampleMappingString(), formAction: "update"]
-	}
-
-	/**
-	 *
-	 * @param params (platformVersionId)
-	 * @return void
-	 */
-	def updatePlatformVersionId(def params) {
-		if (params.platformVersionId) {
-
-			// Workaround for a bug introduced in Mongo GORM 1.0.0 M7, omitting this step would result in NPE
-			UploadedFile.get(session.uploadedFile.id)
-
-			session.uploadedFile['platformVersionId'] = params.platformVersionId as Long
-		}
 	}
 
 	/**

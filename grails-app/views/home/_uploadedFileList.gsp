@@ -1,1 +1,0 @@
-<mm:uploadedFileList files="${files}" dialogProperties="[title: 'Please choose the uploaded file data type', buttons: ['close'], controllerName: 'parseConfiguration', actionName: 'index']"/>

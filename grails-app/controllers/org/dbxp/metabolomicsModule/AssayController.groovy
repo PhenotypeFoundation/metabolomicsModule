@@ -53,27 +53,6 @@ class AssayController {
 		
 		def assayFiles = UploadedFile.findAllByAssay(assay)
 
-		def measurementPlatformVersions = []
-		def measurementPlatformVersionUploadedFiles = [:]
-		assayFiles.each{ assayFile ->
-			
-			// get MeasurementPlatformVersion from AssayFile
-			def mpv = MeasurementPlatformVersion.get((Long) assayFile['platformVersionId'])
-
-            if (mpv) {
-                // add MeasurementPlatformVersion to List
-                measurementPlatformVersions.add(mpv)
-
-                // prepare a Map with MeasuremtentPlatformVersions and their linked files
-                if (!measurementPlatformVersionUploadedFiles[mpv.id]) { measurementPlatformVersionUploadedFiles[mpv.id] = [] }
-                measurementPlatformVersionUploadedFiles[mpv.id] << assayFile
-            }
-		}
-
-		[	assay: assay,
-			assayFiles: assayFiles,
-			measurementPlatformVersions: measurementPlatformVersions,
-			measurementPlatformVersionUploadedFiles: measurementPlatformVersionUploadedFiles
-        ]
+		[ assay: assay, assayFiles: assayFiles ]
 	}
 }

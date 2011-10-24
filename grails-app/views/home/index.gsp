@@ -10,7 +10,7 @@
 </g:if>
 
 <div id="uploadedFiles">
-	<g:render template="uploadedFileList" />
+	<mm:uploadedFileList files="${files}" dialogProperties="[title: 'Please choose the uploaded file data type', buttons: ['close'], controllerName: 'parseConfiguration', actionName: 'index', mmBaseUrl: resource('/', absolute: true)]"/>
 </div>
 <div id="studyOverview">
 	<mm:studyList highlightedAssay="${highlightedAssay}" />
