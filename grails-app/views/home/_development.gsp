@@ -53,6 +53,25 @@ function updateSound() {
 	sound = new Audio('http://www.talkingwav.com/cartoon/cartoon_' + ((soundId<10) ? 0 : '') + soundId + '.wav')
 }
 
+// load mock data
+function loadMockData(element) {
+	developmentBarBefore(element,'loading mock data...');
+
+	var a = $.ajax(
+		'<g:createLink controller="bootStrap" action="index"/>',
+		{
+			async: false,
+			headers: {
+				'X-File-Name': 'a',
+				'X-File-Id': 'b'
+			},
+			success: function(data) {
+				developmentBarAfter(element);
+			}
+		}
+	);
+}
+
 // delete all files
 function deleteAllFiles(element) {
 	developmentBarBefore(element,'please wait while all files are deleted...');

@@ -1,6 +1,7 @@
 package org.dbxp.metabolomicsModule
 
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
+import grails.converters.JSON
 
 /**
  * This is a temporary controller, solely for development purposes. This is a place where you
@@ -46,7 +47,8 @@ class BootStrapController {
 			assayYYY.save(failOnError: true)
 		}
 
-		if (request.getHeader('Referer')) redirect(url: request.getHeader('Referer'))
-		else redirect(controller: 'home')
+//		if (request.getHeader('Referer')) redirect(url: request.getHeader('Referer'))
+//		else redirect(controller: 'home')
+		render ([status: 200, message: "loaded mock data"] as JSON)
 	}
 }

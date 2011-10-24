@@ -11,4 +11,4 @@
  */
 %>
 <div class="button"><input type="button" id="deleteAllFiles" value="delete all files" onclick="if (confirm('are you really super massive sure?')) { deleteAllFiles(this); } else { return false; }"/></div>
-<g:link controller="bootStrap">Load Mock Data</g:link>
+<div class="button"><input type="button" id="loadMockData" value="load mock data" onclick="loadMockData(this);"/></div>
