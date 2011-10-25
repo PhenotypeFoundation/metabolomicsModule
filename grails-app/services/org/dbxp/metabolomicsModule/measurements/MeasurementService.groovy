@@ -74,9 +74,9 @@ class MeasurementService {
 
 	def createHeaderSuggestions(columns) {
 
-		def otherSuggestions = featureHeaderSuggestions.keySet()
-
 		columns.collect { column ->
+
+			def otherSuggestions = featureHeaderSuggestions.keySet()
 
 			for (key in featureHeaderSuggestions.keySet()) {
 				if (column in featureHeaderSuggestions[key]) {

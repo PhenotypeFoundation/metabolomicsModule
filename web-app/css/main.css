@@ -47,3 +47,8 @@
 .dataTypeOption:hover {
 	border-color: #3399ff;
 }
+
+.scrollingDiv {
+	width: 100%;
+	overflow: auto;
+}

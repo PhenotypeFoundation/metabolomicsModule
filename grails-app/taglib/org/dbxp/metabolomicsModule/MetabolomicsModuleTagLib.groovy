@@ -129,17 +129,10 @@ $(document).ready(function() {
 				Long uploadedFileId = UploadedFile.findByAssay(assay)?.id
 				UploadedFile uploadedFile = UploadedFile.get(uploadedFileId)
 
-				if (uploadedFile) {
-					assignedSampleCounts += uploadedFile.determineAmountOfSamplesWithData()
+				assignedSampleCounts += uploadedFile?.determineAmountOfSamplesWithData() ?: 0
 
-					def mpv = assay.measurementPlatformVersion
-					measurementPlatformStrings += mpv ? "${mpv.measurementPlatform?.name} (${mpv.versionNumber})" : ""
-//
-//					if (assay.measurementPlatformVersion) {
-////						def mpv = MeasurementPlatformVersion.get((Long) uploadedFile['platformVersionId'])
-//						measurementPlatformStrings += mpv ? "${mpv.measurementPlatform?.name} (${mpv.versionNumber})" : ""
-//					}
-				}
+				def mpv = assay.measurementPlatformVersion
+				measurementPlatformStrings += mpv ? "${mpv.measurementPlatform?.name} (${mpv.versionNumber})" : ""
 			}
 
 			out << assayNames.join('<br />')
@@ -198,7 +191,6 @@ $(document).ready(function() {
 		out << '</textarea>'
 		out << '<br /><input type="submit" value="Submit" />'
 		out << '</form>'
-
 	}
 
 	def assayFeatureTables = { attrs, body ->
@@ -212,7 +204,7 @@ $(document).ready(function() {
 
 	def assayFeatureTable = {attrs, body ->
 
-		out << '<table><thead><tr><th>Platform Feature</th><th>Feature in Data File</th>'
+		out << '<div class="scrollingDiv"><table><thead><tr><th>Platform Feature</th><th>Feature in Data File</th>'
 
 		def measurementPlatformVersionFeatures = attrs.assay.measurementPlatformVersion?.features
 		def propertyLabels = measurementPlatformVersionFeatures ? measurementPlatformVersionFeatures[0].props.keySet() : []
@@ -237,11 +229,12 @@ $(document).ready(function() {
 		for (label in combinedLabels) {
 			out << '<tr><td>'
 
-			if (label in measurementPlatformVersionFeatureLabels) out << label
+			out << ((label in measurementPlatformVersionFeatureLabels) ? label : '<i>missing</i>')
 
 			out << '</td><td>'
 
-			if (label in dataColumnHeaders) out << label + '</td>'
+			out << ((label in dataColumnHeaders) ? label : '<i>missing</i>')
+			out << '</td>'
 
 			propertyValueMap[label].each { propertyValue ->
 				out << "<td>${propertyValue}</td>"
@@ -249,10 +242,46 @@ $(document).ready(function() {
 			out << '</tr>'
 		}
 
-		out << '</tbody></table>'
+		out << '</tbody></table></div>'
+	}
+
+	def platformVersionTable = {attrs, body ->
+
+		out << '<div class="scrollingDiv"><table><thead><tr><th>Platform Feature</th>'
+
+		def measurementPlatformVersionFeatures = attrs.measurementPlatformVersion?.features
+		def propertyLabels = measurementPlatformVersionFeatures ? measurementPlatformVersionFeatures[0].props.keySet() : []
+
+		def propertyValueMap = [:]
+		measurementPlatformVersionFeatures.each { mpvf ->
+			propertyValueMap[mpvf.feature.label] = mpvf.props.values()
+		}
+
+		for (propertyLabel in propertyLabels) {
+			out << "<th>$propertyLabel</th>"
+		}
+
+		out << '</tr></thead><tbody>'
+
+		def measurementPlatformVersionFeatureLabels = measurementPlatformVersionFeatures*.feature?.label
+
+		for (label in measurementPlatformVersionFeatureLabels) {
+			out << "<tr><td>$label</td>"
+
+			propertyValueMap[label].each { propertyValue ->
+				out << "<td>${propertyValue}</td>"
+			}
+			out << '</tr>'
+		}
+
+		out << '</tbody></table></div>'
 	}
 
 	def notification = {attrs, body ->
+
+		out << '''<script>$(document).ready(
+function(){$(".notification").delay(3000).slideUp("slow", function(){ $(this).remove() } );})
+</script>'''
 
 		out << '<div class="notification">'
 
@@ -280,7 +309,9 @@ $(document).ready(function() {
 			}.join('<br/>')}</td><td>"""
 
 			out << versions.collect { MeasurementPlatformVersion version ->
-				MetabolomicsAssay.findAllByMeasurementPlatformVersion(version).join(', ')
+				MetabolomicsAssay.findAllByMeasurementPlatformVersion(version).collect{ assay ->
+					g.link(controller: 'assay', action: 'view', id: assay.id){ assay }
+				}.join(', ')
 			}.join('<br />')
 
 			out << '</td></tr>'

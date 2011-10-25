@@ -30,10 +30,7 @@ package org.dbxp.metabolomicsModule
 import grails.converters.JSON
 import org.dbxp.dbxpModuleStorage.UploadedFile
 import org.dbxp.moduleBase.Assay
-import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
-import org.dbxp.metabolomicsModule.identity.Feature
-import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersionFeature
 
 class ParseConfigurationController {
 
@@ -55,13 +52,13 @@ class ParseConfigurationController {
 	}
 
 	def features = {
-		def uploadedFile = UploadedFile.get(params.uploadedFileId);
+		def uploadedFile = UploadedFile.get(params.uploadedFileId)
 		if (!uploadedFile) {
 			response.sendError(400)
 			return
 		}
 		session.uploadedFile = uploadedFile
-		if (!uploadedFile.matrix) uploadedFile.parse();
+		if (!uploadedFile.matrix) uploadedFile.parse()
 
 		def columns = uploadedFileService.getHeaderRow(uploadedFile).collect {it}
 		def headerSuggestions = measurementService.createHeaderSuggestions(columns)
@@ -86,7 +83,6 @@ class ParseConfigurationController {
 			try {
 				session.uploadedFile.parse()
 			} catch (e) {
-				e.printStackTrace()
 				errorMessage = e.message
 			}
 		}
@@ -206,8 +202,8 @@ class ParseConfigurationController {
 	 */
 	def updateSampleColumnAndFeatureRow(params) {
 		def uploadedFile = session.uploadedFile
-		uploadedFile.sampleColumnIndex = params.sampleColumnIndex as int
-		uploadedFile.featureRowIndex = params.featureRowIndex as int
+		uploadedFile.sampleColumnIndex = params.sampleColumnIndex as int ?: 0
+		uploadedFile.featureRowIndex = params.featureRowIndex as int ?: 0
 	}
 
 	/**
@@ -224,20 +220,19 @@ class ParseConfigurationController {
 
 		// somehow uploadedFile.assay sometimes equals to 'false', getting the assay this way prevents that
 		def assay = Assay.get(uploadedFile?.assay?.id)
-		if (uploadedFile && assay) {
+		if (uploadedFile.matrix && assay) {
 
 			def fileSampleCount = uploadedFileService.sampleCount(uploadedFile)
-			def assaySampleCount = assay.samples.size()
 
 			def unmappedSampleCount = fileSampleCount - (uploadedFile.determineAmountOfSamplesWithData() ?: 0)
 
-			mappingString = "${uploadedFile.determineAmountOfSamplesWithData()} of the $assaySampleCount samples in the assay found; $unmappedSampleCount samples from file remain unmapped."
+			mappingString = "Out of the $fileSampleCount samples from the file, ${uploadedFile.determineAmountOfSamplesWithData()} could be matched to the assay. There are still $unmappedSampleCount unmapped samples in the assay."
 
 		} else if (assay) mappingString = 'File is linked to the assay.'
 		else mappingString = 'File is not linked with an assay.'
 
 		// check for duplicate sample names
-		def sampleNames = uploadedFileService.getSampleNames(uploadedFile)
+		def sampleNames = uploadedFileService.getSampleNames(uploadedFile) ?: []
 		if ((sampleNames+[]).unique().size() < sampleNames.size()) {
 			mappingString += " Warning: duplicate sample names exist in the data file."
 		}
@@ -276,7 +271,7 @@ class ParseConfigurationController {
 		Map currentDataTablesObject = getDataTablesObject()
 
 		// the sample column index was changed so for preview purposes remove the assay sample names
-		if (session.uploadedFile.sampleColumnIndex != params.sampleColumnIndex.toInteger())
+		if (session.uploadedFile.sampleColumnIndex != params.sampleColumnIndex?.toInteger())
 			currentDataTablesObject = removeAssaySampleNamesFromDataTables(params, currentDataTablesObject)
 
 		currentDataTablesObject ?: [message: 'Could not parse datamatrix, no data found.']
@@ -327,7 +322,7 @@ class ParseConfigurationController {
 	 */
 	def transposeMatrixIfNeeded(params) {
 
-		def requestedColumnOrientation = params.isColumnOriented.toBoolean()
+		def requestedColumnOrientation = params.isColumnOriented?.toBoolean()
 
 		if (session.uploadedFile?.matrix &&
 			params.formAction == 'update' &&

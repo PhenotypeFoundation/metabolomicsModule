@@ -67,7 +67,7 @@ class ParseConfigurationTagLib {
      *
      */
     def assaysControl = { attrs, body ->
-        out << "Assay: <br />"
+        out << "Assign uploaded file to assay: <br />"
         out << '<select id="assayId" name="assayId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
 
         // if new studygroup create new label
@@ -128,7 +128,7 @@ class ParseConfigurationTagLib {
      * @param featureRowIndex currently selected feature row
      */
     def featureRowControl = { attrs, body ->
-        out << pc.rangeSelectWithLabel(label: 'Feature row', name: 'featureRowIndex', maxIndex: 5, value: attrs.featureRowIndex, disabled: attrs.disabled)
+        out << pc.rangeSelectWithLabel(label: 'Feature are in row', name: 'featureRowIndex', maxIndex: 5, value: attrs.featureRowIndex, disabled: attrs.disabled)
     }
 
     /**
@@ -136,7 +136,7 @@ class ParseConfigurationTagLib {
      * @param sampleColumnIndex currently selected sample column
      */
     def sampleColumnControl = { attrs, body ->
-        out << pc.rangeSelectWithLabel(label: 'Sample column', name: 'sampleColumnIndex', maxIndex: attrs.maxIndex, value: attrs.sampleColumnIndex, disabled: attrs.disabled)
+        out << pc.rangeSelectWithLabel(label: 'Sample names are in column', name: 'sampleColumnIndex', maxIndex: attrs.maxIndex, value: attrs.sampleColumnIndex, disabled: attrs.disabled)
     }
 
     /**

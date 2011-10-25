@@ -113,7 +113,7 @@ function initFeaturesPage(data) {
 		newHTML += '">original: ' + cell.innerHTML + '</option>';
 
 		if (preferredFeaturePropertyName[0]) {
-			newHTML += '<option value=' + cell.innerHTML + ' selected="true">preferred: ' + preferredFeaturePropertyName + '</option>';
+			newHTML += '<option value=' + preferredFeaturePropertyName + ' selected="true">preferred: ' + preferredFeaturePropertyName + '</option>';
 		}
 
 		for (suggestionIdx in suggestions) {
