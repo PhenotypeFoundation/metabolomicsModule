@@ -15,7 +15,7 @@ class MeasurementService {
 		'm/z': 		['mz', 'm z', 'm over z'],
 		'InChI':	['inchi','Inchi','inchie'],
 		'PubChem':	['pubchem'],
-		'ChEBI':	['chebi', 'Chebi']
+		'ChEBI ID':	['chebi', 'Chebi', 'chebi_id', 'ChEBI_ID']
 	]
 
 	/*

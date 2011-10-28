@@ -128,7 +128,7 @@ class ParseConfigurationTagLib {
      * @param featureRowIndex currently selected feature row
      */
     def featureRowControl = { attrs, body ->
-        out << pc.rangeSelectWithLabel(label: 'Feature are in row', name: 'featureRowIndex', maxIndex: 5, value: attrs.featureRowIndex, disabled: attrs.disabled)
+        out << pc.rangeSelectWithLabel(label: 'Features are in row', name: 'featureRowIndex', maxIndex: 5, value: attrs.featureRowIndex, disabled: attrs.disabled)
     }
 
     /**

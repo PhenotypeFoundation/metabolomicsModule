@@ -53,23 +53,35 @@
 		<input id="formAction" type="hidden" name="formAction" value=""/>
 
 		<div class="matrixOptions">
-			<g:if test="${parseInfo?.parserClassName=='ExcelParser'}">
-				<pc:sheetSelectControl numberOfSheets="${parseInfo.numberOfSheets}" sheetIndex="${parseInfo.sheetIndex}"
-									   disabled="${controlsDisabled}"/>
-			</g:if>
-			<g:elseif test="${parseInfo?.parserClassName=='CsvParser'}">
-				<pc:delimiterControl value="${parseInfo.delimiter}" delimiterNameMap="${parseInfo.delimiterNameMap}"
-									 disabled="${controlsDisabled}"/>
-			</g:elseif>
-			<pc:sampleColumnControl sampleColumnIndex="${uploadedFile?.sampleColumnIndex}"
+
+			<table id="matrixOptionsTable">
+			<tr>
+				<td>
+					<pc:sampleColumnControl sampleColumnIndex="${uploadedFile?.sampleColumnIndex}"
 									maxIndex="${uploadedFile?.columns}" disabled="${controlsDisabled}"/>
-			<pc:featureRowControl featureRowIndex="${uploadedFile?.featureRowIndex}" disabled="${controlsDisabled}"/>
-		</div>
+				</td><td>
+					<pc:featureRowControl featureRowIndex="${uploadedFile?.featureRowIndex}" disabled="${controlsDisabled}"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<pc:orientationControl isColumnOriented="${uploadedFile?.isColumnOriented}" disabled="${controlsDisabled}"/>
+				</td><td>
+					<g:if test="${parseInfo?.parserClassName=='ExcelParser'}">
+						<pc:sheetSelectControl numberOfSheets="${parseInfo.numberOfSheets}"
+											   sheetIndex="${parseInfo.sheetIndex}"
+											   disabled="${controlsDisabled}"/>
+					</g:if>
+					<g:elseif test="${parseInfo?.parserClassName=='CsvParser'}">
+						<pc:delimiterControl value="${parseInfo.delimiter}" delimiterNameMap="${parseInfo.delimiterNameMap}"
+											 disabled="${controlsDisabled}"/>
+					</g:elseif>
+			</td>
+			</tr>
+			</table>
 
-		<div class="orientation">
-			<pc:orientationControl isColumnOriented="${uploadedFile?.isColumnOriented}" disabled="${controlsDisabled}"/>
 		</div>
-
+		
 		<div class="dataMatrixContainer">
 		</div>
 
