@@ -22,6 +22,8 @@ class MetabolomicsModuleTagLib {
     def assayService
     def uploadedFileService
     def measurementService
+	def featurePropertyService
+
 	private static final log = LogFactory.getLog(this);
 
     def uploadedFileList = { attrs ->
@@ -174,9 +176,8 @@ $(document).ready(function() {
             }
 
             out << '</optgroup>'
-
         }
-
+		
         out << '</select>'
         out << '<input type="submit" value="Submit" />'
         out << '</form>'
@@ -207,22 +208,23 @@ $(document).ready(function() {
 		out << '<div class="scrollingDiv"><table><thead><tr><th>Platform Feature</th><th>Feature in Data File</th>'
 
 		def measurementPlatformVersionFeatures = attrs.assay.measurementPlatformVersion?.features
-		def propertyLabels = measurementPlatformVersionFeatures ? measurementPlatformVersionFeatures[0].props.keySet() : []
+		Set propertyHeaders = measurementPlatformVersionFeatures.collect{
+			it.props?.keySet()
+		}.findAll{it}.sum() as Set
 
-
-		def propertyValueMap = [:]
+		def propertyMap = [:]
 		measurementPlatformVersionFeatures.each { mpvf ->
-			propertyValueMap[mpvf.feature.label] = mpvf.props.values()
+			propertyMap[mpvf.feature.label] = mpvf.props
 		}
 
-		for (propertyLabel in propertyLabels) {
+		for (propertyLabel in propertyHeaders) {
 			out << "<th>$propertyLabel</th>"
 		}
 
 		out << '</tr></thead><tbody>'
 
 		def dataColumnHeaders = uploadedFileService.getDataColumnHeaders(attrs.assayFile)
-		def measurementPlatformVersionFeatureLabels = measurementPlatformVersionFeatures*.feature?.label
+		def measurementPlatformVersionFeatureLabels = measurementPlatformVersionFeatures*.feature?.label ?: []
 
 		Set combinedLabels = dataColumnHeaders + measurementPlatformVersionFeatureLabels
 
@@ -236,13 +238,22 @@ $(document).ready(function() {
 			out << ((label in dataColumnHeaders) ? label : '<i>missing</i>')
 			out << '</td>'
 
-			propertyValueMap[label].each { propertyValue ->
-				out << "<td>${propertyValue}</td>"
+			propertyHeaders.each{ propertyHeader ->
+				out << "<td>" + viewFeatureProperty(propertyHeader: propertyHeader, propertyValue: propertyMap[label][propertyHeader]) + "</td>"
 			}
 			out << '</tr>'
 		}
 
 		out << '</tbody></table></div>'
+	}
+
+	def viewFeatureProperty = {attrs, body ->
+
+		if (!attrs.propertyHeader || !attrs.propertyValue){
+			out << ''
+		} else {
+			out << featurePropertyService.view(attrs.propertyHeader, attrs.propertyValue)
+		}
 	}
 
 	def platformVersionTable = {attrs, body ->
