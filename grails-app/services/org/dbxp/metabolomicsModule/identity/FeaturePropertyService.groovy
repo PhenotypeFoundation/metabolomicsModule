@@ -6,6 +6,7 @@ class FeaturePropertyService {
 	def ChebiService
 	def LipidmapsService
 	def PubchemService
+	def HmdbService
 
     static transactional = true
 
@@ -46,5 +47,9 @@ class FeaturePropertyService {
 
 	def viewChemspider(chemspiderId){
 		return '<a target="_blank" href="' + ChemspiderService.chemspiderUrlByChemspiderId(chemspiderId) + '">' + chemspiderId + '</a>'
+	}
+	
+	def viewHmdb(HmdbId){
+		return '<a target="_blank" href="' + HmdbService.hmdbUrlByHmdbId(HmdbId) + '">' + HmdbId + '</a>'
 	}
 }
