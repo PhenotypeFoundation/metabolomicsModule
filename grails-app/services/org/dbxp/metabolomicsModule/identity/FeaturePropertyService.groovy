@@ -12,7 +12,9 @@ class FeaturePropertyService {
     def view(String label, String value) {
 
 		//reformat the label to a method compatible format
-		label = label.replaceAll(" ", "").toLowerCase()
+		label = label.toLowerCase()
+		label = label.replaceAll(" ", "")
+		label = label.replaceAll("_", "")
 		label = label.replaceFirst("${label[0]}", "${label[0].toUpperCase()}")
 
 		try {
@@ -23,7 +25,7 @@ class FeaturePropertyService {
     }
 
 	def viewInchi(inchi){
-		return '<a target="_blank" href="http://www.metitree.nl/inchi2image/png/'+inchi+'">'+inchi+'</a>'
+		return '<a target="_blank" href="http://www.metitree.nl/inchi2image/png/' + inchi + '">' + ((inchi.size() >= 20) ? "${inchi[0..20]}..." : inchi) + '</a>'
 	}
 
 	def viewInchikey(inchikey){
@@ -35,14 +37,14 @@ class FeaturePropertyService {
 	}
 
 	def viewPubchem(pubchemId){
-		return "THIS IS A PUBCHEM ID ${pubchemId}"
+		return '<a target="_blank" href="' + PubchemService.pubchemUrlByPubchemId(pubchemId) + '">' + pubchemId + '</a>'
 	}
 
 	def viewLipidmap(LMID){
-		return "THIS IS A Lipidmaps IDtoURL ${LipidmapsService.lipidmapsUrlByLMID(LMID)}"
+		return '<a target="_blank" href="' + LipidmapsService.lipidmapsUrlByLMID(LMID) + '">' + LMID + '</a>'
 	}
 
 	def viewChemspider(chemspiderId){
-		return "THIS IS A Chemspider IDtoURL ${ChemspiderService.chemspiderUrlByChemspiderId(chemspiderId)}"
+		return '<a target="_blank" href="' + ChemspiderService.chemspiderUrlByChemspiderId(chemspiderId) + '">' + chemspiderId + '</a>'
 	}
 }
