@@ -8,7 +8,10 @@ class HomeController {
 	def index = {
 		def files = uploadedFileService.getUnassignedUploadedFilesForUser(session.user)
 
-		def uploadedFileWasMovedToAssay = session.uploadedFileWasMovedToAssay
+		def uploadedFileWasMovedToAssay
+		if (session.uploadedFileWasMovedToAssay?.isSaved) {
+			uploadedFileWasMovedToAssay = session.uploadedFileWasMovedToAssay
+		}
 		session.removeAttribute('uploadedFileWasMovedToAssay')
 
 		[ 	files: files,

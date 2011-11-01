@@ -187,6 +187,8 @@ class ParseConfigurationController {
 
 		updateAssayIfNeeded(params)
 
+		if (session.uploadedFileWasMovedToAssay) session.uploadedFileWasMovedToAssay.isSaved = true
+
 		// Workaround for a bug introduced in Mongo GORM 1.0.0 M7, omitting this step would result in NPE
 		UploadedFile.get(session.uploadedFile.id)
 
