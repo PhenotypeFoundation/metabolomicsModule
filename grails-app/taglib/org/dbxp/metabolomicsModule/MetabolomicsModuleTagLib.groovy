@@ -239,7 +239,11 @@ $(document).ready(function() {
 			out << '</td>'
 
 			propertyHeaders.each{ propertyHeader ->
-				out << "<td>" + viewFeatureProperty(propertyHeader: propertyHeader, propertyValue: propertyMap[label][propertyHeader]) + "</td>"
+ 				if (propertyMap[label]) {
+					out << "<td>" + viewFeatureProperty(propertyHeader: propertyHeader, propertyValue: propertyMap[label][propertyHeader]) + "</td>"
+				 } else {
+					out << "<td></td>"
+				 }
 			}
 			out << '</tr>'
 		}

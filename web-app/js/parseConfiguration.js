@@ -60,7 +60,7 @@ function openParseConfigurationDialog(dialogProperties) {
                 title: dialogProperties.title + " - " + dialogProperties.fileName,
                 buttons: buttonMap,
                 width: 680,
-                height: 520,
+                height: 530,
                 // necessary to destroy object to make datatables appear after opening dialog for a second time
                 beforeClose: function(event, ui) {
 
