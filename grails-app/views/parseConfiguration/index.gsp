@@ -3,18 +3,27 @@
 <body>
 
 <mm:dataTypeOption dialogProperties="${(dialogProperties + [dataType: 'clean', actionName: 'data', title: 'Clean Data Interpretation']) as JSON}">
-	<b>Clean Data</b><br />
-	Metabolomics data without quality control samples.
+	<div class="dataTypeOptionText">
+		<b>Clean Data</b><br />
+		Metabolomics data without quality control samples.
+	</div>
+	<img class="dataTypeImage" src="images/filetype_clean.png" alt="Clean Data Files">
 </mm:dataTypeOption>
 
 <mm:dataTypeOption dialogProperties="${(dialogProperties + [dataType: 'raw', actionName: 'data', title: 'Raw Data Interpretation']) as JSON}">
-	<b>Raw Data</b><br />
-	Metabolomics data including quality control samples.
+	<div class="dataTypeOptionText">
+		<b>Raw Data</b><br />
+		Metabolomics data including quality control samples.
+	</div>
+	<img class="dataTypeImage" src="images/filetype_raw.png" alt="Raw Data Files">
 </mm:dataTypeOption>
 
 <mm:dataTypeOption dialogProperties="${(dialogProperties + [actionName: 'features', title: 'Feature List']) as JSON}">
-	<b>Feature List</b><br />
-	A list of platform features describing the measured compounds. Connect this file to an assay to link the assay's associated data files with the features from this file.
+	<div class="dataTypeOptionText">
+		<b>Feature List</b><br />
+		A list of platform features describing the measured compounds. Connect this file to an assay to link the assay's associated data files with the features from this file.
+	</div>
+	<img class="dataTypeImage" src="images/filetype_features.png" alt="Feature Files">
 </mm:dataTypeOption>
 
 </body>

@@ -52,3 +52,15 @@
 	width: 100%;
 	overflow: auto;
 }
+
+.dataTypeOptionText {
+	width: 40%;
+	float: left;
+}
+
+.dataTypeImage {
+	float: right;
+	position: relative;
+	top: 50%;
+	margin-top: -45px;
+}
