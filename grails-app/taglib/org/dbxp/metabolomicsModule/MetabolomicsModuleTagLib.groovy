@@ -157,6 +157,15 @@ $(document).ready(function() {
 		out << '</tbody></table>'
     }
 
+	def assayPropertiesEditor = { attrs, body ->
+
+		out << '<form action="../updateAssayProperties/' + attrs.assay.id + '">'
+		out << assayPlatformChooser(assay: attrs.assay) {}
+		out << assayCommentFieldEditor(assay: attrs.assay) {}
+		out << '<input type="submit" value="Submit" />'
+		out << '</form>'
+	}
+
     /**
      * Dropdown list control to choose the platform used (DCL lipodomics, et cetera).
      *
@@ -164,7 +173,6 @@ $(document).ready(function() {
      */
     def assayPlatformChooser = { attrs, body ->
         out << "Platform:  <br />"
-        out << '<form>'
         out << '<select name="platformVersionId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
 
         measurementService.findAllMeasurementPlatforms().each { platform ->
@@ -179,19 +187,14 @@ $(document).ready(function() {
         }
 		
         out << '</select>'
-        out << '<input type="submit" value="Submit" />'
-        out << '</form>'
     }
 
-	def commentFieldEditor = { attrs, body ->
+	def assayCommentFieldEditor = { attrs, body ->
 
 		out << "Comments: <br />"
-		out << '<form>'
 		out << '<textarea name="comments" rows="8" style="width:100%;padding:0;">'
 		out << attrs.assay.comments
 		out << '</textarea>'
-		out << '<br /><input type="submit" value="Submit" />'
-		out << '</form>'
 	}
 
 	def assayFeatureTables = { attrs, body ->
@@ -240,7 +243,7 @@ $(document).ready(function() {
 
 			propertyHeaders.each{ propertyHeader ->
  				if (propertyMap[label]) {
-					out << "<td>" + viewFeatureProperty(propertyHeader: propertyHeader, propertyValue: propertyMap[label][propertyHeader]) + "</td>"
+					out << "<td>" + viewFeatureProperty(propertyHeader: propertyHeader, propertyValue: propertyMap[label][propertyHeader]) {} + "</td>"
 				 } else {
 					out << "<td></td>"
 				 }

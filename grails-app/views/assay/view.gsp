@@ -5,9 +5,7 @@
 
 <body>
 <h1>${assay.name} <small>(${assay.study.token()})</small></h1>
-
-<mm:assayPlatformChooser assay="${assay}" />
-<mm:commentFieldEditor assay="${assay}" />
+<mm:assayPropertiesEditor assay="${assay}" />
 
 <div id="uploadedAssayFiles">
 	<mm:uploadedFileList

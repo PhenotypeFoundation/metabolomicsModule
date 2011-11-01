@@ -38,21 +38,26 @@ class AssayController {
 		if (!params.id) response.sendError(400, "No assay id specified.") // id of an assay must be present
 		
 		// load assay from id (for session.user)
-		MetabolomicsAssay assay = (MetabolomicsAssay) assayService.getAssayReadableByUserById(session.user, params.id as Long)
+		def assay = assayService.getAssayReadableByUserById(session.user, params.id as Long)
 
         if (!assay) {
             response.sendError(404, "No assay found with id $params.id")
             return
-        } else if (params.platformVersionId) {
-            assay.measurementPlatformVersion = MeasurementPlatformVersion.get(params.platformVersionId)
-            assay.save()
-        } else if (params.comments) {
-			assay.comments = params.comments
-			assay.save()
-		}
-		
+        }
+
 		def assayFiles = UploadedFile.findAllByAssay(assay)
 
 		[ assay: assay, assayFiles: assayFiles ]
+	}
+
+	def updateAssayProperties = {
+
+		def assay = MetabolomicsAssay.get(params.id)
+
+		assay.measurementPlatformVersion = MeasurementPlatformVersion.get(params.platformVersionId)
+		assay.comments = params.comments ?: ''
+		assay.save(failOnError: true)
+
+		redirect(action: 'view', id: params.id)
 	}
 }
