@@ -41,8 +41,8 @@ function openParseConfigurationDialog(dialogProperties) {
 			case 'save':
 				buttonMap['Save'] = function() { submitForm("save") };
 				break;
-			case 'close':
-				buttonMap['Close'] = function() { $(this).dialog('close') };
+			case 'cancel':
+				buttonMap['Cancel'] = function() { $(this).dialog('close') };
 			break
 		}
 	});

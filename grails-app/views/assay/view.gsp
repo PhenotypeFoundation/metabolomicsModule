@@ -12,7 +12,7 @@
 <div id="uploadedAssayFiles">
 	<mm:uploadedFileList
 		files="${assayFiles}"
-		dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['save', 'close'], assayId: id, controllerName: 'parseConfiguration', actionName: 'data', refreshPageAfterClose: true, mmBaseUrl: resource('/', absolute: true), redirectUrl:resource('/assay/view/'+assay.id, absolute: true)]}"
+		dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['save', 'cancel'], assayId: id, controllerName: 'parseConfiguration', actionName: 'data', refreshPageAfterClose: true, mmBaseUrl: resource('/', absolute: true), redirectUrl:resource('/assay/view/'+assay.id, absolute: true)]}"
 		assay="${assay}" />
 </div>
 

@@ -45,7 +45,7 @@ class ParseConfigurationController {
 				fileName: params.fileName,
 				mmBaseUrl: resource('/', absolute: true),
 				controllerName: params.controller,
-				buttons: ['save', 'close'],
+				buttons: ['save', 'cancel'],
 				refreshPageAfterClose: true,
 				redirectUrl: resource('/', absolute: true)
 			]]

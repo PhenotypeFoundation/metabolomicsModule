@@ -48,7 +48,7 @@
 <body>
 <div class="parseConfigDialog" id="parseConfigDialog">
 	<g:formRemote name="pcform" onFailure="updateStatus('server does not respond')"
-				  onSuccess="updateDialog(data)" action="handleForm" url="${[action:'handleForm']}">
+				  onSuccess="if (\$('#formAction').val() == 'save') {\$('#parseConfigurationDialog').dialog('close')}; updateDialog(data);" action="handleForm" url="${[action:'handleForm']}">
 		<input type="hidden" name="filename" value="${uploadedFile.fileName}"/>
 		<input id="formAction" type="hidden" name="formAction" value=""/>
 

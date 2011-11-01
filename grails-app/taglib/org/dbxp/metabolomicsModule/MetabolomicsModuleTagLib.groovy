@@ -295,7 +295,7 @@ $(document).ready(function() {
 	def notification = {attrs, body ->
 
 		out << '''<script>$(document).ready(
-function(){$(".notification").delay(3000).slideUp("slow", function(){ $(this).remove() } );})
+function(){$(".notification").delay(4000).slideUp("slow", function(){ $(this).remove() } );})
 </script>'''
 
 		out << '<div class="notification">'
