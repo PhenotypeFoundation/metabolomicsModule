@@ -50,7 +50,7 @@ function openParseConfigurationDialog(dialogProperties) {
     // Assign the dialog to the global variable
     parseConfigurationDialog = $("<div id='parseConfigurationDialog'><img src='" + mmBaseUrl +  "/images/spinner.gif'></div>")
 		.load(
-			mmBaseUrl + dialogProperties.controllerName + '/' + dialogProperties.actionName + '/' +
+			mmBaseUrl + '/' + dialogProperties.controllerName + '/' + dialogProperties.actionName + '/' +
 				"?fileName=" + encodeURI(dialogProperties.fileName) +
 				"&uploadedFileId=" + encodeURI(dialogProperties.uploadedFileId) +
 				(dialogProperties.dataType ? "&dataType=" + dialogProperties.dataType : '')
@@ -181,9 +181,9 @@ function updateDialog(data) {
             if (data.assaySampleNames.length) {
                 // the datamatrix sample name also exists in the assay sample collection?
                 if ( $.inArray(sampleName, data.assaySampleNames) != -1 ) {
-                    dataCellObject.html('<img src="' + mmBaseUrl + 'images/sample_green.png" class="sampleColumnIcon"/>' + dataCellObject.html());
+                    dataCellObject.html('<img src="' + mmBaseUrl + '/images/sample_green.png" class="sampleColumnIcon"/>' + dataCellObject.html());
                 } else { // the datamatrix samples doesn't exist in the assay sample collection
-                    dataCellObject.html('<img src="' + mmBaseUrl + 'images/sample_red.png" class="sampleColumnIcon"/>' + dataCellObject.html());
+                    dataCellObject.html('<img src="' + mmBaseUrl + '/images/sample_red.png" class="sampleColumnIcon"/>' + dataCellObject.html());
                 }
             }
 

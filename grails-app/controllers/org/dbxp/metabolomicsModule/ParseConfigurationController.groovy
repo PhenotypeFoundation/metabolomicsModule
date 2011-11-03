@@ -43,7 +43,7 @@ class ParseConfigurationController {
 		[dialogProperties:
 			[	uploadedFileId: params.uploadedFileId,
 				fileName: params.fileName,
-				mmBaseUrl: resource('/', absolute: true),
+				mmBaseUrl: grailsApplication.config.grails.serverURL,
 				controllerName: params.controller,
 				buttons: ['save', 'cancel'],
 				refreshPageAfterClose: true,

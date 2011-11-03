@@ -10,7 +10,7 @@
 </g:if>
 
 <div id="uploadedFiles">
-	<mm:uploadedFileList files="${files}" dialogProperties="[title: 'Please choose the uploaded file data type', buttons: ['close'], controllerName: 'parseConfiguration', actionName: 'index', mmBaseUrl: resource('/', absolute: true)]"/>
+	<mm:uploadedFileList files="${files}" dialogProperties="[title: 'Please choose the uploaded file data type', buttons: ['close'], controllerName: 'parseConfiguration', actionName: 'index', mmBaseUrl: grailsApplication.config.grails.serverURL]"/>
 </div>
 <div id="studyOverview">
 	<mm:studyList highlightedAssay="${highlightedAssay}" />
