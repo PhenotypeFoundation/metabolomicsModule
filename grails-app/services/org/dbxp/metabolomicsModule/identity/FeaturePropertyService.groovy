@@ -7,6 +7,7 @@ class FeaturePropertyService {
 	def LipidmapsService
 	def PubchemService
 	def HmdbService
+	def KeggService
 
     static transactional = true
 
@@ -25,31 +26,35 @@ class FeaturePropertyService {
 		}
     }
 
-	def viewInchi(inchi){
+	def viewInchi(String inchi){
 		return '<a target="_blank" href="http://www.metitree.nl/inchi2image/png/' + inchi + '">' + ((inchi.size() >= 20) ? "${inchi[0..20]}..." : inchi) + '</a>'
 	}
 
-	def viewInchikey(inchikey){
-		return "THIS IS AN INCHIKEY ${inchikey}"
+	def viewInchikey(String inchikey){
+		return "${inchikey}[INCHIKEY]"
 	}
 
-	def viewChebi(chebiId){
-		return "THIS IS A CHEBI ID ${chebiId}"
+	def viewChebi(String chebiId){
+		return '<a target="_blank" href="' + ChebiService.chebiUrlByChebiId(chebiId) + '">' + chebiId + '</a>'
 	}
 
-	def viewPubchem(pubchemId){
+	def viewPubchem(String pubchemId){
 		return '<a target="_blank" href="' + PubchemService.pubchemUrlByPubchemId(pubchemId) + '">' + pubchemId + '</a>'
 	}
 
-	def viewLipidmap(LMID){
+	def viewLipidmap(String LMID){
 		return '<a target="_blank" href="' + LipidmapsService.lipidmapsUrlByLMID(LMID) + '">' + LMID + '</a>'
 	}
 
-	def viewChemspider(chemspiderId){
+	def viewChemspider(String chemspiderId){
 		return '<a target="_blank" href="' + ChemspiderService.chemspiderUrlByChemspiderId(chemspiderId) + '">' + chemspiderId + '</a>'
 	}
 	
-	def viewHmdb(HmdbId){
-		return '<a target="_blank" href="' + HmdbService.hmdbUrlByHmdbId(HmdbId) + '">' + HmdbId + '</a>'
+	def viewHmdb(String hmdbId){
+		return '<a target="_blank" href="' + HmdbService.hmdbUrlByHmdbId(hmdbId) + '">' + hmdbId + '</a>'
+	}
+	
+	def viewKegg(String keggId){
+		return '<a target="_blank" href="' + KeggService.keggUrlByKeggId(keggId) + '">' + keggId + '</a>'
 	}
 }
