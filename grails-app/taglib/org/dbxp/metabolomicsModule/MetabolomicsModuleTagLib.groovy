@@ -49,7 +49,7 @@ class MetabolomicsModuleTagLib {
 					uploadr.rating { "${measurementService.determineUploadedFileRating(uploadedFile)}" }
 					uploadr.fileSize { uploadedFile.fileSize }
                     uploadr.fileModified { uploadedFile.lastUpdated.time }
-					uploadr.ratingText { 'rating text to come here ....' }
+					uploadr.ratingText { measurementService.constructRatingText(uploadedFile) }
                     uploadr.fileId { uploadedFile.id }
                 }
             }

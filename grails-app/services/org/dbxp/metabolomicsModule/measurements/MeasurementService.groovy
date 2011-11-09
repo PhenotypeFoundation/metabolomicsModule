@@ -112,11 +112,11 @@ class MeasurementService {
 			points++
 
 			// 3 : all samples are recognized
-			if ( uploadedFile.matrix && (assay?.samples?.size() == uploadedFile.determineAmountOfSamplesWithData())) {
+			if (assay?.samples?.size() == uploadedFile.determineAmountOfSamplesWithData()) {
 				points++
 
 				// 4 : all features are recognized
-				if (assay.measurementPlatformVersion?.features?.size() == uploadedFileService.getFeatureNames(uploadedFile).size()) {
+				if ((assay.measurementPlatformVersion?.features*.label as Set)?.containsAll(uploadedFileService.getFeatureNames(uploadedFile) as Set)) {
 					points++
 
 					// 5 : study is public
@@ -127,6 +127,32 @@ class MeasurementService {
 
 		// calculate and return rating
 		return (points / maxPoints)
+	}
+
+	// Constructs a paragraph based on an uploadedFile to describe why the rating (the stars) is the way it is
+	def constructRatingText(UploadedFile uploadedFile) {
+
+		def rating = (determineUploadedFileRating(uploadedFile) * 5) as int
+		MetabolomicsAssay assay = Assay.get(uploadedFile.assay?.id)
+
+		def ratingTextLines = [
+			"1: file is uploaded",
+			"0: file is not connected to an assay",
+			"0: ${(assay?.samples?.size() ?: 0) - uploadedFile.determineAmountOfSamplesWithData()} samples have no data",
+			"0: ${(((uploadedFileService.getFeatureNames(uploadedFile) ?: []) as Set) - ((assay?.measurementPlatformVersion?.features*.label ?: []) as Set)).size()} features not recognized in platform",
+		    "0: Study is not public",
+			"Total: ${rating} stars"
+		]
+
+		// deliberate fall through for switch statement!
+		switch (rating) {
+			case 5: ratingTextLines[4] = "1: Study is public"
+			case 4: ratingTextLines[3] = "1: All features recognized"
+			case 3: ratingTextLines[2] = "1: All samples have data"
+			case 2: ratingTextLines[1] = "1: File is connected to an assay"
+		}
+
+		"<div style=\"text-align:left;\"> ${ratingTextLines.join('<br />')}</div>"
 	}
 }
 
