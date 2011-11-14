@@ -40,7 +40,7 @@ class MetabolomicsModuleTagLib {
 
 		// output file uploadr
         out << '<h1>Uploaded files</h1>'
-        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: 'up', maxVisible: 8, rating: true) {
+        out << uploadr.add(name: "uploadrArea", path: "/tmp", placeholder: "Drop file(s) here to upload", direction: 'up', maxVisible: 8, rating: true, maxSize: 52428800) {
             uploadedFiles.each { uploadedFile ->
 				// add file to the uploadr
                 uploadr.file(name: uploadedFile.fileName) {
