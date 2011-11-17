@@ -116,7 +116,7 @@ class MeasurementService {
 				points++
 
 				// 4 : all features are recognized
-				if ((assay.measurementPlatformVersion?.features*.label as Set)?.containsAll(uploadedFileService.getFeatureNames(uploadedFile) as Set)) {
+				if ((assay.measurementPlatformVersion?.features*.feature*.label as Set)?.containsAll(uploadedFileService.getFeatureNames(uploadedFile) as Set)) {
 					points++
 
 					// 5 : study is public
@@ -139,7 +139,7 @@ class MeasurementService {
 			"1: file is uploaded",
 			"0: file is not connected to an assay",
 			"0: ${(assay?.samples?.size() ?: 0) - uploadedFile.determineAmountOfSamplesWithData()} samples have no data",
-			"0: ${(((uploadedFileService.getFeatureNames(uploadedFile) ?: []) as Set) - ((assay?.measurementPlatformVersion?.features*.label ?: []) as Set)).size()} features not recognized in platform",
+			"0: ${(((uploadedFileService.getFeatureNames(uploadedFile) ?: []) as Set) - ((assay?.measurementPlatformVersion?.features*.feature*.label ?: []) as Set)).size()} features not recognized in platform",
 		    "0: Study is not public",
 			"Total: ${rating} stars"
 		]
