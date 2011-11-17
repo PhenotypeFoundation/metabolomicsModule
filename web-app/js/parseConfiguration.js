@@ -9,7 +9,7 @@ var mmBaseUrl;
  */
 function initParseConfigurationDialogListeners() {
     // Listen for control element changes, if so, submit the form
-    $('#delimiter, #sheetIndex, #samplePerRow, #samplePerColumn, #sampleColumnIndex').change( function() {
+    $('#delimiter, #sheetIndex, #samplePerRow, #samplePerColumn, #sampleColumnIndex, #featureRowIndex').change( function() {
         submitForm("update");
     });
 
