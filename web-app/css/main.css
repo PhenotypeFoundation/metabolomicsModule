@@ -10,16 +10,6 @@
 	text-align: center;
 }
 
-#uploadedFiles {
-	float: left;
-	width: 50%;
-}
-
-#studyOverview {
-	float: left;
-	width: 50%;
-}
-
 #studyOverviewTable {
 	margin-top: 28px;
 	table-layout: fixed;
