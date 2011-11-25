@@ -273,7 +273,7 @@ $(document).ready(function() {
 
 		def propertyValueMap = [:]
 		measurementPlatformVersionFeatures.each { mpvf ->
-			propertyValueMap[mpvf.feature.label] = mpvf.props.values()
+			propertyValueMap[mpvf.id] = mpvf.props.values()
 		}
 
 		for (propertyLabel in propertyLabels) {
@@ -282,12 +282,12 @@ $(document).ready(function() {
 
 		out << '</tr></thead><tbody>'
 
-		def measurementPlatformVersionFeatureLabels = measurementPlatformVersionFeatures*.feature?.label
+		measurementPlatformVersionFeatures.each { mpvf ->
+			out << "<tr><td>"
+			out << g.link(controller: 'measurementPlatformVersionFeature', action: 'view', id: mpvf.id) { mpvf.feature.label }
+			out << "</td>"
 
-		for (label in measurementPlatformVersionFeatureLabels) {
-			out << "<tr><td>$label</td>"
-
-			propertyValueMap[label].each { propertyValue ->
+			propertyValueMap[mpvf.id].each { propertyValue ->
 				out << "<td>${propertyValue}</td>"
 			}
 			out << '</tr>'
