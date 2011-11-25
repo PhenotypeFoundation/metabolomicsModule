@@ -209,6 +209,8 @@ $(document).ready(function() {
 
 	def assayFeatureTable = {attrs, body ->
 
+		out << "<h2>Platform features mapping for data file: ${attrs.assayFile.fileName}</h2>"
+
 		out << '<div class="scrollingDiv"><table><thead><tr><th>Platform Feature</th><th>Feature in Data File</th>'
 
 		def measurementPlatformVersionFeatures = attrs.assay.measurementPlatformVersion?.features
@@ -255,7 +257,32 @@ $(document).ready(function() {
 		out << '</tbody></table></div>'
 	}
 
-	def viewFeatureProperty = {attrs, body ->
+	def sampleTable = { attrs, body ->
+
+		out << "<h2>Sample overview</h2>"
+
+		def assayFiles = UploadedFile.findAllByAssay(attrs.assay)
+		def amountOfSamplesWithData = assayFiles.sum{ it.determineAmountOfSamplesWithData() } ?: 0
+
+		out << "Number of GSCF samples: ${attrs.assay.samples.size()}<br/>"
+		out << "Number of samples with data: ${amountOfSamplesWithData}"
+
+		if (!assayFiles) return
+
+		out << '''<div class="scrollingDiv"><table><thead><tr><th>Data File</th><th>Samples with data</th><th>Features per sample</th></tr></thead><tbody>'''
+
+		assayFiles.each{ assayFile ->
+			out << """<tr>
+<td>${assayFile.fileName}</td>
+<td>${assayFile.samplesWithData.join(', <br/>')}</td>
+<td>${uploadedFileService.getFeatureNames(assayFile).size()}</td>
+</tr>"""
+		}
+
+		out << '</tbody></table></div>'
+	}
+
+	def viewFeatureProperty = { attrs, body ->
 
 		if (!attrs.propertyHeader || !attrs.propertyValue){
 			out << ''

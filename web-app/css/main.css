@@ -11,18 +11,12 @@
 }
 
 #studyOverviewTable {
-	margin-top: 28px;
 	table-layout: fixed;
 	width: 100%;
 }
 
 #studyOverviewTable * {
 	white-space: pre-wrap; /* css-3 */
-}
-
-/*prevent our floating divs from overlapping footer */
-#footer {
-	clear: both;
 }
 
 .dataTypeOption {

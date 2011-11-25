@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<mm:dataTypeOption dialogProperties="${(dialogProperties + [dataType: 'clean', actionName: 'data', title: 'Clean Data Interpretation']) as JSON}">
+<mm:dataTypeOption dialogProperties="${(dialogProperties + [dataType: 'clean', actionName: 'cleanData', title: 'Clean Data Interpretation']) as JSON}">
 	<div class="dataTypeOptionText">
 		<b>Clean Data</b><br />
 		Metabolomics data without quality control samples.
@@ -10,7 +10,7 @@
 	<img class="dataTypeImage" src="images/filetype_clean.png" alt="Clean Data Files">
 </mm:dataTypeOption>
 
-<mm:dataTypeOption dialogProperties="${(dialogProperties + [dataType: 'raw', actionName: 'data', title: 'Raw Data Interpretation']) as JSON}">
+<mm:dataTypeOption dialogProperties="${(dialogProperties + [dataType: 'raw', actionName: 'rawData', title: 'Raw Data Interpretation']) as JSON}">
 	<div class="dataTypeOptionText">
 		<b>Raw Data</b><br />
 		Metabolomics data including quality control samples.

@@ -70,7 +70,7 @@ class ParseConfigurationController {
 		]
 	}
 
-	def data = {
+	def cleanData = {
 		if (!params.uploadedFileId) {
 			throw new RuntimeException('The uploadedFileId was not set, please report this error message to the system administrator.')
 		}
@@ -93,13 +93,23 @@ class ParseConfigurationController {
 			controlsDisabled: errorMessage ? true : false]
 	}
 
+	def rawData = {
+		if (!params.uploadedFileId) {
+			throw new RuntimeException('The uploadedFileId was not set, please report this error message to the system administrator.')
+		}
+
+		session.uploadedFile = UploadedFile.get(params.uploadedFileId)
+		[	uploadedFile: session.uploadedFile,
+			errorMessage: '']
+	}
+
 	/**
 	 * Method to read all form parameters and to update the dataMatrix preview
 	 *
 	 * @param form control parameters (filename, filetype, orientation et cetera)
 	 * @return JSON (datatables) formatted string representing the dataMatrix
 	 */
-	def handleForm = {
+	def handleCleanDataForm = {
 		if (!session.uploadedFile) return
 
 		switch (params.formAction) {
@@ -121,8 +131,25 @@ class ParseConfigurationController {
 		}
 	}
 
+	def handleRawDataForm = {
+		println 'handleRawDataForm ' + params
+
+		if (!session.uploadedFile) return
+
+		def uploadedFile = UploadedFile.get(session.uploadedFile.id)
+		session.uploadedFile = uploadedFile
+
+		updateAssayIfNeeded(params)
+
+		if (session.uploadedFileWasMovedToAssay) session.uploadedFileWasMovedToAssay.isSaved = true
+
+		session.uploadedFile.save(failOnError: true)
+
+		render ''
+	}
+
 	/**
-	 * Same as handleForm but specifically for the features pop-up dialog
+	 * Same as handleCleanDataForm but specifically for the features pop-up dialog
 	 */
 	def handleFeatureForm = {
 
@@ -226,7 +253,10 @@ class ParseConfigurationController {
 
 			def fileSampleCount = uploadedFileService.sampleCount(uploadedFile)
 
-			def unmappedSampleCount = fileSampleCount - (uploadedFile.determineAmountOfSamplesWithData() ?: 0)
+			Set uploadedFiles = UploadedFile.findAllByAssay(assay) + uploadedFile
+
+			def mappedSampleCount = uploadedFiles.sum { it.determineAmountOfSamplesWithData() ?: 0 } ?: 0
+			def unmappedSampleCount = assay.samples.size() - mappedSampleCount
 
 			mappingString = "Out of the $fileSampleCount samples from the file, ${uploadedFile.determineAmountOfSamplesWithData()} could be matched to the assay. There are still $unmappedSampleCount unmapped samples in the assay."
 
@@ -248,7 +278,6 @@ class ParseConfigurationController {
 	 * @return void
 	 */
 	def updateAssayIfNeeded(params) {
-
 		def assay = Assay.get(params.assayId)
 		if (params.assayId != session.uploadedFile.assay?.id) {
 
