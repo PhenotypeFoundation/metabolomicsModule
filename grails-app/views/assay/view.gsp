@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta name="layout" content="main"/>
-<script type="text/javascript">
+<r:script>
 $(document).ready(function() {
 	$("#tabs").tabs();
 	$("#pageTitle").tipTip({
@@ -11,7 +11,7 @@ $(document).ready(function() {
 		defaultPosition: 'left'
 	});
 });
-</script>
+</r:script>
 </head>
 
 <body>

@@ -48,3 +48,8 @@
 	top: 50%;
 	margin-top: -45px;
 }
+
+/* all file uploadr's should have a white background */
+.files {
+	background-color: #fff;
+}
