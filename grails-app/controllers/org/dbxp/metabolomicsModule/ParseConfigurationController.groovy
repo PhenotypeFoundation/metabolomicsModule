@@ -253,7 +253,10 @@ class ParseConfigurationController {
 
 			def fileSampleCount = uploadedFileService.sampleCount(uploadedFile)
 
-			Set uploadedFiles = UploadedFile.findAllByAssay(assay) + uploadedFile
+			Set uploadedFiles = UploadedFile.findAllByAssay(assay)
+			if (!(uploadedFile.gridFSFile_id in uploadedFiles*.gridFSFile_id)) {
+				uploadedFiles += uploadedFile
+			}
 
 			def mappedSampleCount = uploadedFiles.sum { it.determineAmountOfSamplesWithData() ?: 0 } ?: 0
 			def unmappedSampleCount = assay.samples.size() - mappedSampleCount
