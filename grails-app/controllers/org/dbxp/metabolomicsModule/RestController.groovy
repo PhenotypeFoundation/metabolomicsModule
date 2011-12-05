@@ -2,7 +2,7 @@ package org.dbxp.metabolomicsModule
 
 import grails.converters.JSON
 
-class RestController {
+class RestController extends org.dbxp.dbxpModuleStorage.RestController {
 
     def getMeasurementMetaData = {
 	
