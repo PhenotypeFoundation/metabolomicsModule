@@ -12,15 +12,19 @@ class MeasurementPlatformController {
 	def view = {
 
 		if (!params.id) redirect(action: 'list')
-		
+
 		def measurementPlatform = MeasurementPlatform.get(params.id)
 		
-		if (params.measurementPlatformName) { 
-			measurementPlatform.name 		= params.measurementPlatformName
+		if (params.edit && params.measurementPlatformName){
+			measurementPlatform.name 		= params.measurementPlatformName?.trim()
 			measurementPlatform.description = params.measurementPlatformDescription
-			measurementPlatform.save()
-			params.edit = false
-		} 
+
+			if (!measurementPlatform.save()){
+				flash.message = 'unable to save, make sure the name is set and unique!'
+			} else {
+				params.edit = false
+			}
+		}
 
 		[ measurementPlatform: measurementPlatform ]
 	}
@@ -36,10 +40,12 @@ class MeasurementPlatformController {
 
 	def add = {
 
-		if (!MeasurementPlatform.findByName(params.measurementplatform as String)){
-			new MeasurementPlatform(name: params.measurementplatform).save()
+		if ((params.measurementplatform).trim().size() > 0){
+			if (!MeasurementPlatform.findByName(params.measurementplatform as String)){
+				new MeasurementPlatform(name: params.measurementplatform).save()
+			}
 		}
-		
+
 		render mm.measurementPlatformOverview(measurementPlatforms: MeasurementPlatform.list())
 	}
 }

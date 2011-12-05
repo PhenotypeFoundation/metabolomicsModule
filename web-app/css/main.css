@@ -49,6 +49,14 @@
 	margin-top: -45px;
 }
 
+.errorMessage {
+	text-align: center;
+	color: red;
+	border: thin solid #cdcdcd;
+	padding: 5px;
+	margin: 5px auto;	
+}
+
 /* all file uploadr's should have a white background */
 .files {
 	background-color: #fff;

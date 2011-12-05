@@ -13,6 +13,10 @@
 	<body>		 
 		<h1>Measurement Platform</h1>	
 		
+		<g:if test="${flash.message}">
+			<div class="errorMessage">${flash.message}</div>
+		</g:if>
+		
 		<g:if test="${params.edit}">
 			<g:form action="view" id="${measurementPlatform?.id}">
 				<input name="edit" type="hidden" value="false" />
