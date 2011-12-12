@@ -3,7 +3,7 @@
 <meta name="layout" content="main"/>
 <r:script>
 $(document).ready(function() {
-	$("#tabs").tabs();
+	$("#tabs").tabs({selected: "${selectedTab}"});
 	$("#pageTitle").tipTip({
 		content: 'assay token: ${assay.study.token()}',
 		maxWidth: 'auto',
@@ -42,7 +42,7 @@ $(document).ready(function() {
 		<div id="uploadedAssayFiles">
 			<mm:uploadedFileList
 				files="${assayFiles}"
-				dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['save', 'cancel'], assayId: id, controllerName: 'parseConfiguration', actionName: 'cleanData', refreshPageAfterClose: false, mmBaseUrl: grailsApplication.config.grails.serverURL, redirectUrl:resource('/assay/view/'+assay.id, absolute: true)]}"
+				dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['save', 'cancel'], assayId: id, controllerName: 'parseConfiguration', actionName: 'cleanData', refreshPageAfterClose: true, mmBaseUrl: grailsApplication.config.grails.serverURL, redirectUrl:resource('/assay/view/'+assay.id+'?selectedTab=3', absolute: true)]}"
 				assay="${assay}"/>
 		</div>
 	</div>

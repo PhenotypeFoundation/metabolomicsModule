@@ -47,7 +47,10 @@ class AssayController {
 
 		def assayFiles = UploadedFile.findAllByAssay(assay)
 
-		[ assay: assay, assayFiles: assayFiles ]
+		[	assay: assay,
+			assayFiles: assayFiles,
+			selectedTab: params.selectedTab
+		]
 	}
 
 	def updateAssayProperties = {
