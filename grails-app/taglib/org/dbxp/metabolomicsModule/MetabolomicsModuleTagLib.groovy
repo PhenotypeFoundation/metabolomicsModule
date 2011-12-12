@@ -315,7 +315,16 @@ $(document).ready(function() {
 			out << "</td>"
 
 			propertyValueMap[mpvf.id].each { propertyValue ->
-				out << "<td>${propertyValue}</td>"
+
+				def stringValue = propertyValue.toString()
+
+				// uncomment this line to remove html tags (and comment the following)
+//				stringValue = stringValue.replaceAll('<','&lt;').replaceAll('>','&gt;');
+
+				// replace all '<', '>' with unicode character so they are displayed but have no meaning in html
+				stringValue = stringValue.replaceAll("<(.|\n)*?>", '');
+
+				out << "<td>${stringValue}</td>"
 			}
 			out << '</tr>'
 		}
