@@ -57,8 +57,17 @@ class ParseConfigurationController {
 			response.sendError(400)
 			return
 		}
+
+		def errorMessage = ''
+
 		session.uploadedFile = uploadedFile
-		if (!uploadedFile.matrix) uploadedFile.parse()
+		if (!uploadedFile.matrix) {
+			try {
+				uploadedFile.parse()
+			} catch (e) {
+				errorMessage = e.message
+			}
+		}
 
 		def columns = uploadedFileService.getHeaderRow(uploadedFile).collect {it}
 		def headerSuggestions = measurementService.createHeaderSuggestions(columns)
@@ -66,7 +75,8 @@ class ParseConfigurationController {
 		[	uploadedFile: uploadedFile,
 			columns: columns.collect {[sTitle: it]},
 			data: uploadedFile.matrix[1..-1],
-			headerSuggestions: headerSuggestions
+			headerSuggestions: headerSuggestions,
+			errorMessage: errorMessage
 		]
 	}
 

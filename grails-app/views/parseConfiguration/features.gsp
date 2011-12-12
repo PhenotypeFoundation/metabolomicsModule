@@ -24,7 +24,7 @@
 	<div class="dataMatrixContainer"></div>
 
 	<pc:platformControl/>
-  	<pc:statusControl initialStatus=""/>
+  	<pc:statusControl initialStatus="${errorMessage}"/>
 
   </g:formRemote>
   </div>
