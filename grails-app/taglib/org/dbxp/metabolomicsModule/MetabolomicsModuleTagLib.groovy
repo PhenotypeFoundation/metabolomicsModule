@@ -287,7 +287,7 @@ $(document).ready(function() {
 		if (!attrs.propertyHeader || !attrs.propertyValue){
 			out << ''
 		} else {
-			out << featurePropertyService.view(attrs.propertyHeader, attrs.propertyValue)
+			out << featurePropertyService.view(attrs.propertyHeader as String, attrs.propertyValue as String)
 		}
 	}
 

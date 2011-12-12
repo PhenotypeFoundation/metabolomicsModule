@@ -414,16 +414,25 @@ class ParseConfigurationController {
 		// Round or limit the string length of the values in the datamatrix
 		def choppedData = data.collect { row ->
 			row.collect {
-				String cellValue ->
+				def cellValue ->
 
-				// If the cell value is a double round it and leave it as is, otherwise it is probably
-				// a string value which should be chopped of if it exceeds the predefined maximum
-				// cell content length
-				cellValue.isDouble() ?
-					cellValue.toDouble().round(3) :
-					(cellValue.trim().length() < tableCellMaxContentLength) ?
-						cellValue.trim() :
-						cellValue[0..Math.min(tableCellMaxContentLength, cellValue.trim().length() - 1)] + ' (...)'
+				if (cellValue instanceof Double) {
+
+					cellValue.round(3)
+
+				} else {
+
+					def stringRepresentation = cellValue.toString().trim()
+
+					// chop off strings that are too long
+					if (stringRepresentation.length() <= tableCellMaxContentLength) {
+						stringRepresentation
+					} else {
+						stringRepresentation[0..Math.min(tableCellMaxContentLength, stringRepresentation.length() - 1)] + ' (...)'
+					}
+
+					stringRepresentation
+				}
 			}
 		}
 
