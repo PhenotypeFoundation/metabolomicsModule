@@ -31,7 +31,7 @@ class MeasurementPlatformVersionFeature {
 
 		this.props.each { mpvfproperty ->
 			if (mpvfproperty.key){
-				mappings[["${mpvfproperty.key}": "${mpvfproperty.value}"]] = FeaturePropertyService.propertyMapping(mpvfproperty.key, mpvfproperty.value, mappingService)
+				mappings[["${mpvfproperty.key}": "${mpvfproperty.value}"]] = FeaturePropertyService.propertyMapping(mpvfproperty.key, mpvfproperty.value as String, mappingService)
 			}
 		}
 
