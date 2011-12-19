@@ -81,7 +81,7 @@ log4j = {
 grails.views.javascript.library="jquery"
 
 // define in which environments the development bar should be available
-development.bar=['development','ci']
+development.bar=['development','ci','nmcdsptest']
 
 // set default properties here in case default.properties in not placed in classpath and no external config
 grails.serverURL='http://localhost:8083/metabolomicsModule'
