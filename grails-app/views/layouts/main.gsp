@@ -1,8 +1,11 @@
 <g:applyLayout name="module">
 <html>
 	<head>
+		<meta http-equiv="X-UA-Compatible" content="chrome=1"/>
+		<meta app-name="${meta(name: 'app.name')} "/>
+		<meta app-version="${meta(name: 'app.version')} "/>
+		<meta app-revision="${meta(name: 'app.build.svn.revision')}"/>
 		<title><g:layoutTitle default="Metabolomics Module"/></title>
-		<meta http-equiv="X-UA-Compatible" content="chrome=1">
 		<g:layoutHead/>
 		<r:require modules="metabolomicsModule"/>
 	</head>
