@@ -179,10 +179,16 @@ class ParseConfigurationController {
 
 				def existingVersionNumbers = mp.versions*.versionNumber
 
-				def newVersionNumber = existingVersionNumbers ? existingVersionNumbers.sort()[-1] + 0.1 : 0.1 
-
+				def newVersionNumber = existingVersionNumbers ? existingVersionNumbers.sort()[-1] + 0.1 : 0.1
+				
 				def headerReplacements = [:]
-				params.keySet().findAll { it in uploadedFileService.getDataColumnHeaders(session.uploadedFile) }.each { headerReplacements[it] = params[it] }
+				params.keySet().findAll {
+					it in uploadedFileService.getDataColumnHeaders(session.uploadedFile)
+				}.each {
+					// if multiple values for a key exist, they are returned as a list, we need only the first one
+					// this happens when a feature file contains some columns more than once
+					headerReplacements[it]  = (params[it] instanceof String) ? params[it] : params[it][0]
+				}
 
 				measurementService.createMeasurementPlatformVersion(
 					uploadedFile,

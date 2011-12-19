@@ -53,19 +53,27 @@ class MeasurementService {
 		mpv.save()
 
 		List propertyNames
+
+		// get labels for properties if they exist
 		if (uploadedFile.matrix[0].size() > 1) {
 			propertyNames = uploadedFile.matrix[0][1..-1]
 		}
 
+		// replace property names with user chosen replacements
 		headerReplacements.each { replacement ->
 			propertyNames[propertyNames.findIndexOf { it == replacement.key }] = replacement.value
 		}
 
+		// iterate all rows (=features) and assign properties
 		uploadedFile.matrix[1..-1].each { row ->
 			def props = [:]
 
 			propertyNames.eachWithIndex { name, index ->
-				props[name] = row[index+1]
+
+				// disregard empty strings and already set properties
+				if (name && !props[name]) {
+					props[name] = row[index+1]
+				}
 			}
 
 			def feature = Feature.findByLabel(row[0]) ?: new Feature(label: row[0])
