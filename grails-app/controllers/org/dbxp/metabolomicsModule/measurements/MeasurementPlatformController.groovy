@@ -42,10 +42,23 @@ class MeasurementPlatformController {
 
 		if ((params.measurementplatform).trim().size() > 0){
 			if (!MeasurementPlatform.findByName(params.measurementplatform as String)){
-				new MeasurementPlatform(name: params.measurementplatform).save()
+				new MeasurementPlatform(name: params.measurementplatform).save(flush: true)
 			}
 		}
 
 		render mm.measurementPlatformOverview(measurementPlatforms: MeasurementPlatform.list())
+	}
+
+	def delete = {
+
+		def measurementPlatform = MeasurementPlatform.get(params.id)
+
+		if (measurementPlatform.versions) {
+			flash.errorMessage = "Could not delete measurement platform because it is not empty."
+		} else {
+			measurementPlatform.delete(flush: true)
+		}
+		
+		redirect(action: 'list')
 	}
 }

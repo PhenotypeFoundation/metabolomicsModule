@@ -1,7 +1,5 @@
 package org.dbxp.metabolomicsModule.measurements
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-
 class MeasurementPlatformVersion {
 	
 	MeasurementPlatform measurementPlatform	

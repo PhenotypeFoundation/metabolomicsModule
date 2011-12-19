@@ -177,14 +177,20 @@ $(document).ready(function() {
         out << '<select name="platformVersionId" size="8" style="width:100%;" ' + (attrs.disabled ? 'disabled>' : '>')
 
         measurementService.findAllMeasurementPlatforms().each { platform ->
-			// if new studygroup create new label
-			out << '<optgroup label="' + platform.name + '">'
-            measurementService.findAllMeasurementPlatformVersions(measurementPlatform:platform).each { platformVersion ->
 
-                out << '<option value="' + platformVersion.id + '" ' + ((platformVersion.id == attrs.assay.measurementPlatformVersion?.id) ? 'selected' : '') + '>' + platformVersion.versionNumber + '</option>'
-            }
+			def measurementPlatformVersions = measurementService.findAllMeasurementPlatformVersions(measurementPlatform:platform)
 
-            out << '</optgroup>'
+			if (measurementPlatformVersions) {
+
+				// if new studygroup create new label
+				out << '<optgroup label="' + platform.name + '">'
+				measurementPlatformVersions.each { platformVersion ->
+
+					out << '<option value="' + platformVersion.id + '" ' + ((platformVersion.id == attrs.assay.measurementPlatformVersion?.id) ? 'selected' : '') + '>' + platformVersion.versionNumber + '</option>'
+				}
+
+				out << '</optgroup>'
+			}
         }
 		
         out << '</select>'

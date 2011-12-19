@@ -52,8 +52,7 @@ function openParseConfigurationDialog(dialogProperties) {
 		.load(
 			mmBaseUrl + '/' + dialogProperties.controllerName + '/' + dialogProperties.actionName + '/' +
 				"?fileName=" + encodeURI(dialogProperties.fileName) +
-				"&uploadedFileId=" + encodeURI(dialogProperties.uploadedFileId) +
-				(dialogProperties.dataType ? "&dataType=" + dialogProperties.dataType : '')
+				"&uploadedFileId=" + encodeURI(dialogProperties.uploadedFileId)
 		)
         .dialog({
                 modal: true,
@@ -93,6 +92,7 @@ function initFeaturesPage(data) {
         "aoColumns": data.aoColumns
     });
 
+	// transform headers to select boxes containing alternatives for header names
 	$('.dataTables_scrollHeadInner table thead tr th').each(function(idx,cell){
 
 		var suggestions = data.headerSuggestions[idx];

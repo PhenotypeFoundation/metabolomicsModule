@@ -42,7 +42,15 @@ $(document).ready(function() {
 		<div id="uploadedAssayFiles">
 			<mm:uploadedFileList
 				files="${assayFiles}"
-				dialogProperties="${[title: 'Please choose the uploaded file data type', buttons: ['save', 'cancel'], assayId: id, controllerName: 'parseConfiguration', actionName: 'cleanData', refreshPageAfterClose: true, mmBaseUrl: grailsApplication.config.grails.serverURL, redirectUrl:resource('/assay/view/'+assay.id+'?selectedTab=3', absolute: true)]}"
+				dialogProperties="${[
+					title: 'Please choose the uploaded file data type',
+					buttons: ['save', 'cancel'],
+					controllerName: 'parseConfiguration',
+					actionName: 'cleanData',
+					refreshPageAfterClose: true,
+					mmBaseUrl: grailsApplication.config.grails.serverURL,
+					redirectUrl:resource('/assay/view/'+assay.id+'?selectedTab=3', absolute: true)
+					]}"
 				assay="${assay}"/>
 		</div>
 	</div>

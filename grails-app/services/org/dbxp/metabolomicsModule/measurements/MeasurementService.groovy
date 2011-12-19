@@ -52,7 +52,10 @@ class MeasurementService {
 		MeasurementPlatformVersion mpv = new MeasurementPlatformVersion(mpvProperties)
 		mpv.save()
 
-		List propertyNames = uploadedFile.matrix[0][1..-1]
+		List propertyNames
+		if (uploadedFile.matrix[0].size() > 1) {
+			propertyNames = uploadedFile.matrix[0][1..-1]
+		}
 
 		headerReplacements.each { replacement ->
 			propertyNames[propertyNames.findIndexOf { it == replacement.key }] = replacement.value
