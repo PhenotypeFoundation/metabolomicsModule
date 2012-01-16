@@ -157,6 +157,15 @@ $(document).ready(function() {
 
 		out << '</tbody></table>'
     }
+	
+	def assayList = { attrs, body ->
+		
+		attrs.assays.each { assay ->
+			out << g.link(controller: 'assay', action: 'view', id: assay.id) { "${assay.name}" }
+			out << "<br />"
+		}
+		
+	}
 
 	def assayPropertiesEditor = { attrs, body ->
 
