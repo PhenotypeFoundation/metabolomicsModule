@@ -10,18 +10,16 @@ class RestController extends org.dbxp.dbxpModuleStorage.RestController {
 		
 		if (params.assayToken){
 			def assay = MetabolomicsAssay.findByAssayToken(params.assayToken as String)
-
+						
 			def requestedMeasurementTokens  = params.measurementToken instanceof String ? [params.measurementToken] : params.measurementToken
 			def measurementTokens 			= assay?.measurementPlatformVersion?.features
 
-			if (requestedMeasurementTokens) {
-        		measurementTokens           = measurementTokens.findAll { it in requestedMeasurementTokens }
-			}
+			assay?.measurementPlatformVersion?.features?.each { mpvf ->
 
-			measurementTokens.each {
-
-				def featureMap = [name: it.feature.label]
-				resp += featureMap + (it?.props ?: [])
+				if (!params.measurementToken || mpvf.feature.label in requestedMeasurementTokens){
+					def featureMap = [name: mpvf.feature.label]
+					resp += featureMap + (mpvf.props ?: [])
+				}
 			}
 		}
 
