@@ -29,6 +29,8 @@
 		</li>
 	</content>
 	<g:layoutBody/>
+	
+		<trackr:track reference="${session.user ?: 'unknown'}"/>
 	</body>
 </html>
 </g:applyLayout>
