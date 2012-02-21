@@ -11,13 +11,6 @@ class MeasurementService {
 
 	def uploadedFileService
 
-	static featureHeaderSuggestions = [
-		'm/z': 		['mz', 'm z', 'm over z'],
-		'InChI':	['inchi','Inchi','inchie'],
-		'PubChem':	['pubchem'],
-		'ChEBI ID':	['chebi', 'Chebi', 'chebi_id', 'ChEBI_ID']
-	]
-
 	/*
 	 * Wrapper function to fetch all MeasurementPlatforms based on the provided arguments
 	 */
@@ -84,6 +77,9 @@ class MeasurementService {
 	}
 
 	def createHeaderSuggestions(columns) {
+		
+		def featureHeaderSuggestions = [:]
+		FeatureProperty.list().collect { featureHeaderSuggestions[it.label] = it.synonyms.split(",") }
 
 		columns.collect { column ->
 

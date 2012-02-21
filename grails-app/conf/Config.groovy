@@ -92,4 +92,4 @@ module.synchronization.classes.assay = 'org.dbxp.metabolomicsModule.Metabolomics
 
 // ****** trackR Config ******
 trackr.path = "/tmp/"
-trackr.prefix = "nmcdsp."
+trackr.prefix = "nmcdsp.${grails.util.GrailsUtil.environment}."

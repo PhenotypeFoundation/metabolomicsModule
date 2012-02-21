@@ -1,5 +1,6 @@
 package org.dbxp.metabolomicsModule
 
+import org.dbxp.metabolomicsModule.identity.FeatureProperty;
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
 
@@ -61,6 +62,12 @@ class BootStrapController {
 				assay.measurementPlatformVersion = mpv
 				assay.save(failOnError: true)	
 			} 
+			
+			//add default feature property mappings
+			new FeatureProperty(label: 'm/z', synonyms: 'mz,m z,m over z,Mass Quan#').save()
+			new FeatureProperty(label: 'InChI', synonyms: 'inchi,Inchi,inchie').save()
+			new FeatureProperty(label: 'PubChem', synonyms: 'pubchem').save()
+			new FeatureProperty(label: 'ChEBI ID', synonyms: 'chebi,Chebi,chebi_id,ChEBI_ID').save()
 			
 			log.info "Done bootstrapping"
 		}
