@@ -30,10 +30,47 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
+	plugins {
+//		build	":tomcat:$grailsVersion"
+//		runtime ":hibernate:$grailsVersion",
+//				":mongodb:latest.integration",
+//				":resources:latest.integration",
+//
+//				":uploadr:latest.integration",
+//				":modernizr:latest.integration",
+//
+//				":grom:latest.integration",
+//
+//				":jquery:latest.integration",
+//				":jquery-ui:latest.integration",
+//				":jquery-datatables:latest.integration",
+//
+//				":trackr:latest.integration",
+//				":matrix-importer:latest.integration",
+//				":famfamfam:latest.integration",
+//
+//				":dbxp-chemistry:latest.integration",
+//				":dbxp-module-base:latest.integration",
+//				":dbxp-module-storage:latest.integration"
+//		build	":tomcat:$grailsVersion"
+//		runtime ":hibernate:$grailsVersion",
+//
+//				":uploadr:latest.integration",
+//				":modernizr:latest.integration",
+//
+//				":grom:latest.integration",
+//
+//				":trackr:latest.integration"
+//		runtime	":uploadr:latest.integration",
+//				":modernizr:latest.integration",
+//				":grom:latest.integration"
+	}
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 		// runtime 'com.github.groovy-wslite:groovy-wslite:0.1'
         // runtime 'mysql:mysql-connector-java:5.1.13'
+		// runtime 'postgresql:postgresql:9.0-801.jdbc4'
+		runtime 'postgresql:postgresql:9.1-901.jdbc3'
     }
 }
 
