@@ -34,6 +34,12 @@ class BootStrapController {
 			assay = MetabolomicsAssay.findByName(assayName)
 		}
 		
+		//add default feature property mappings
+		if (!FeatureProperty.findByLabel('m/z')) { new FeatureProperty(label: 'm/z', synonyms: 'mz,m z,m over z,Mass Quan#').save() }
+		if (!FeatureProperty.findByLabel('InChI')) { new FeatureProperty(label: 'InChI', synonyms: 'inchi,Inchi,inchie').save() }
+		if (!FeatureProperty.findByLabel('PubChem')) { new FeatureProperty(label: 'PubChem', synonyms: 'pubchem').save() }
+		if (!FeatureProperty.findByLabel('ChEBI ID')) { new FeatureProperty(label: 'ChEBI ID', synonyms: 'chebi,Chebi,chebi_id,ChEBI_ID').save() }
+		
 		if (assay != null) {
 			
 			log.info "Bootstrapping Assay: ${assay.name} for user: ${session.user}"
@@ -62,12 +68,6 @@ class BootStrapController {
 				assay.measurementPlatformVersion = mpv
 				assay.save(failOnError: true)	
 			} 
-			
-			//add default feature property mappings
-			new FeatureProperty(label: 'm/z', synonyms: 'mz,m z,m over z,Mass Quan#').save()
-			new FeatureProperty(label: 'InChI', synonyms: 'inchi,Inchi,inchie').save()
-			new FeatureProperty(label: 'PubChem', synonyms: 'pubchem').save()
-			new FeatureProperty(label: 'ChEBI ID', synonyms: 'chebi,Chebi,chebi_id,ChEBI_ID').save()
 			
 			log.info "Done bootstrapping"
 		}
