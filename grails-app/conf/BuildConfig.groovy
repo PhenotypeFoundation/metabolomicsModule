@@ -4,6 +4,12 @@ grails.project.test.reports.dir = "target/test-reports"
 
 grails.server.port.http = 8083
 
+log4j = {
+	appenders {
+		rollingFile name: "stacktrace", maxFileSize: 1024, file: "/var/log/metabolomicsModule-${grails.util.GrailsUtil.environment}.log"
+	}
+}
+
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
