@@ -59,6 +59,9 @@ log4j = {
     //appenders {
     //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     //}
+	appenders {
+		rollingFile name: "stacktrace", maxFileSize: 1024, file: "/var/log/metabolomicsModule-${grails.util.GrailsUtil.environment}.log"
+	}
 
 	info   'org.dbxp'
 
