@@ -126,7 +126,7 @@ $(document).ready(function() {
 
 				assayNames += g.link(action:"view", controller:"assay", id: assay.id) { assayNameString }
 
-				sampleCounts += assay.samples.size()
+				sampleCounts += assay.samples?.size()
 
 				// avoiding mongo bugs by obtaining the uploaded file instance like this
 				Long uploadedFileId = UploadedFile.findByAssay(assay)?.id
@@ -279,7 +279,7 @@ $(document).ready(function() {
 		def assayFiles = UploadedFile.findAllByAssay(attrs.assay)
 		def amountOfSamplesWithData = assayFiles.sum{ it.determineAmountOfSamplesWithData() } ?: 0
 
-		out << "Number of GSCF samples: ${attrs.assay.samples.size()}<br/>"
+		out << "Number of GSCF samples: ${attrs.assay.samples?.size() ?: 0}<br/>"
 		out << "Number of samples with data: ${amountOfSamplesWithData}"
 
 		if (!assayFiles) return
