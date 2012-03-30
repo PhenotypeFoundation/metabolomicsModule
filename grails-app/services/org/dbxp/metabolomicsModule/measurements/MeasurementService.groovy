@@ -4,6 +4,7 @@ import org.dbxp.metabolomicsModule.identity.Feature
 import org.dbxp.dbxpModuleStorage.UploadedFile
 import org.dbxp.moduleBase.Assay
 import org.dbxp.metabolomicsModule.MetabolomicsAssay
+import org.dbxp.metabolomicsModule.identity.FeatureProperty
 
 class MeasurementService {
 
@@ -79,7 +80,7 @@ class MeasurementService {
 	def createHeaderSuggestions(columns) {
 		
 		def featureHeaderSuggestions = [:]
-		FeatureProperty.list().collect { featureHeaderSuggestions[it.label] = it.synonyms.split(",") }
+		FeatureProperty.list().collect { featureHeaderSuggestions[it.label] = it.synonyms?.split(",") }
 
 		columns.collect { column ->
 

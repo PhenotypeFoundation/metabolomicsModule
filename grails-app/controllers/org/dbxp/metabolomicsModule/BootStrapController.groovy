@@ -35,10 +35,10 @@ class BootStrapController {
 		}
 		
 		//add default feature property mappings
-		if (!FeatureProperty.findByLabel('m/z')) { new FeatureProperty(label: 'm/z', synonyms: 'mz,m z,m over z,Mass Quan#').save() }
-		if (!FeatureProperty.findByLabel('InChI')) { new FeatureProperty(label: 'InChI', synonyms: 'inchi,Inchi,inchie').save() }
-		if (!FeatureProperty.findByLabel('PubChem')) { new FeatureProperty(label: 'PubChem', synonyms: 'pubchem').save() }
-		if (!FeatureProperty.findByLabel('ChEBI ID')) { new FeatureProperty(label: 'ChEBI ID', synonyms: 'chebi,Chebi,chebi_id,ChEBI_ID').save() }
+//		if (!FeatureProperty.findByLabel('m/z')) { new FeatureProperty(label: 'm/z', synonyms: 'mz,m z,m over z,Mass Quan#').save() }
+//		if (!FeatureProperty.findByLabel('InChI')) { new FeatureProperty(label: 'InChI', synonyms: 'inchi,Inchi,inchie').save() }
+//		if (!FeatureProperty.findByLabel('PubChem')) { new FeatureProperty(label: 'PubChem', synonyms: 'pubchem').save() }
+//		if (!FeatureProperty.findByLabel('ChEBI ID')) { new FeatureProperty(label: 'ChEBI ID', synonyms: 'chebi,Chebi,chebi_id,ChEBI_ID').save() }
 		
 		if (assay != null) {
 			
