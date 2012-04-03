@@ -248,8 +248,14 @@ function destroyDataTable() {
 * @param data JSON-object containing information about the parse settings
 */
 function updateControls(data) {
-    $('#samplePerRow').attr('checked', !data.isColumnOriented);
-    $('#samplePerColumn').attr('checked', data.isColumnOriented);
+    if (data.isColumnOriented) {
+        $('#samplePerRow').removeAttr('checked');
+        $('#samplePerColumn').attr('checked', 'checked');
+    } else {
+        $('#samplePerColumn').removeAttr('checked');
+        $('#samplePerRow').attr('checked', 'checked');
+    }
+
     if (data.parseInfo) $('#delimiter').val(data.parseInfo.delimiter);
 }
 
