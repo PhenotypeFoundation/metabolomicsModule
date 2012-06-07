@@ -19,7 +19,7 @@ grails.project.dependency.resolution = {
 		mavenCentral()
 
         mavenRepo "http://nexus.nmcdsp.org/content/repositories/releases"
-//        mavenRepo "http://nexus.nmcdsp.org/content/repositories/snapshots"
+        //mavenRepo "http://nexus.nmcdsp.org/content/repositories/snapshots"
 
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
@@ -31,39 +31,22 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
 	plugins {
-//		build	":tomcat:$grailsVersion"
-//		runtime ":hibernate:$grailsVersion",
-//				":mongodb:latest.integration",
-//				":resources:latest.integration",
-//
-//				":uploadr:latest.integration",
-//				":modernizr:latest.integration",
-//
-//				":grom:latest.integration",
-//
-//				":jquery:latest.integration",
-//				":jquery-ui:latest.integration",
-//				":jquery-datatables:latest.integration",
-//
-//				":trackr:latest.integration",
-//				":matrix-importer:latest.integration",
-//				":famfamfam:latest.integration",
-//
-//				":dbxp-chemistry:latest.integration",
-//				":dbxp-module-base:latest.integration",
-//				":dbxp-module-storage:latest.integration"
-//		build	":tomcat:$grailsVersion"
-//		runtime ":hibernate:$grailsVersion",
-//
-//				":uploadr:latest.integration",
-//				":modernizr:latest.integration",
-//
-//				":grom:latest.integration",
-//
-//				":trackr:latest.integration"
-//		runtime	":uploadr:latest.integration",
-//				":modernizr:latest.integration",
-//				":grom:latest.integration"
+        compile(":hibernate:$grailsVersion")
+        compile ':tomcat:1.3.7.2'
+        compile ":mongodb-morphia:0.7.8"
+        compile ':famfamfam:1.0.1'
+        compile ':jquery:1.7.1'
+        compile ":jquery-ui:1.8.15"
+        compile ":jquery-datatables:1.7.5"
+        compile ":dbxp-chemistry:0.1.2"
+        compile ":dbxp-module-base:0.4.16"
+        compile ":dbxp-module-storage:0.3.0"
+        compile ':grom:0.2.3'
+        compile ":uploadr:0.5.10"
+        compile ':matrix-importer:0.2.3.5'
+        compile ':trackr:0.6.2'
+        runtime ":modernizr:2.0.6"
+        runtime ":resources:1.1.6"
 	}
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
