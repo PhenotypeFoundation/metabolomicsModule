@@ -34,7 +34,8 @@ grails.project.dependency.resolution = {
 	plugins {
         compile(":hibernate:$grailsVersion")
         compile ':tomcat:1.3.7.2'
-	compile ":mongodb:1.0.0.GA"
+	//compile ":mongodb:1.0.0.GA"
+	compile ":mongodb:1.0.0.RC3"
         compile ':famfamfam:1.0.1'
         compile ':jquery:1.7.1'
         compile ":jquery-ui:1.8.15"
