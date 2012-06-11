@@ -16,9 +16,10 @@ grails.project.dependency.resolution = {
         grailsPlugins()
         grailsHome()
         grailsCentral()
-		mavenCentral()
+	mavenCentral()
 
         mavenRepo "http://nexus.nmcdsp.org/content/repositories/releases"
+	mavenRepo "http://grails.org/plugins"
         //mavenRepo "http://nexus.nmcdsp.org/content/repositories/snapshots"
 
         // uncomment the below to enable remote dependency resolution
