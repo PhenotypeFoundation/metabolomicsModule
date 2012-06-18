@@ -17,7 +17,11 @@ class AssayController {
 	def showByToken = {
 		if (params.id){
 			def assay = MetabolomicsAssay.findByAssayToken(params.id as String)
-			redirect (action: "view", id: assay.id, params: params)
+			try {
+				redirect (action: "view", id: assay.id, params: params)
+			} catch (e) {
+				log.error e
+			}
 		}
 		
 		response.sendError(400, "No assayToken specified.") 

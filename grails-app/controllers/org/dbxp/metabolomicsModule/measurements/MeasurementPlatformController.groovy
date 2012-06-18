@@ -39,10 +39,12 @@ class MeasurementPlatformController {
 	}
 
 	def add = {
+		
+		def measurementPlatformName = params.measurementplatform.trim() as String
 
-		if ((params.measurementplatform).trim().size() > 0){
-			if (!MeasurementPlatform.findByName(params.measurementplatform as String)){
-				new MeasurementPlatform(name: params.measurementplatform).save(flush: true)
+		if (measurementPlatformName.size() > 0){
+			if (!MeasurementPlatform.findByName(measurementPlatformName)){
+				new MeasurementPlatform(name: measurementPlatformName).save()
 			}
 		}
 

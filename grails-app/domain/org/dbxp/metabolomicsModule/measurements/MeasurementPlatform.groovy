@@ -6,7 +6,7 @@ class MeasurementPlatform {
 	String description
 
     static constraints = {
-		name(unique: true, nullable: false, blank: false)
+		name(blank: false)
 		description(nullable: true)
     }
 	
