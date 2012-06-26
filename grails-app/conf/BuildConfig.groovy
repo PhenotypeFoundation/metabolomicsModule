@@ -41,7 +41,9 @@ grails.project.dependency.resolution = {
         compile ":jquery-ui:1.8.15"
         compile ":jquery-datatables:1.7.5"
         compile ":dbxp-chemistry:0.1.2"
-        compile ":dbxp-module-base:0.4.19"
+        compile(":dbxp-module-base:0.4.17") {
+            transitive = false
+        }
         compile(":dbxp-module-storage:0.3.0") {
             transitive = false
         }
