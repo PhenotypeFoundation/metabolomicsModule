@@ -16,20 +16,10 @@ grails.project.dependency.resolution = {
         grailsPlugins()
         grailsHome()
         grailsCentral()
-	mavenCentral()
+		mavenCentral()
 
         mavenRepo "http://nexus.nmcdsp.org/content/repositories/releases"
-	mavenRepo "http://grails.org/plugins"
-        //mavenRepo "http://nexus.nmcdsp.org/content/repositories/snapshots"
-
-        // uncomment the below to enable remote dependency resolution
-        // from public Maven repositories
-        //mavenLocal()
-        //mavenCentral()
-        //mavenRepo "http://snapshots.repository.codehaus.org"
-        //mavenRepo "http://repository.codehaus.org"
-        //mavenRepo "http://download.java.net/maven/2/"
-        //mavenRepo "http://repository.jboss.com/maven2/"
+		mavenRepo "http://grails.org/plugins"
     }
 	plugins {
         compile(":hibernate:$grailsVersion")
@@ -48,9 +38,9 @@ grails.project.dependency.resolution = {
         compile ':grom:0.2.3'
         compile ":uploadr:0.5.10"
         compile ':matrix-importer:0.2.3.5'
-        compile ':trackr:0.6.2'
-        runtime ":modernizr:2.0.6"
-        runtime ":resources:1.1.6"
+        compile ':trackr:0.7.3'
+        runtime ':modernizr:2.0.6'
+        runtime ':resources:1.1.6'
 	}
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
