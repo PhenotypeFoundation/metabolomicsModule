@@ -33,20 +33,18 @@ grails.project.dependency.resolution = {
     }
 	plugins {
         compile(":hibernate:$grailsVersion")
-        compile ':tomcat:1.3.7.2'
-	//compile ":mongodb:1.0.0.GA"
-	compile ":mongodb:1.0.0.RC3"
-        compile ':famfamfam:1.0.1'
-        compile ':jquery:1.7.1'
-        compile ":jquery-ui:1.8.15"
-        compile ":jquery-datatables:1.7.5"
-        compile ":dbxp-chemistry:0.1.2"
-        compile(":dbxp-module-base:0.4.17") {
-            transitive = false
-        }
-        compile(":dbxp-module-storage:0.3.0") {
-            transitive = false
-        }
+        compile ":tomcat:$grailsVersion"
+
+		compile ":dbxp-module-base:0.5.0"
+        compile ":dbxp-module-storage:0.4.0"
+
+		compile ":mongodb:1.0.0.RC3"
+		compile ':famfamfam:1.0.1'
+		compile ':jquery:1.7.1'
+		compile ":jquery-ui:1.8.15"
+		compile ":jquery-datatables:1.7.5"
+		compile ":dbxp-chemistry:0.1.2"
+
         compile ':grom:0.2.3'
         compile ":uploadr:0.5.10"
         compile ':matrix-importer:0.2.3.5'
@@ -64,8 +62,8 @@ grails.project.dependency.resolution = {
     }
 }
 
-//grails.plugin.location.'dbxpModuleBase'     = '../dbxpModuleBase'
-//grails.plugin.location.'dbxpModuleStorage'  = '../dbxpModuleStorage'
+//grails.plugin.location.'dbxp-module-base'     = '../dbxpModuleBase'
+//grails.plugin.location.'dbxp-module-storage'  = '../dbxpModuleStorage'
 //grails.plugin.location.'matrixImporter'     = '../matrixImporter'
 //grails.plugin.location.'uploadr'            = '../uploadr'
 
