@@ -28,7 +28,7 @@ grails.project.dependency.resolution = {
 		compile ":dbxp-module-base:0.5.0"
         compile ":dbxp-module-storage:0.4.0"
 
-		compile ":mongodb:1.0.0.RC3"
+		compile ":mongodb:1.0.0.GA"
 		compile ':famfamfam:1.0.1'
 		compile ':jquery:1.7.1'
 		compile ":jquery-ui:1.8.15"
