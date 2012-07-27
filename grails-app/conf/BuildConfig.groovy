@@ -38,7 +38,7 @@ grails.project.dependency.resolution = {
 		compile ":dbxp-chemistry:0.1.2"
 
         compile ':grom:0.2.3'
-        compile ":uploadr:0.5.10"
+        compile ":uploadr:0.5.11"
         compile ':matrix-importer:0.2.3.5'
         compile ':trackr:0.7.3'
         runtime ':modernizr:2.0.6'
