@@ -32,7 +32,9 @@ grails.project.dependency.resolution = {
 		compile ':famfamfam:1.0.1'
 		compile ':jquery:1.7.1'
 		compile ":jquery-ui:1.8.15"
-		compile ":jquery-datatables:1.7.5"
+		compile (":jquery-datatables:1.7.5"){
+			transitive = false
+		}
 		compile ":dbxp-chemistry:0.1.2"
 
         compile ':grom:0.2.3'
