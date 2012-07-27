@@ -28,7 +28,7 @@ grails.project.dependency.resolution = {
 		compile ":dbxp-module-base:0.5.0"
         compile ":dbxp-module-storage:0.4.1"
 
-		compile ":mongodb:1.0.0.GA"
+		compile ":mongodb:1.0.0.RC3"
 		compile ':famfamfam:1.0.1'
 		compile ':jquery:1.7.1'
 		compile ":jquery-ui:1.8.15"
@@ -48,7 +48,6 @@ grails.project.dependency.resolution = {
         // runtime 'mysql:mysql-connector-java:5.1.13'
 		// runtime 'postgresql:postgresql:9.0-801.jdbc4'
 		runtime 'postgresql:postgresql:9.1-901.jdbc3'
-        runtime 'javassist:javassist:3.12.1.GA'
     }
 }
 
