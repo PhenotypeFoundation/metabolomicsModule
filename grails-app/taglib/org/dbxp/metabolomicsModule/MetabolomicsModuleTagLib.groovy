@@ -99,9 +99,10 @@ $(document).ready(function() {
     });
 });
 </script>'''
-
+		out << '<div style="float: right">'
+		out << 	g.link(action:"createAssay", controller:"assay") { 'study or assay not here?' }
+		out << '</div>'
 		out << '<h1>Study overview</h1>'
-
 		out << '<table id="studyOverviewTable"><thead><tr><th>Studies</th><th>Assays</th><th>Samples</th><th>Assigned</th><th>Platform</th></tr></thead><tbody>'
 
 		def readableStudiesWithAssays = assayService.getAssaysReadableByUserAndGroupedByStudy(session.user)
@@ -157,14 +158,14 @@ $(document).ready(function() {
 
 		out << '</tbody></table>'
     }
-	
+
 	def assayList = { attrs, body ->
-		
+
 		attrs.assays.each { assay ->
 			out << g.link(controller: 'assay', action: 'view', id: assay.id) { "${assay.name}" }
 			out << "<br />"
 		}
-		
+
 	}
 
 	def assayPropertiesEditor = { attrs, body ->
@@ -201,7 +202,7 @@ $(document).ready(function() {
 				out << '</optgroup>'
 			}
         }
-		
+
         out << '</select>'
     }
 
@@ -363,7 +364,7 @@ function(){$(".notification").delay(4000).slideUp("slow", function(){ $(this).re
 	def measurementPlatformOverview = {attrs, body ->
 
 		out << '<table><thead><tr><th>Measurement Platforms</th><th>Versions</th><th>Associated Assays</th></tr></thead><tbody>'
-		
+
 		attrs.measurementPlatforms.each { MeasurementPlatform measurementPlatform ->
 
 			out << '<tr><td>'

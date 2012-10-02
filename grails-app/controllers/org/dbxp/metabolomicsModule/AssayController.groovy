@@ -5,11 +5,13 @@ import org.dbxp.metabolomicsModule.measurements.MeasurementPlatform
 import org.dbxp.metabolomicsModule.measurements.MeasurementPlatformVersion
 
 class AssayController {
-	
+
 	/*
 	 * embed required service(s)
 	 */
 	def assayService
+	def gscfApiService
+	def synchronizationService
 
 	/*
 	 * Assay by Token (for GSCF integration)
@@ -23,15 +25,15 @@ class AssayController {
 				log.error e
 			}
 		}
-		
-		response.sendError(400, "No assayToken specified.") 
+
+		response.sendError(400, "No assayToken specified.")
 	}
-	
+
 	/*
 	 * Metabolomics Assay page
 	 * - list basic assay info (name, members etc)
 	 * - list files related to this assay
-	 * 
+	 *
 	 * params.id is required to load the assay
 	 */
 	def view = {
@@ -40,7 +42,7 @@ class AssayController {
 		session.removeAttribute('uploadedFileWasMovedToAssay')
 
 		if (!params.id) response.sendError(400, "No assay id specified.") // id of an assay must be present
-		
+
 		// load assay from id (for session.user)
 		def assay = assayService.getAssayReadableByUserById(session.user, params.id as Long)
 
@@ -66,5 +68,26 @@ class AssayController {
 		assay.save(failOnError: true)
 
 		redirect(action: 'view', id: params.id)
+	}
+
+	def createAssay = {
+		//option to create an assay via the GSCF API
+		if (params?.submit == 'create'){
+			try {
+				def resp = gscfApiService.createAssay(params)
+
+				//force a sync!!!
+				synchronizationService.fullSynchronization()
+
+
+				redirect(action: 'showByToken', id: resp.token)
+			} catch (e) {
+				log.error(e) //failed to create an assay
+				flash.message = "Was unable to create the assay!"
+			}
+
+		}
+
+		[studies: gscfApiService.findAllStudies(), assayTemplates: gscfApiService.findAllAssayTemplates()]
 	}
 }
