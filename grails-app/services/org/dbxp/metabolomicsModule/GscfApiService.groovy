@@ -3,18 +3,21 @@
 package org.dbxp.metabolomicsModule
 
 import org.dbxp.GSCF
+import org.codehaus.groovy.grails.commons.*
 
 class GscfApiService {
 
     // init GSCF object
     final GSCF gscf = new GSCF()
 
+    def config = ConfigurationHolder.config
+
     // point to running instance of GSCF
-    final String URL = 'http://localhost:8080/'
-    final String EndPoint = 'gscf/api'
-    final String Username = 'api'
-    final String Password = 'apI123!'
-    final String ApiKey = '11111111-2222-3333-4444-555555555555'
+    final String URL = config.api.url
+    final String EndPoint = config.api.endpoint
+    final String Username = config.api.username
+    final String Password = config.api.password
+    final String ApiKey = config.api.apikey
 
     static transactional = true
 
@@ -40,6 +43,6 @@ class GscfApiService {
     }
 
     public createAssay(args = [:]){
-        return callGscf('createEntityWithTemplate', [entityType: 'Assay', templateToken: args.assayTemplate, studyToken: args.studyToken, module: 'Metabolomics module', name: args.assayName])
+        return callGscf('createEntityWithTemplate', [entityType: 'Assay', templateToken: args.assayTemplate, studyToken: args.studyToken, module: config.api.module, name: args.assayName])
     }
 }

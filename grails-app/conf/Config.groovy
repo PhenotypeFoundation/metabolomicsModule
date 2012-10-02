@@ -97,3 +97,11 @@ module.synchronization.perform = true
 // ****** trackR Config ******
 trackr.path = "/tmp/"
 trackr.prefix = "nmcdsp.${grails.util.GrailsUtil.environment}."
+
+// ****** GSCF-API ******
+api.url = "http://localhost:8080/"
+api.endpoint = "gscf/api"
+api.username = "api"
+api.password = "apI123!"
+api.apikey = "11111111-2222-3333-4444-555555555555"
+api.module = "Metabolomics module"
