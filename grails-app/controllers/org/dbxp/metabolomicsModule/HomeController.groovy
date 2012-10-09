@@ -4,6 +4,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class HomeController {
 	def uploadedFileService
+	def synchronizationService
 
 	def index = {
 		def files = uploadedFileService.getUnassignedUploadedFilesForUser(session.user)
@@ -26,5 +27,10 @@ class HomeController {
 		} else {
 			render 'This functionality is not available...'
 		}
+	}
+
+	def sync = {
+		synchronizationService.fullSynchronization()
+		redirect(url: request.getHeader('Referer'))
 	}
 }

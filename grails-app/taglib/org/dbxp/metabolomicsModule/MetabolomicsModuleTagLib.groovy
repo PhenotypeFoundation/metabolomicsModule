@@ -285,14 +285,14 @@ $(document).ready(function() {
 
 		if (!assayFiles) return
 
-		out << '''<div class="scrollingDiv"><table><thead><tr><th>Data File</th><th>Samples with data</th><th>Features per sample</th></tr></thead><tbody>'''
+		out << '''<div class="scrollingDiv"><table><thead><tr><th>File</th><th>Matched samples</th><th>Samples with data</th></tr></thead><tbody>'''
 
 		assayFiles.each{ assayFile ->
-			out << """<tr>
-<td>${assayFile.fileName}</td>
-<td>${assayFile.samplesWithData.join(', <br/>')}</td>
-<td>${uploadedFileService.getFeatureNames(assayFile).size()}</td>
-</tr>"""
+			out << "<tr>"
+			out << "<td>${assayFile.fileName}<br />Features per sample: ${uploadedFileService.getFeatureNames(assayFile).size()}</td>"
+			out << "<td>${assayFile.assaySamplesWithData.join(', <br/>')}</td>" //show samples, only when matched in the GSCF
+			out << "<td>${assayFile.samplesWithData.join(', <br/>')}</td>" //show samples, also when not linked to assay in GSCF
+			out << "</tr>"
 		}
 
 		out << '</tbody></table></div>'

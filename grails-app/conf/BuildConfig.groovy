@@ -34,7 +34,7 @@ grails.project.dependency.resolution = {
         compile ":tomcat:$grailsVersion"
 
 		compile ":dbxp-module-base:0.5.0"
-        compile ":dbxp-module-storage:0.4.1"
+        compile ":dbxp-module-storage:0.4.2"
 
 		compile ":mongodb:1.0.0.RC3"
 		compile ':famfamfam:1.0.1'

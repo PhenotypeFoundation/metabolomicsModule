@@ -22,6 +22,7 @@
 						Go to GSCF
 					</g:link>
 				</li>
+				<li><g:link controller="home" action="sync">Sync</g:link></li>
 			</ul>
 		</li>
 		<li>
@@ -29,7 +30,7 @@
 		</li>
 	</content>
 	<g:layoutBody/>
-	
+
 		<trackr:track reference="${session.user ?: 'unknown'}"/>
 	</body>
 </html>
