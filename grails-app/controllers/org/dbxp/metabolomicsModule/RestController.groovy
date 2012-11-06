@@ -5,14 +5,21 @@ import grails.converters.JSON
 class RestController extends org.dbxp.dbxpModuleStorage.RestController {
 
     def getMeasurementMetaData = {
-	
+
 		def resp = []
-		
+
 		if (params.assayToken){
+
+			println "getMeasurementMetaData for AssayToken: ${params.assayToken}"
+			println "available AssayTokens: "
+			MetabolomicsAssay.list().each { massay ->
+				println massay.assayToken
+			}
+
 			def assay = MetabolomicsAssay.findByAssayToken(params.assayToken as String)
-						
-			def requestedMeasurementTokens  = params.measurementToken instanceof String ? [params.measurementToken] : params.measurementToken
-			def measurementTokens 			= assay?.measurementPlatformVersion?.features
+
+			def requestedMeasurementTokens = params.measurementToken instanceof String ? [params.measurementToken] : params.measurementToken
+			def measurementTokens = assay?.measurementPlatformVersion?.features
 
 			assay?.measurementPlatformVersion?.features?.each { mpvf ->
 
@@ -23,6 +30,6 @@ class RestController extends org.dbxp.dbxpModuleStorage.RestController {
 			}
 		}
 
-		render resp as JSON	
+		render resp as JSON
 	}
 }
